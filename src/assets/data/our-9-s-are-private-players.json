@@ -1,0 +1,33 @@
+[  
+    {"name": "Hubie Nations",
+    "id": "28036791",
+    "skill": 5},
+
+    {"name": "Cindy Lassiter",
+    "id": "28011658",
+    "skill": 4},
+
+    {"name": "Brian Lassiter",
+    "id": "28040048",
+    "skill": 2},
+
+    {"name": "Amanda Ryan",
+    "id": "28040195",
+    "skill": 3},
+
+    {"name": "Chuck-Chuckles Martin",
+    "id": "28039949",
+    "skill": 5},
+
+    {"name": "Todd Benedict",
+    "id": "28042317",
+    "skill": 2},
+
+    {"name": "Ray Pollard",
+    "id": "28042206",
+    "skill": 3},
+
+    {"name": "Aaron Davis",
+    "id": "28038069",
+    "skill": 6}
+]
