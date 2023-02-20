@@ -1,16 +1,18 @@
 <div>
+    <p>Next Ball To Hit:</p>
     <img class="up-next" src={{curBallImgPath}}>
+    <p>Click a ball to see the next ball to hit</p>
     <table id="balls">
         <tr>
-            <td><img class="ball" src="assets/images/1ball.png" /></td>
-            <td><img class="ball" src="assets/images/2ball.png" /></td>
-            <td><img class="ball" src="assets/images/3ball.png" /></td>
-            <td><img class="ball" src="assets/images/4ball.png" /></td>
-            <td><img class="ball" src="assets/images/5ball.png" /></td>
-            <td><img class="ball" src="assets/images/6ball.png" /></td>
-            <td><img class="ball" src="assets/images/7ball.png" /></td>
-            <td><img class="ball" src="assets/images/8ball.png" /></td>
-            <td><img class="ball" src="assets/images/9ball.png" /></td>
+            <td><img (click)="updateNextBall(2)" class="ball" src="assets/images/1ball.png" /></td>
+            <td><img (click)="updateNextBall(3)" class="ball" src="assets/images/2ball.png" /></td>
+            <td><img (click)="updateNextBall(4)" class="ball" src="assets/images/3ball.png" /></td>
+            <td><img (click)="updateNextBall(5)" class="ball" src="assets/images/4ball.png" /></td>
+            <td><img (click)="updateNextBall(6)" class="ball" src="assets/images/5ball.png" /></td>
+            <td><img (click)="updateNextBall(7)" class="ball" src="assets/images/6ball.png" /></td>
+            <td><img (click)="updateNextBall(8)" class="ball" src="assets/images/7ball.png" /></td>
+            <td><img (click)="updateNextBall(9)" class="ball" src="assets/images/8ball.png" /></td>
+            <td><img (click)="updateNextBall(1)" class="ball" src="assets/images/9ball.png" /></td>
         </tr>
     </table>
 </div>
