@@ -1,25 +1,35 @@
 <div>
-    <h2>Team Names</h2>
-    <h4>Click on a team to load that team's players</h4>
-    <div *ngFor="let teamName of getTeamNames()">
+    <h2 *ngIf="isYourTeam">Select Your Team</h2>
+    <h2 *ngIf="isYourTeam==false">Select Opponent Team</h2>
+    <div *ngFor="let teamName of teams">
         <a (click)="chooseTeam(teamName)" [routerLink]="">{{teamName}}</a>
 </div>
 <div *ngIf="getChosenTeamName().length > 0">
-    <h2>Players for team [{{getChosenTeamName()}}]:</h2>
+    <h4>Confirm Player info for {{getChosenTeamName()}}</h4>
     <table mat-table id="playerNamesTable">
         <tr>
             <th [width]="80">Number</th>
             <th [width]="170">Name</th>
             <th [width]="60">Skill</th>
         </tr>
-        <tr class='tableDataRow' *ngFor="let player of getPlayers()">
+        <tr *ngFor="let player of getPlayers()">
             <td>{{player.id}}</td>
             <td>{{player.name}}</td>
             <td>{{player.skill}}</td>
         </tr>
     </table>
-    <p></p>
-    <div>
-        <button id="confirmButton" class='centerButton' [routerLink]="['/playField']">Confirm Team Choice</button>
-    </div>
+</div>
+<div *ngIf="getChosenTeamName().length == 0">
+    <h4>Choose a team above</h4>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
 </div>

@@ -1,14 +1,27 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'abs-play-field',
   templateUrl: './play-field.component.html',
   styleUrls: ['./play-field.component.css']
 })
-export class PlayFieldComponent {
-  constructor() {}
+export class PlayFieldComponent implements OnInit{
+  @Input() yourTeam: string = '';
+  @Input() opponentTeam: string = '';
   protected nextBall: number = 1;
-  protected curBallImgPath:string = "assets/images/1ball.png";
+  protected curBallImgPath: string = "assets/images/1ball.png";
+
+  constructor(private route: ActivatedRoute) { }
+
+  ngOnInit() { 
+    console.log('===== start PlayFieldComponent onInit ======');
+    this.yourTeam = this.route.snapshot.paramMap.get('yourTeam') || '';
+    this.opponentTeam = this.route.snapshot.paramMap.get('opponentTeam') || '';
+    console.log('your team:' + this.yourTeam)
+    console.log('opponent team:' + this.opponentTeam)
+    console.log('===== end PlayFieldComponent onInit ======');
+  }
 
   updateNextBall(newNext: number) {
     this.nextBall = newNext;
@@ -20,5 +33,12 @@ export class PlayFieldComponent {
   }
   public getCurBallImgPath(): string {
     return this.curBallImgPath;
+  }
+
+  public getYourTeam(): string {
+    return this.yourTeam || 'null';
+  }
+  public getOpponentTeam(): string {
+    return this.opponentTeam || 'null';
   }
 }

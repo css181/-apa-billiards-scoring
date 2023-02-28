@@ -1,3 +1,6 @@
-  tr:nth-child(even) {
-    background-color: rgb(234, 220, 220);
-  }
+
+.centerButton {
+  align-items: center;
+  text-align: center;
+  align-content: center;
+}

@@ -7,11 +7,12 @@ import { AppComponent } from './app.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { DashifyNamesPipe } from './pipes/dashify-names.pipe';
 import { PlayFieldComponent } from './play-field/play-field.component';
-import { TeamSelectionComponent } from './team-selection/team-selection.component';
+import { TeamSelectionComponent } from './welcome/team-selection/team-selection.component';
 
 const routes: Routes = [
   { path: 'welcome', component: WelcomeComponent },
-  { path: 'playField', component: PlayFieldComponent },
+  { path: 'playField/:yourTeam/:opponentTeam', component: PlayFieldComponent },
+  { path: 'teamSelection', component: TeamSelectionComponent },
   { path: '', redirectTo: '/welcome', pathMatch: 'full'}
 ];
 

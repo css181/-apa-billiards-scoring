@@ -1,1 +1,21 @@
 <p>Welcome is running!</p>
+<p>Your Team: {{getYourTeam()}}</p>
+<p>Opponent Team: {{getOpponentTeam()}}</p>
+<table id="teamSelections" [cellPadding]="10">
+    <tr>
+        <td><abs-team-selection [isYourTeam]="true" [teams]='getTeamNames()' (notify)='onTeamSelected($event)'></abs-team-selection></td>
+        <td><abs-team-selection [isYourTeam]="false" [teams]='getTeamNames()' (notify)='onTeamSelected($event)'></abs-team-selection></td>
+    </tr>
+</table>
+<p></p>
+<table>
+    <tr>
+        <td [width]="265"></td>
+        <td [width]="180">
+            <div>
+                <button id="confirmButton" class='centerButton' [routerLink]="['/playField', getYourTeam(), getOpponentTeam()]">Confirm Team Choices</button>
+            </div>
+        </td>
+        <td [width]="265"></td>
+    </tr>
+</table>

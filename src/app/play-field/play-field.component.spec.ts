@@ -1,14 +1,25 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from "@angular/platform-browser"
+import { ActivatedRoute } from '@angular/router';
+import { async } from 'rxjs';
 import { PlayFieldComponent } from './play-field.component';
 
 describe('PlayFieldComponent', () => {
   let component: PlayFieldComponent;
   let fixture: ComponentFixture<PlayFieldComponent>;
 
+  const mockParamMap = { get(attrib: string):string { return 'Defense Gone Bad'}}
+  const fakeActivatedRoute = {
+    snapshot: { 
+      paramMap: mockParamMap
+    }
+  } as unknown as ActivatedRoute;
+
+
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ PlayFieldComponent ]
+    TestBed.configureTestingModule({ 
+      declarations: [ PlayFieldComponent ],
+      providers: [ {provide: ActivatedRoute, useValue: fakeActivatedRoute} ],
     })
     .compileComponents();
 
@@ -21,8 +32,8 @@ describe('PlayFieldComponent', () => {
     const ballTable = fixture.debugElement.query(By.css('table#balls'));
     const imgs = ballTable.queryAll(By.css('.ball'));
 
-    for(var x = 1; x < 10; x++) {
-      expect(imgs[x-1].nativeElement.src).toContain(x+"ball.png");
+    for (var x = 1; x < 10; x++) {
+      expect(imgs[x - 1].nativeElement.src).toContain(x + "ball.png");
     }
   });
 
@@ -32,7 +43,7 @@ describe('PlayFieldComponent', () => {
   })
 
   describe('updateNextBall() method', () => {
-    it('should update the nextBall state of the component', ()=> {
+    it('should update the nextBall state of the component', () => {
       expect(component.getNextBall()).toBe(1);
 
       component.updateNextBall(2);

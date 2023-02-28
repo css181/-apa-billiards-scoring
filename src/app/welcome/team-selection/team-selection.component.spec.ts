@@ -26,24 +26,31 @@ describe('TeamSelection Component', () => {
 
     fixture = TestBed.createComponent(TeamSelectionComponent);
     component = fixture.componentInstance;
+    component.teams = names; //This is an input, so lets assign it here to what the input would typically be
     fixture.detectChanges();
   });
 
-  describe('ngOnInit', () => {
-    it('should get the list of team names', () => {
-      component.ngOnInit();
+  describe('header h2', () => {
+    it('should say "Your Team" if isYourTeam is true', ()=> {
+      component.isYourTeam = true;
+      fixture.detectChanges();
 
-      expect(component.getTeamNames().length).toBe(8);
+      expect(fixture.debugElement.query(By.css('h2')).nativeElement.textContent).toContain("Your Team");
+    })
+    it('should say "Opponent Team" if isYourTeam is false', ()=> {
+      component.isYourTeam = false;
+      fixture.detectChanges();
+
+      expect(fixture.debugElement.query(By.css('h2')).nativeElement.textContent).toContain("Opponent Team");
     })
   })
-
   describe('chosenTeamName property', () => {
     it('should start with a blank value', () => {
       expect(component.getChosenTeamName()).toBe('');
     });
 
     it('should update when chooseTeam() method is called', () => {
-      const chosenTeam: string = component.getTeamNames()[0];
+      const chosenTeam: string = component.teams[0];
       
       component.chooseTeam(chosenTeam);
 
@@ -56,7 +63,7 @@ describe('TeamSelection Component', () => {
       expect(component.getPlayers()).toEqual([]);
     })
     it('should update when chooseTeam() method is called', () => {
-      const chosenTeam: string = component.getTeamNames()[0];
+      const chosenTeam: string = component.teams[0];
       
       component.chooseTeam(chosenTeam);
 
@@ -64,21 +71,17 @@ describe('TeamSelection Component', () => {
     })
   })
 
-  describe('players list and confirm button', () => {
+  describe('players list', () => {
     it('should display only after you click a team', () => {
       let playerNameTableElement = fixture.debugElement.query(By.css('table#playerNamesTable'));
-      let confirmButtonElement = fixture.debugElement.query(By.css('#confirmButton'));
       expect(playerNameTableElement).toBeFalsy();
-      expect(confirmButtonElement).toBeFalsy();
 
       const teamLinks: DebugElement[] = fixture.debugElement.queryAll(By.css('a'));
       teamLinks[2].nativeElement.click();
       fixture.detectChanges();
       playerNameTableElement = fixture.debugElement.query(By.css('table#playerNamesTable'));
-      confirmButtonElement = fixture.debugElement.query(By.css('#confirmButton'));
 
       expect(playerNameTableElement).toBeTruthy();
-      expect(confirmButtonElement).toBeTruthy();
     })
   })
 });
