@@ -1,0 +1,15 @@
+<div *ngIf="getTeamName().length > 0">
+    <h4>Confirm info for [{{getTeamName()}}]</h4>
+    <table mat-table id="playerNamesTable">
+        <tr>
+            <th [width]="80">Number</th>
+            <th [width]="170">Name</th>
+            <th [width]="60">Skill</th>
+        </tr>
+        <tr *ngFor="let player of getPlayers()">
+            <td>{{player.id}}</td>
+            <td>{{player.name}}</td>
+            <td>{{player.skill}}</td>
+        </tr>
+    </table>
+</div>

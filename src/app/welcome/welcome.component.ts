@@ -31,8 +31,14 @@ export class WelcomeComponent implements OnInit{
   public getTeamNames(): string[] {
     return this.teamNames;
   }
+  public setYourTeam(name: string): void {
+    this.yourTeam=name;
+  }
   public getYourTeam(): string {
     return this.yourTeam;
+  }
+  public setOpponentTeam(name: string): void {
+    this.opponentTeam=name;
   }
   public getOpponentTeam(): string {
     return this.opponentTeam;

@@ -15,12 +15,10 @@ export class PlayFieldComponent implements OnInit{
   constructor(private route: ActivatedRoute) { }
 
   ngOnInit() { 
-    console.log('===== start PlayFieldComponent onInit ======');
     this.yourTeam = this.route.snapshot.paramMap.get('yourTeam') || '';
     this.opponentTeam = this.route.snapshot.paramMap.get('opponentTeam') || '';
-    console.log('your team:' + this.yourTeam)
-    console.log('opponent team:' + this.opponentTeam)
-    console.log('===== end PlayFieldComponent onInit ======');
+    // console.log('your team:' + this.yourTeam)
+    // console.log('opponent team:' + this.opponentTeam)
   }
 
   updateNextBall(newNext: number) {

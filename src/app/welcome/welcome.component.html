@@ -1,14 +1,17 @@
-<p>Welcome is running!</p>
 <p>Your Team: {{getYourTeam()}}</p>
 <p>Opponent Team: {{getOpponentTeam()}}</p>
 <table id="teamSelections" [cellPadding]="10">
     <tr>
-        <td><abs-team-selection [isYourTeam]="true" [teams]='getTeamNames()' (notify)='onTeamSelected($event)'></abs-team-selection></td>
-        <td><abs-team-selection [isYourTeam]="false" [teams]='getTeamNames()' (notify)='onTeamSelected($event)'></abs-team-selection></td>
+        <td><abs-team-selection [isYourTeam]="true" [teams]='getTeamNames()' (notifyTeamWasSelected)='onTeamSelected($event)'></abs-team-selection></td>
+        <td><abs-team-selection [isYourTeam]="false" [teams]='getTeamNames()' (notifyTeamWasSelected)='onTeamSelected($event)'></abs-team-selection></td>
+    </tr>
+    <tr>
+        <td><abs-player-info-update [teamName]='getYourTeam()'></abs-player-info-update></td>
+        <td><abs-player-info-update [teamName]='getOpponentTeam()'></abs-player-info-update></td>
     </tr>
 </table>
 <p></p>
-<table>
+<table  *ngIf="(getYourTeam() !=='') && (getOpponentTeam() !=='')  && (getYourTeam() !== getOpponentTeam())">
     <tr>
         <td [width]="265"></td>
         <td [width]="180">

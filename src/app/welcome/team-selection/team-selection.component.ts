@@ -7,34 +7,24 @@ import { TeamsListService } from '../../services/teams-list.service';
   templateUrl: './team-selection.component.html',
   styleUrls: ['./team-selection.component.css']
 })
-export class TeamSelectionComponent implements OnChanges {
+export class TeamSelectionComponent {
   @Input() teams: string[] = [];
   @Input() isYourTeam: boolean = false;
-  private players: IPlayer[];
   private chosenTeamName: string;
-  @Output() notify: EventEmitter<string> = new EventEmitter<string>();
+  @Output() notifyTeamWasSelected: EventEmitter<string> = new EventEmitter<string>();
 
   constructor(public teamsListService: TeamsListService) {
-    this.players = [];
     this.chosenTeamName = '';
   }
 
-  ngOnChanges() {
-
-  }
-
   public chooseTeam(teamName: string) {
-    this.players = [];
     console.log("choosing team: " + teamName);
     this.chosenTeamName = teamName;
-    this.notify.emit(this.isYourTeam + "|" + teamName);
-    this.teamsListService.getPlayers(teamName).subscribe(data => this.players=data);
+    this.notifyTeamWasSelected.emit(this.isYourTeam + "|" + teamName);
   }
 
   public getChosenTeamName(): string {
     return this.chosenTeamName;
   }
-  public getPlayers(): IPlayer[] {
-    return this.players;
-  }
+
 }

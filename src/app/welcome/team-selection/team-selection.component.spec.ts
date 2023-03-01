@@ -6,7 +6,7 @@ import HookerPlayers from '../../../assets/data/hookers-players.json';
 import { TeamsListService } from '../../services/teams-list.service';
 import { of } from 'rxjs';
 import { By } from "@angular/platform-browser"
-import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('TeamSelection Component', () => {
   let component: TeamSelectionComponent;
@@ -58,30 +58,4 @@ describe('TeamSelection Component', () => {
     })
   })
 
-  describe('players property', () => {
-    it('should start with an empty list', () => {
-      expect(component.getPlayers()).toEqual([]);
-    })
-    it('should update when chooseTeam() method is called', () => {
-      const chosenTeam: string = component.teams[0];
-      
-      component.chooseTeam(chosenTeam);
-
-      expect(component.getPlayers()).toEqual(HookerPlayers);
-    })
-  })
-
-  describe('players list', () => {
-    it('should display only after you click a team', () => {
-      let playerNameTableElement = fixture.debugElement.query(By.css('table#playerNamesTable'));
-      expect(playerNameTableElement).toBeFalsy();
-
-      const teamLinks: DebugElement[] = fixture.debugElement.queryAll(By.css('a'));
-      teamLinks[2].nativeElement.click();
-      fixture.detectChanges();
-      playerNameTableElement = fixture.debugElement.query(By.css('table#playerNamesTable'));
-
-      expect(playerNameTableElement).toBeTruthy();
-    })
-  })
 });

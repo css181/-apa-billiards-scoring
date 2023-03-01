@@ -8,6 +8,7 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import { DashifyNamesPipe } from './pipes/dashify-names.pipe';
 import { PlayFieldComponent } from './play-field/play-field.component';
 import { TeamSelectionComponent } from './welcome/team-selection/team-selection.component';
+import { PlayerInfoUpdateComponent } from './welcome/player-info-update/player-info-update.component';
 
 const routes: Routes = [
   { path: 'welcome', component: WelcomeComponent },
@@ -18,7 +19,7 @@ const routes: Routes = [
 
 @NgModule({
   imports:      [ BrowserModule, HttpClientModule, RouterModule.forRoot(routes) ],
-  declarations: [ AppComponent, WelcomeComponent, DashifyNamesPipe, PlayFieldComponent, TeamSelectionComponent ],
+  declarations: [ AppComponent, WelcomeComponent, DashifyNamesPipe, PlayFieldComponent, TeamSelectionComponent, PlayerInfoUpdateComponent ],
   providers:    [ DashifyNamesPipe ],
   bootstrap:    [ AppComponent ]
 })
