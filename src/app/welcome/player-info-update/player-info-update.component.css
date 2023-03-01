@@ -5,3 +5,17 @@ tr:nth-child(even) {
   .tableDataRow {
     border: 0px;
   }
+
+  .playerIDInput {
+    width: 100px;
+  }
+  .playerNameInput {
+    width: 180px;
+  }
+  .playerSkillInput {
+    width: 20px;
+  }
+
+  .playerInfo {
+    border: 0px;
+  }

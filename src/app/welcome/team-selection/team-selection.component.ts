@@ -18,7 +18,7 @@ export class TeamSelectionComponent {
   }
 
   public chooseTeam(teamName: string) {
-    console.log("choosing team: " + teamName);
+    console.log("choosing " + (this.isYourTeam?"your ":"opponent ") + " team: " + teamName);
     this.chosenTeamName = teamName;
     this.notifyTeamWasSelected.emit(this.isYourTeam + "|" + teamName);
   }

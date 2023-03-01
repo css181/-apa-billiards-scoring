@@ -7,9 +7,13 @@
             <th [width]="60">Skill</th>
         </tr>
         <tr *ngFor="let player of getPlayers()">
-            <td>{{player.id}}</td>
-            <td>{{player.name}}</td>
-            <td>{{player.skill}}</td>
+            <td *ngIf="getIsUpdateMode()"><input class="playerIDInput" value="{{player.id}}"></td>
+            <td *ngIf="getIsUpdateMode()==false" class="playerInfo">{{player.id}}</td>
+            <td *ngIf="getIsUpdateMode()"><input class="playerNameInput" value="{{player.name}}"></td>
+            <td *ngIf="getIsUpdateMode()==false" class="playerInfo">{{player.name}}</td>
+            <td *ngIf="getIsUpdateMode()"><input class="playerSkillInput" value="{{player.skill}}"></td>
+            <td *ngIf="getIsUpdateMode()==false" class="playerInfo">{{player.skill}}</td>
         </tr>
     </table>
+    <button id="updateButton" [routerLink]="" (click)="onUpdate()">Update</button>
 </div>
