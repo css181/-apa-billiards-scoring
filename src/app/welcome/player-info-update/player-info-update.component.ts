@@ -33,6 +33,11 @@ export class PlayerInfoUpdateComponent implements OnChanges {
     this.isUpdateMode = true;
     console.log('setting isUpdateMode to true');
   }
+  
+  onSave(): void {
+    console.log('Saving values of players:');
+    console.log(JSON.stringify(this.players));
+  }
 
   public getPlayers(): IPlayer[] {
     return this.players;

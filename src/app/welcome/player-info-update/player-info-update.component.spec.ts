@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, flush, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import HookerPlayers from '../../../assets/data/hookers-players.json';
 import { PlayerInfoUpdateComponent } from './player-info-update.component';
 import { By } from "@angular/platform-browser"
@@ -6,6 +6,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { of } from 'rxjs';
 import { TeamsListService } from 'src/app/services/teams-list.service';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 describe('PlayerInfoUpdateComponent', () => {
   let component: PlayerInfoUpdateComponent;
@@ -18,7 +19,7 @@ describe('PlayerInfoUpdateComponent', () => {
     TestBed.configureTestingModule({
       declarations: [PlayerInfoUpdateComponent],
       providers: [{ provide: TeamsListService, useValue: mockTeamsListService }],
-      imports: [HttpClientModule],
+      imports: [HttpClientModule, FormsModule],
       schemas: [NO_ERRORS_SCHEMA]
     });
 
@@ -83,9 +84,9 @@ describe('PlayerInfoUpdateComponent', () => {
       component.teamName = 'Hookers';
       component.ngOnChanges();
       fixture.detectChanges();
-      let inputBoxes = fixture.debugElement.queryAll(By.css('input'));
+      let inputBoxes = fixture.debugElement.query(By.css('table#playerNamesTable')).queryAll(By.css('input'));
       expect(inputBoxes.length).toBe(0);
-      let tdElements = fixture.debugElement.queryAll(By.css('td'));
+      let tdElements = fixture.debugElement.query(By.css('table#playerNamesTable')).queryAll(By.css('td'));
       expect(tdElements.length).toBe(8 * 3);
 
       let updateButton = fixture.debugElement.query(By.css('button#updateButton'));
@@ -105,4 +106,38 @@ describe('PlayerInfoUpdateComponent', () => {
       expect(inputSkillBoxes.length).toBe(8);
     })
   })
+
+  describe('save button', () => {
+    it('should update the value in players array after update is hit, values are changed, and save is hit', fakeAsync(() => {
+      const idChangedValue = '5';
+      component.teamName = 'Hookers';
+      component.ngOnChanges();
+      tick();
+      fixture.detectChanges();
+
+      let updateButton = fixture.debugElement.query(By.css('button#updateButton'));
+      updateButton.triggerEventHandler('click', null);
+      fixture.detectChanges();
+      let inputIDBox1 = fixture.debugElement.queryAll(By.css('.playerIDInput'))[0].nativeElement;
+      console.log('***************************************');
+      console.log('start value: ' + inputIDBox1.value);
+      setInputValue(inputIDBox1, idChangedValue);
+      let saveButton = fixture.debugElement.query(By.css('button#saveButton'));
+      saveButton.triggerEventHandler('click', null);
+      fixture.detectChanges();
+      inputIDBox1 = fixture.debugElement.queryAll(By.css('.playerIDInput'))[0].nativeElement;
+      console.log('end value: ' + inputIDBox1.value);
+
+      console.log(component.getPlayers()[0]);
+      expect(component.getPlayers()[0].id).toBe(idChangedValue);
+    }))
+  })
+
+  // must be called from within fakeAsync due to use of tick()
+  function setInputValue(element:any, value:string) {
+    element.value = value;
+    dispatchEvent(new Event('input'));
+    tick();
+    fixture.detectChanges();
+  }
 });
