@@ -1,5 +1,6 @@
 <div *ngIf="getTeamName().length > 0">
-    <h4>Confirm info for [{{getTeamName()}}]</h4>
+    <input type="text" id="tempInput" [(ngModel)]="tempValue" value="{{tempValue}}">
+    <h4>Confirm info for [{{getTeamName()}}], tempvalue: {{tempValue}}</h4>
     <table mat-table id="playerNamesTable">
         <tr>
             <th [width]="80">Number</th>
@@ -7,11 +8,11 @@
             <th [width]="60">Skill</th>
         </tr>
         <tr *ngFor="let player of getPlayers(); let i = index">
-            <td *ngIf="getIsUpdateMode()"><input class="playerIDInput" [(ngModel)]="getPlayers()[i].id" value="{{getPlayers()[i].id}}"></td>
+            <td *ngIf="getIsUpdateMode()"><input class="playerIDInput" [(ngModel)]="players[i].id" value="{{players[i].id}}"></td>
             <td *ngIf="getIsUpdateMode()==false" class="playerInfo">{{player.id}}</td>
-            <td *ngIf="getIsUpdateMode()"><input class="playerNameInput" [(ngModel)]="getPlayers()[i].name" value="{{getPlayers()[i].name}}"></td>
+            <td *ngIf="getIsUpdateMode()"><input class="playerNameInput" [(ngModel)]="players[i].name" value="{{players[i].name}}"></td>
             <td *ngIf="getIsUpdateMode()==false" class="playerInfo">{{player.name}}</td>
-            <td *ngIf="getIsUpdateMode()"><input class="playerSkillInput" [(ngModel)]="getPlayers()[i].skill" value="{{getPlayers()[i].skill}}"></td>
+            <td *ngIf="getIsUpdateMode()"><input class="playerSkillInput" [(ngModel)]="players[i].skill" value="{{players[i].skill}}"></td>
             <td *ngIf="getIsUpdateMode()==false" class="playerInfo">{{player.skill}}</td>
         </tr>
     </table>

@@ -10,11 +10,13 @@ import { TeamsListService } from 'src/app/services/teams-list.service';
 export class PlayerInfoUpdateComponent implements OnChanges {
   @Input() teamName: string;
   private oldTeamName: string;
-  private players: IPlayer[];
+  public players: IPlayer[];
   public isUpdateMode: boolean;
+  public tempValue: string;
   
   constructor(public teamsListService: TeamsListService) {
     this.players = [];
+    this.tempValue = 'aaaaa';
     this.teamName = '';
     this.oldTeamName = '';
     this.isUpdateMode = false;

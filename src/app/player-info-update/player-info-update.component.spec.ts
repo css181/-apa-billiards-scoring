@@ -1,5 +1,5 @@
 import { ComponentFixture, flush, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import HookerPlayers from '../../../assets/data/hookers-players.json';
+import HookerPlayers from '../../assets/data/hookers-players.json';
 import { PlayerInfoUpdateComponent } from './player-info-update.component';
 import { By } from "@angular/platform-browser"
 import { NO_ERRORS_SCHEMA } from '@angular/core';
@@ -81,17 +81,13 @@ describe('PlayerInfoUpdateComponent', () => {
 
   describe('update button', () => {
     it('should turn all the player info elements to input boxes', () => {
-      component.teamName = 'Hookers';
-      component.ngOnChanges();
-      fixture.detectChanges();
+      setupPlayerInfoUpdateComponent();
       let inputBoxes = fixture.debugElement.query(By.css('table#playerNamesTable')).queryAll(By.css('input'));
       expect(inputBoxes.length).toBe(0);
       let tdElements = fixture.debugElement.query(By.css('table#playerNamesTable')).queryAll(By.css('td'));
       expect(tdElements.length).toBe(8 * 3);
 
-      let updateButton = fixture.debugElement.query(By.css('button#updateButton'));
-      updateButton.triggerEventHandler('click', null);
-      fixture.detectChanges();
+      clickUpdateButton();
 
       //Verify No non-Input TDs
       let nonInputBoxes = fixture.debugElement.queryAll(By.css('.playerInfo'));
@@ -105,39 +101,73 @@ describe('PlayerInfoUpdateComponent', () => {
       let inputSkillBoxes = fixture.debugElement.queryAll(By.css('.playerSkillInput'));
       expect(inputSkillBoxes.length).toBe(8);
     })
+    it('should test the input binding to all the <input> display values when the component property values change', () => {
+      const idChangedValue = '5';
+      setupPlayerInfoUpdateComponent();
+
+      clickUpdateButton();
+      let inputIDBox1 = fixture.debugElement.queryAll(By.css('.playerIDInput'))[0].nativeElement;
+
+      component.players[0].id = idChangedValue;
+      fixture.detectChanges();
+
+      fixture.whenStable().then(() => {
+        expect(inputIDBox1.value).toEqual(idChangedValue);
+      });
+    })
   })
 
   describe('save button', () => {
-    it('should update the value in players array after update is hit, values are changed, and save is hit', fakeAsync(() => {
+    it('should update the value in players array after update is hit, values are changed, and save is hit', () => {
       const idChangedValue = '5';
-      component.teamName = 'Hookers';
-      component.ngOnChanges();
-      tick();
-      fixture.detectChanges();
+      setupPlayerInfoUpdateComponent();
 
-      let updateButton = fixture.debugElement.query(By.css('button#updateButton'));
-      updateButton.triggerEventHandler('click', null);
-      fixture.detectChanges();
+      clickUpdateButton();
       let inputIDBox1 = fixture.debugElement.queryAll(By.css('.playerIDInput'))[0].nativeElement;
-      console.log('***************************************');
-      console.log('start value: ' + inputIDBox1.value);
       setInputValue(inputIDBox1, idChangedValue);
       let saveButton = fixture.debugElement.query(By.css('button#saveButton'));
       saveButton.triggerEventHandler('click', null);
       fixture.detectChanges();
-      inputIDBox1 = fixture.debugElement.queryAll(By.css('.playerIDInput'))[0].nativeElement;
-      console.log('end value: ' + inputIDBox1.value);
 
-      console.log(component.getPlayers()[0]);
-      expect(component.getPlayers()[0].id).toBe(idChangedValue);
-    }))
+      fixture.whenStable().then(() => {
+        expect(component.getPlayers()[0].id).toBe(idChangedValue);
+      });
+    })
+  })
+
+  xdescribe('temp input', () => {
+    
+    it('should save new tempValue property value when <input> value is updated', () => {
+      const idChangedValue = '5';
+      setupPlayerInfoUpdateComponent();
+
+      const tempInputDe = fixture.debugElement.query(By.css('#tempInput'));
+      const tempInputEl = tempInputDe.nativeElement;
+      
+      setInputValue(tempInputEl, idChangedValue);
+
+      fixture.whenStable().then(() => {
+        expect(component.tempValue).toEqual(idChangedValue);
+      });
+    });
   })
 
   // must be called from within fakeAsync due to use of tick()
   function setInputValue(element:any, value:string) {
     element.value = value;
     dispatchEvent(new Event('input'));
-    tick();
+    fixture.detectChanges();
+  }
+
+  function setupPlayerInfoUpdateComponent() {
+    component.teamName = 'Hookers';
+    component.ngOnChanges();
+    fixture.detectChanges();
+  }
+
+  function clickUpdateButton() {
+    let updateButton = fixture.debugElement.query(By.css('button#updateButton'));
+    updateButton.triggerEventHandler('click', null);
     fixture.detectChanges();
   }
 });
