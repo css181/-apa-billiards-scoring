@@ -1,0 +1,33 @@
+[  
+    {"name": "Super Man",
+    "id": "1111111",
+    "skill": 4},
+
+    {"name": "Wonder Woman",
+    "id": "2222222",
+    "skill": 4},
+
+    {"name": "Mr Fantastic",
+    "id": "3333333",
+    "skill": 3},
+
+    {"name": "The Thing",
+    "id": "4444444",
+    "skill": 2},
+
+    {"name": "Johny Storm",
+    "id": "5555555",
+    "skill": 3},
+
+    {"name": "Ried Richards",
+    "id": "6666666",
+    "skill": 4},
+
+    {"name": "Susan Storm",
+    "id": "7777777",
+    "skill": 3},
+
+    {"name": "Human Torch",
+    "id": "88888888",
+    "skill": 4}
+]

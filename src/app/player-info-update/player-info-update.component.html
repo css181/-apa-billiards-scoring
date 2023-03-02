@@ -17,10 +17,10 @@
     </table>
     <table>
         <tr>
-            <td>
+            <td *ngIf="getIsUpdateMode()==false">
                 <button id="updateButton" [routerLink]="" (click)="onUpdate()">Update</button>
             </td>
-            <td>
+            <td *ngIf="getIsUpdateMode()">
                 <button id="saveButton" [routerLink]="" (click)="onSave()">Save</button>
             </td>
         </tr>

@@ -80,6 +80,16 @@ describe('PlayerInfoUpdateComponent', () => {
   })
 
   describe('update button', () => {
+    it('should only show if not in updateMode', () => {
+      setupPlayerInfoUpdateComponent();
+      let updateButon = fixture.debugElement.query(By.css('button#updateButton'));
+      expect(updateButon).toBeTruthy();
+
+      clickUpdateButton();
+      updateButon = fixture.debugElement.query(By.css('button#updateButton'));
+
+      expect(updateButon).toBeFalsy();
+    })
     it('should turn all the player info elements to input boxes', () => {
       setupPlayerInfoUpdateComponent();
       let inputBoxes = fixture.debugElement.query(By.css('table#playerNamesTable')).queryAll(By.css('input'));
@@ -118,6 +128,39 @@ describe('PlayerInfoUpdateComponent', () => {
   })
 
   describe('save button', () => {
+    it('should only show if in updateMode', () => {
+      setupPlayerInfoUpdateComponent();
+      let saveButon = fixture.debugElement.query(By.css('button#saveButton'));
+      expect(saveButon).toBeFalsy();
+
+      clickUpdateButton();
+      saveButon = fixture.debugElement.query(By.css('button#saveButton'));
+
+      expect(saveButon).toBeTruthy();
+    })
+    it('should remove the ability to update values via <inputs> anymore after save is hit', () => {
+      setupPlayerInfoUpdateComponent();
+      clickUpdateButton();
+      let inputBoxes = fixture.debugElement.query(By.css('table#playerNamesTable')).queryAll(By.css('input'));
+      expect(inputBoxes.length).toBe(8*3);
+      //Verify No non-Input TDs
+      let nonInputBoxes = fixture.debugElement.queryAll(By.css('.playerInfo'));
+      expect(nonInputBoxes.length).toBe(0);
+
+      clickSaveButton();
+
+      //Verify No Inputs for each of the player fields
+      let inputIDBoxes = fixture.debugElement.queryAll(By.css('.playerIDInput'));
+      expect(inputIDBoxes.length).toBe(0);
+      let inputNameBoxes = fixture.debugElement.queryAll(By.css('.playerNameInput'));
+      expect(inputNameBoxes.length).toBe(0);
+      let inputSkillBoxes = fixture.debugElement.queryAll(By.css('.playerSkillInput'));
+      expect(inputSkillBoxes.length).toBe(0);
+
+      //Verify 8*3 non-Input TDs
+      nonInputBoxes = fixture.debugElement.queryAll(By.css('.playerInfo'));
+      expect(nonInputBoxes.length).toBe(8*3);
+    })
     it('should update the value in players array after update is hit, values are changed, and save is hit', () => {
       const idChangedValue = '5';
       setupPlayerInfoUpdateComponent();
@@ -150,6 +193,11 @@ describe('PlayerInfoUpdateComponent', () => {
 
   function clickUpdateButton() {
     let updateButton = fixture.debugElement.query(By.css('button#updateButton'));
+    updateButton.triggerEventHandler('click', null);
+    fixture.detectChanges();
+  }
+  function clickSaveButton() {
+    let updateButton = fixture.debugElement.query(By.css('button#saveButton'));
     updateButton.triggerEventHandler('click', null);
     fixture.detectChanges();
   }
