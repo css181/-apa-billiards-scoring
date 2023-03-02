@@ -1,12 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TeamSelectionComponent } from './team-selection/team-selection.component';
 import { By } from "@angular/platform-browser"
 import { WelcomeComponent } from './welcome.component';
 import names from '../../assets/data/team-names.json';
 import { TeamsListService } from '../services/teams-list.service';
 import { HttpClientModule } from '@angular/common/http';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 describe('WelcomeComponent', () => {
   let component: WelcomeComponent;
@@ -32,7 +30,7 @@ describe('WelcomeComponent', () => {
     it('should get the list of team names', () => {
       component.ngOnInit();
 
-      expect(component.getTeamNames().length).toBe(8);
+      expect(component.getTeamNames().length).toBe(9);
     })
   })
 

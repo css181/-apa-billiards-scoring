@@ -1,6 +1,5 @@
 <div *ngIf="getTeamName().length > 0">
-    <input type="text" id="tempInput" [(ngModel)]="tempValue" value="{{tempValue}}">
-    <h4>Confirm info for [{{getTeamName()}}], tempvalue: {{tempValue}}</h4>
+    <h4>Confirm info for [{{getTeamName()}}]</h4>
     <table mat-table id="playerNamesTable">
         <tr>
             <th [width]="80">Number</th>

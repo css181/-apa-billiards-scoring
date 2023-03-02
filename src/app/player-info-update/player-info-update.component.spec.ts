@@ -135,23 +135,6 @@ describe('PlayerInfoUpdateComponent', () => {
     })
   })
 
-  xdescribe('temp input', () => {
-    
-    it('should save new tempValue property value when <input> value is updated', () => {
-      const idChangedValue = '5';
-      setupPlayerInfoUpdateComponent();
-
-      const tempInputDe = fixture.debugElement.query(By.css('#tempInput'));
-      const tempInputEl = tempInputDe.nativeElement;
-      
-      setInputValue(tempInputEl, idChangedValue);
-
-      fixture.whenStable().then(() => {
-        expect(component.tempValue).toEqual(idChangedValue);
-      });
-    });
-  })
-
   // must be called from within fakeAsync due to use of tick()
   function setInputValue(element:any, value:string) {
     element.value = value;
