@@ -48,7 +48,7 @@ describe('WelcomeComponent', () => {
   });
 
   describe('confirm button', () => {
-    xit('send us to play-field when clicked', () => {
+    xit('send us to put-up when clicked', () => {
       let confirmButtonElement = fixture.debugElement.query(By.css('#confirmButton'));
 
       //TODO: Make sure it routes to the right place
@@ -106,6 +106,8 @@ describe('WelcomeComponent', () => {
       expect(confirmButtonElement).toBeFalsy();
     })
 
+    //TODO: if same team is selected for both, we don't want to show confirm (test below),
+    //But we also need some way to reset. Worry about this later.
     it('should not show confirm button if the same team was selected and confirmed for you and opponent', () => {
       const sameTeamName = 'Defense Gone Bad';
       component.setOpponentTeam(sameTeamName);

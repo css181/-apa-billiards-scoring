@@ -44,4 +44,29 @@
         </td>
     </tr>
 </table>
+<div *ngIf="(getYourTeamSelectedPlayer().id!='') && (getOpponentTeamSelectedPlayer().id!='')" id="matchPlayers">
+    <table>
+        <tr>
+            <td align="center"><strong>{{getYourTeamSelectedPlayer().name}}</strong></td>
+            <td align="center">vs.</td>
+            <td align="center"><strong>{{getOpponentTeamSelectedPlayer().name}}</strong></td>
+        </tr>
+        <tr>
+            <td>
+                <button id="yourTeamWonLag" [routerLink]="['/playField', getYourTeam(), getOpponentTeam()]">
+                    Your Team's: {{getYourTeamSelectedPlayer().name}} (skill:{{getYourTeamSelectedPlayer().skill}})
+                    <br>Won the lag
+                </button>
+            </td>
+            <td></td>
+            <td>
+                <button id="opponentTeamWonLag" [routerLink]="['/playField', getYourTeam(), getOpponentTeam()]">
+                    Opponent Team's: {{getOpponentTeamSelectedPlayer().name}} (skill:{{getOpponentTeamSelectedPlayer().skill}})
+                    <br>Won the lag
+                </button>
+            </td>
+        </tr>
+    </table>
+
+</div>
 

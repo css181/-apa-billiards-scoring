@@ -5,6 +5,7 @@ import HookerPlayers from '../../assets/data/hookers-players.json';
 import { blankPlayer, PutUpComponent } from './put-up.component';
 import { By } from '@angular/platform-browser';
 import { IPlayer } from '../interfaces/iplayer';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('PutUpComponent', () => {
   let component: PutUpComponent;
@@ -14,6 +15,7 @@ describe('PutUpComponent', () => {
     TestBed.configureTestingModule({ 
       declarations: [ PutUpComponent ],
       providers: [ SharedDataService ],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
 
@@ -127,4 +129,52 @@ describe('PutUpComponent', () => {
     tableRow.triggerEventHandler('click', null);
     fixture.detectChanges();
   }
+
+
+  describe('Put Up Players div', () => {
+    it('should start invisible and become visible only when your team and opponent team selects a player', () => {
+      let matchPlayerDiv = fixture.debugElement.query(By.css('div#matchPlayers'));
+      expect(matchPlayerDiv).toBeFalsy();
+
+      component.onChooseYourPlayer(DefenseGoneBadPlayers[0]);
+      fixture.detectChanges();
+      matchPlayerDiv = fixture.debugElement.query(By.css('div#matchPlayers'));
+      expect(matchPlayerDiv).toBeFalsy();
+      component.onChooseOpponentPlayer(HookerPlayers[0]);
+      fixture.detectChanges();
+      matchPlayerDiv = fixture.debugElement.query(By.css('div#matchPlayers'));
+
+      expect(matchPlayerDiv).toBeTruthy();
+      expect(matchPlayerDiv.nativeElement.textContent).toContain(DefenseGoneBadPlayers[0].name);
+      expect(matchPlayerDiv.nativeElement.textContent).toContain(HookerPlayers[0].name);
+    })
+    it('should contain button for Your Teams player winning the lag', () => {
+      const yourTeamPlayer = DefenseGoneBadPlayers[0];
+      component.onChooseYourPlayer(yourTeamPlayer);
+      component.onChooseOpponentPlayer(HookerPlayers[0]);
+      fixture.detectChanges();
+      const matchPlayerDiv = fixture.debugElement.query(By.css('div#matchPlayers'));
+      const yourTeamWonLagButton = matchPlayerDiv.query(By.css('button#yourTeamWonLag'));
+
+      expect(yourTeamWonLagButton).toBeTruthy();
+      expect(yourTeamWonLagButton.nativeElement.textContent).toContain(yourTeamPlayer.name);
+      expect(yourTeamWonLagButton.nativeElement.textContent).toContain(yourTeamPlayer.skill);
+    })
+    it('should contain button for Opponent Teams player winning the lag', () => {
+      const opponentTeamPlayer = HookerPlayers[0];
+      component.onChooseYourPlayer(DefenseGoneBadPlayers[0]);
+      component.onChooseOpponentPlayer(opponentTeamPlayer);
+      fixture.detectChanges();
+      const matchPlayerDiv = fixture.debugElement.query(By.css('div#matchPlayers'));
+      const opponentTeamWonLagButton = matchPlayerDiv.query(By.css('button#opponentTeamWonLag'));
+
+      expect(opponentTeamWonLagButton).toBeTruthy();
+      expect(opponentTeamWonLagButton.nativeElement.textContent).toContain(opponentTeamPlayer.name);
+      expect(opponentTeamWonLagButton.nativeElement.textContent).toContain(opponentTeamPlayer.skill);
+    })
+    xit('should have both team win lag buttons re-directs to play-field component when clicked', () => {
+      //TODO verify redirect to correct place
+    })
+  })
+
 });
