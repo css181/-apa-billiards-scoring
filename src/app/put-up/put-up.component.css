@@ -1,7 +1,10 @@
-tr:nth-child(even) {
-    background-color: rgb(234, 220, 220);
-  }
-
   .tableDataRow {
     border: 0px;
+  }
+
+  .currentlySelectedYourTeam {
+    background-color:deepskyblue;
+  }
+  .currentlySelectedOpponentTeam {
+    background-color:darksalmon;
   }

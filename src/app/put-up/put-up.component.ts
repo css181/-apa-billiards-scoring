@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { IPlayer } from '../interfaces/iplayer';
 import { SharedDataService } from '../services/shared-data.service';
 
+export const blankPlayer:IPlayer = {id:'', name:'', skill:0} as IPlayer
 @Component({
   selector: 'abs-put-up',
   templateUrl: './put-up.component.html',
@@ -13,6 +14,8 @@ export class PutUpComponent {
   private opponentTeam: string = '';
   private yourPlayers: IPlayer[] = [];
   private opponentPlayers: IPlayer[] = [];
+  private yourTeamSelectedPlayer: IPlayer = blankPlayer;
+  private opponentTeamSelectedPlayer: IPlayer = blankPlayer;
   
   constructor(public sharedData: SharedDataService) { }
 
@@ -21,6 +24,15 @@ export class PutUpComponent {
     this.opponentTeam = this.sharedData.getOpponentTeam();
     this.yourPlayers = this.sharedData.getYourTeamPlayers();
     this.opponentPlayers = this.sharedData.getOpponentTeamPlayers();
+  }
+
+  onChooseYourPlayer(player: IPlayer): void {
+    console.log('Putting up Your player: ', player);
+    this.yourTeamSelectedPlayer = player;
+  }
+  onChooseOpponentPlayer(player: IPlayer): void {
+    console.log('Putting up Opponent player: ', player);
+    this.opponentTeamSelectedPlayer = player;
   }
 
   public getYourTeam(): string {
@@ -34,5 +46,11 @@ export class PutUpComponent {
   }
   public getOpponentPlayers(): IPlayer[] {
     return this.opponentPlayers;
+  }
+  public getYourTeamSelectedPlayer(): IPlayer {
+    return this.yourTeamSelectedPlayer;
+  }
+  public getOpponentTeamSelectedPlayer(): IPlayer {
+    return this.opponentTeamSelectedPlayer;
   }
 }
