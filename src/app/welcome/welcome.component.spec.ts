@@ -54,36 +54,64 @@ describe('WelcomeComponent', () => {
       //TODO: Make sure it routes to the right place
       // expect(confirmButtonElement.attributes.get('routerLink'))
     })
-    it('should only display once both teams are chosen', () => {
+    it('should only display once both teams are chosen and confirmed', () => {
       //No names set yet
       fixture.detectChanges();
       let confirmButtonElement = fixture.debugElement.query(By.css('#confirmButton'));
       expect(confirmButtonElement).toBeFalsy();
 
-      //Set only Opponent
+      //Set and confirm only Opponent
       component.setOpponentTeam('Hookers');
+      component.onConfirmClicked(false);
       fixture.detectChanges();
       confirmButtonElement = fixture.debugElement.query(By.css('#confirmButton'));
       expect(confirmButtonElement).toBeFalsy();
 
       //reset Opponent and set only Your team
       component.setOpponentTeam('');
+      component.setIsOpponentTeamConfirmed(false);
       component.setYourTeam('Defense Gone Bad');
+      component.onConfirmClicked(true);
       fixture.detectChanges();
       confirmButtonElement = fixture.debugElement.query(By.css('#confirmButton'));
       expect(confirmButtonElement).toBeFalsy();
 
-      //Both set should show
+      //Both set should show (leave your team already set and now also set opponent)
       component.setOpponentTeam('Hookers');
+      component.onConfirmClicked(false);
       fixture.detectChanges();
       confirmButtonElement = fixture.debugElement.query(By.css('#confirmButton'));
       expect(confirmButtonElement).toBeTruthy();
     })
+    it('should not display if both teams are chosen but have not yet been confirmed', () => {
+      //No names set yet
+      fixture.detectChanges();
+      let confirmButtonElement = fixture.debugElement.query(By.css('#confirmButton'));
+      expect(confirmButtonElement).toBeFalsy();
 
-    it('should not show confirm button if the same team was selected for you and opponent', () => {
+      //Set and confirm only Opponent, set but not confirm your team
+      component.setOpponentTeam('Hookers');
+      component.onConfirmClicked(false);
+      component.setYourTeam('Defense Gone Bad')
+      fixture.detectChanges();
+      confirmButtonElement = fixture.debugElement.query(By.css('#confirmButton'));
+      expect(confirmButtonElement).toBeFalsy();
+
+      //reset Opponent confirm and set and confirm only Your team
+      component.setIsOpponentTeamConfirmed(false);
+      component.setYourTeam('Defense Gone Bad');
+      component.onConfirmClicked(true);
+      fixture.detectChanges();
+      confirmButtonElement = fixture.debugElement.query(By.css('#confirmButton'));
+      expect(confirmButtonElement).toBeFalsy();
+    })
+
+    it('should not show confirm button if the same team was selected and confirmed for you and opponent', () => {
       const sameTeamName = 'Defense Gone Bad';
       component.setOpponentTeam(sameTeamName);
+      component.onConfirmClicked(false);
       component.setYourTeam(sameTeamName);
+      component.onConfirmClicked(true);
 
       fixture.detectChanges();
       

@@ -1,0 +1,31 @@
+<table mat-table id="yourPlayerNamesTable">
+    <tr>
+        <td [colSpan]="3">Your Team: <strong>{{getYourTeam()}}</strong></td>
+    </tr>
+    <tr>
+        <th [width]="80">Number</th>
+        <th [width]="170">Name</th>
+        <th [width]="60">Skill</th>
+    </tr>
+    <tr *ngFor="let player of getYourPlayers(); let i = index">
+        <td class="playerInfo">{{player.id}}</td>
+        <td class="playerInfo">{{player.name}}</td>
+        <td class="playerInfo">{{player.skill}}</td>
+    </tr>
+</table>
+<p></p>
+<table mat-table id="opponentPlayerNamesTable">
+    <tr>
+        <td [colSpan]="3">Opponent Team: <strong>{{getOpponentTeam()}}</strong></td>
+    </tr>
+    <tr>
+        <th [width]="80">Number</th>
+        <th [width]="170">Name</th>
+        <th [width]="60">Skill</th>
+    </tr>
+    <tr *ngFor="let player of getOpponentPlayers(); let i = index">
+        <td class="playerInfo">{{player.id}}</td>
+        <td class="playerInfo">{{player.name}}</td>
+        <td class="playerInfo">{{player.skill}}</td>
+    </tr>
+</table>

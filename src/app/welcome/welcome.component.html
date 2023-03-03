@@ -1,22 +1,24 @@
-<p>Your Team: {{getYourTeam()}}</p>
-<p>Opponent Team: {{getOpponentTeam()}}</p>
-<table id="teamSelections" [cellPadding]="10">
+<table id="teamSelections">
     <tr>
-        <td><abs-team-selection [isYourTeam]="true" [teams]='getTeamNames()' (notifyTeamWasSelected)='onTeamSelected($event)'></abs-team-selection></td>
+        <td class="rightpad"><strong>Your Team: </strong>{{getYourTeam()}}</td>
+        <td><strong>Opponent Team: </strong>{{getOpponentTeam()}}</td>
+    </tr>
+    <tr>
+        <td class="rightpad"><abs-team-selection [isYourTeam]="true" [teams]='getTeamNames()' (notifyTeamWasSelected)='onTeamSelected($event)'></abs-team-selection></td>
         <td><abs-team-selection [isYourTeam]="false" [teams]='getTeamNames()' (notifyTeamWasSelected)='onTeamSelected($event)'></abs-team-selection></td>
     </tr>
     <tr>
-        <td><abs-player-info-update [teamName]='getYourTeam()'></abs-player-info-update></td>
-        <td><abs-player-info-update [teamName]='getOpponentTeam()'></abs-player-info-update></td>
+        <td class="rightpad"><abs-player-info-update [isYourTeam]="true" [teamName]='getYourTeam()' (notifyConfirm)='onConfirmClicked($event)'></abs-player-info-update></td>
+        <td><abs-player-info-update [isYourTeam]="false" [teamName]='getOpponentTeam()' (notifyConfirm)='onConfirmClicked($event)'></abs-player-info-update></td>
     </tr>
 </table>
 <p></p>
-<table  *ngIf="(getYourTeam() !=='') && (getOpponentTeam() !=='')  && (getYourTeam() !== getOpponentTeam())">
+<table  *ngIf="(getYourTeam() !=='') && (getOpponentTeam() !=='')  && (areBothTeamsConfirmed())  && (getYourTeam() !== getOpponentTeam())">
     <tr>
         <td [width]="265"></td>
         <td [width]="180">
             <div>
-                <button id="confirmButton" class='centerButton' [routerLink]="['/playField', getYourTeam(), getOpponentTeam()]">Confirm Team Choices</button>
+                <button id="confirmButton" class='centerButton' [routerLink]="['/putUp']">Confirm Team Choices</button>
             </div>
         </td>
         <td [width]="265"></td>

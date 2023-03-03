@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { OnInit } from '@angular/core';
+import { IPlayer } from '../interfaces/iplayer';
 import { TeamsListService } from '../services/teams-list.service';
 
 @Component({
@@ -9,8 +10,12 @@ import { TeamsListService } from '../services/teams-list.service';
 })
 export class WelcomeComponent implements OnInit{
   private yourTeam: string = '';
+  private yourPlayers: IPlayer[] = [];
   private opponentTeam: string = '';
+  private opponentPlayers: IPlayer[] = [];
   private teamNames: string[];
+  private isYourTeamConfirmed: boolean = false;
+  private isOpponentTeamConfirmed: boolean = false;
 
   constructor(public teamsListService: TeamsListService) {
     this.teamNames = [];
@@ -28,6 +33,14 @@ export class WelcomeComponent implements OnInit{
     }
   }
 
+  onConfirmClicked(isYourTeamEvent: boolean) {
+    if(isYourTeamEvent) {
+      this.isYourTeamConfirmed = true;
+    } else {
+      this.isOpponentTeamConfirmed = true;
+    }
+  }
+
   public getTeamNames(): string[] {
     return this.teamNames;
   }
@@ -37,10 +50,26 @@ export class WelcomeComponent implements OnInit{
   public getYourTeam(): string {
     return this.yourTeam;
   }
+  public getYourPlayers(): IPlayer[] {
+    return this.yourPlayers;
+  }
   public setOpponentTeam(name: string): void {
     this.opponentTeam=name;
   }
   public getOpponentTeam(): string {
     return this.opponentTeam;
+  }
+  public getOpponentPlayers(): IPlayer[] {
+    return this.opponentPlayers;
+  }
+
+  public setIsYourTeamConfirmed(value: boolean): void {
+    this.isYourTeamConfirmed = value;
+  }
+  public setIsOpponentTeamConfirmed(value: boolean): void {
+    this.isOpponentTeamConfirmed = value;
+  }
+  public areBothTeamsConfirmed(): boolean {
+    return this.isYourTeamConfirmed && this.isOpponentTeamConfirmed;
   }
 }

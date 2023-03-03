@@ -1,5 +1,5 @@
 import { Component, Input, Output, OnChanges, EventEmitter } from '@angular/core';
-import { IPlayer } from '../../interfaces/iplayer';
+import { SharedDataService } from 'src/app/services/shared-data.service';
 import { TeamsListService } from '../../services/teams-list.service';
 
 @Component({
@@ -13,13 +13,19 @@ export class TeamSelectionComponent {
   private chosenTeamName: string;
   @Output() notifyTeamWasSelected: EventEmitter<string> = new EventEmitter<string>();
 
-  constructor(public teamsListService: TeamsListService) {
+  constructor(public teamsListService: TeamsListService, public sharedData: SharedDataService) {
     this.chosenTeamName = '';
   }
 
   public chooseTeam(teamName: string) {
-    console.log("choosing " + (this.isYourTeam?"your ":"opponent ") + " team: " + teamName);
     this.chosenTeamName = teamName;
+    if(this.isYourTeam) {
+      console.log("choosing your team: " + teamName);
+      this.sharedData.setYourTeam(teamName);
+    } else {
+      console.log("choosing opponent team: " + teamName);
+      this.sharedData.setOpponentTeam(teamName);
+    }
     this.notifyTeamWasSelected.emit(this.isYourTeam + "|" + teamName);
   }
 
@@ -27,4 +33,7 @@ export class TeamSelectionComponent {
     return this.chosenTeamName;
   }
 
+  public setIsYourTeam(value: boolean): void {
+    this.isYourTeam = value;
+  }
 }

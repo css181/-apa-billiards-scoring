@@ -7,6 +7,7 @@ import { TeamsListService } from '../../services/teams-list.service';
 import { of } from 'rxjs';
 import { By } from "@angular/platform-browser"
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { SharedDataService } from 'src/app/services/shared-data.service';
 
 describe('TeamSelection Component', () => {
   let component: TeamSelectionComponent;
@@ -19,7 +20,7 @@ describe('TeamSelection Component', () => {
     mockTeamsListService.getPlayers.and.returnValue(of(HookerPlayers));
     TestBed.configureTestingModule({
       declarations: [ TeamSelectionComponent ],
-      providers: [ { provide: TeamsListService, useValue: mockTeamsListService } ],
+      providers: [ { provide: TeamsListService, useValue: mockTeamsListService }, SharedDataService ],
       imports: [HttpClientModule],
       schemas: [NO_ERRORS_SCHEMA]
     });
@@ -55,6 +56,25 @@ describe('TeamSelection Component', () => {
       component.chooseTeam(chosenTeam);
 
       expect(component.getChosenTeamName()).toEqual(chosenTeam);
+    })
+  })
+
+  describe('when a team is chosen', () => {
+    describe('when isYourTeam=true', () => {
+      it('should store that name in sharedData as yourTeam', () => {
+        component.setIsYourTeam(true);
+        component.chooseTeam('Defense Gone Bad');
+
+        expect(component.sharedData.getYourTeam()).toBe('Defense Gone Bad');
+      })
+    })
+    describe('when isYourTeam=false', () => {
+      it('should store that name in sharedData as opponentTeam', () => {
+        component.setIsYourTeam(false);
+        component.chooseTeam('Hookers');
+
+        expect(component.sharedData.getOpponentTeam()).toBe('Hookers');
+      })
     })
   })
 

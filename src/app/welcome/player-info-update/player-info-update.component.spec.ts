@@ -1,5 +1,5 @@
 import { ComponentFixture, flush, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import HookerPlayers from '../../assets/data/hookers-players.json';
+import HookerPlayers from '../../../assets/data/hookers-players.json';
 import { PlayerInfoUpdateComponent } from './player-info-update.component';
 import { By } from "@angular/platform-browser"
 import { NO_ERRORS_SCHEMA } from '@angular/core';
@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 import { TeamsListService } from 'src/app/services/teams-list.service';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { SharedDataService } from 'src/app/services/shared-data.service';
 
 describe('PlayerInfoUpdateComponent', () => {
   let component: PlayerInfoUpdateComponent;
@@ -18,7 +19,7 @@ describe('PlayerInfoUpdateComponent', () => {
     mockTeamsListService.getPlayers.and.returnValue(of(HookerPlayers));
     TestBed.configureTestingModule({
       declarations: [PlayerInfoUpdateComponent],
-      providers: [{ provide: TeamsListService, useValue: mockTeamsListService }],
+      providers: [{ provide: TeamsListService, useValue: mockTeamsListService }, SharedDataService],
       imports: [HttpClientModule, FormsModule],
       schemas: [NO_ERRORS_SCHEMA]
     });
@@ -86,6 +87,17 @@ describe('PlayerInfoUpdateComponent', () => {
       expect(updateButon).toBeTruthy();
 
       clickUpdateButton();
+      updateButon = fixture.debugElement.query(By.css('button#updateButton'));
+
+      expect(updateButon).toBeFalsy();
+    })
+    it('should not show if hasBeenConfirmed (even if also not in updateMode)', () => {
+      setupPlayerInfoUpdateComponent();
+      component.isUpdateMode = false;
+      let updateButon = fixture.debugElement.query(By.css('button#updateButton'));
+      expect(updateButon).toBeTruthy();
+
+      clickConfirmButton();
       updateButon = fixture.debugElement.query(By.css('button#updateButton'));
 
       expect(updateButon).toBeFalsy();
@@ -178,6 +190,39 @@ describe('PlayerInfoUpdateComponent', () => {
     })
   })
 
+  describe('confirm button', () => {
+    it('should not show once it has been clicked', () => {
+      setupPlayerInfoUpdateComponent();
+      let confirmButon = fixture.debugElement.query(By.css('button#confirmButton'));
+      expect(confirmButon).toBeTruthy();
+
+      clickConfirmButton();
+      confirmButon = fixture.debugElement.query(By.css('button#confirmButton'));
+
+      expect(confirmButon).toBeFalsy();
+    })
+    it('should store the players in sharedData for yourPlayers when isYourTeam', () => {
+      setupPlayerInfoUpdateComponent();
+      component.isYourTeam = true;
+      component.players = HookerPlayers;
+      expect(component.sharedData.getYourTeamPlayers()).toEqual([]);
+
+      clickConfirmButton();
+
+      expect(component.sharedData.getYourTeamPlayers()).toEqual(HookerPlayers);
+    })
+    it('should store the players in sharedData for opponentPlayers when isYourTeam=false', () => {
+      setupPlayerInfoUpdateComponent();
+      component.isYourTeam = false;
+      component.players = HookerPlayers;
+      expect(component.sharedData.getOpponentTeamPlayers()).toEqual([]);
+
+      clickConfirmButton();
+
+      expect(component.sharedData.getOpponentTeamPlayers()).toEqual(HookerPlayers);
+    })
+  })
+
   // must be called from within fakeAsync due to use of tick()
   function setInputValue(element:any, value:string) {
     element.value = value;
@@ -198,6 +243,11 @@ describe('PlayerInfoUpdateComponent', () => {
   }
   function clickSaveButton() {
     let updateButton = fixture.debugElement.query(By.css('button#saveButton'));
+    updateButton.triggerEventHandler('click', null);
+    fixture.detectChanges();
+  }
+  function clickConfirmButton() {
+    let updateButton = fixture.debugElement.query(By.css('button#confirmButton'));
     updateButton.triggerEventHandler('click', null);
     fixture.detectChanges();
   }

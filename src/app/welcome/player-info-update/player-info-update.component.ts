@@ -1,6 +1,7 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { IPlayer } from 'src/app/interfaces/iplayer';
 import { TeamsListService } from 'src/app/services/teams-list.service';
+import { SharedDataService } from 'src/app/services/shared-data.service';
 
 @Component({
   selector: 'abs-player-info-update',
@@ -9,15 +10,19 @@ import { TeamsListService } from 'src/app/services/teams-list.service';
 })
 export class PlayerInfoUpdateComponent implements OnChanges {
   @Input() teamName: string;
+  @Input() isYourTeam: boolean = false;
   private oldTeamName: string;
   public players: IPlayer[];
   public isUpdateMode: boolean;
+  public hasBeenConfirmed: boolean;
+  @Output() notifyConfirm: EventEmitter<boolean> = new EventEmitter<boolean>();
   
-  constructor(public teamsListService: TeamsListService) {
+  constructor(public teamsListService: TeamsListService, public sharedData: SharedDataService) {
     this.players = [];
     this.teamName = '';
     this.oldTeamName = '';
     this.isUpdateMode = false;
+    this.hasBeenConfirmed = false;
   }
 
   ngOnChanges(): void {
@@ -40,6 +45,17 @@ export class PlayerInfoUpdateComponent implements OnChanges {
     this.isUpdateMode = false;
   }
 
+  onConfirm(): void {
+    console.log('confirming team');
+    this.hasBeenConfirmed = true;
+    this.notifyConfirm.emit(this.isYourTeam);
+    if(this.isYourTeam) {
+      this.sharedData.setYourTeamPlayers(this.players);
+    } else {
+      this.sharedData.setOpponentTeamPlayers(this.players);
+    }
+  }
+
   public getPlayers(): IPlayer[] {
     return this.players;
   }
@@ -48,5 +64,8 @@ export class PlayerInfoUpdateComponent implements OnChanges {
   }
   public getIsUpdateMode(): boolean {
     return this.isUpdateMode;
+  }
+  public getHasBeenConfirmed(): boolean {
+    return this.hasBeenConfirmed;
   }
 }
