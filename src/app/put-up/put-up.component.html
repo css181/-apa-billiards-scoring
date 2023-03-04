@@ -53,14 +53,14 @@
         </tr>
         <tr>
             <td>
-                <button id="yourTeamWonLag" [routerLink]="['/playField', getYourTeam(), getOpponentTeam()]">
+                <button id="yourTeamWonLag" (click)="onYourTeamWonLag()">
                     Your Team's: {{getYourTeamSelectedPlayer().name}} (skill:{{getYourTeamSelectedPlayer().skill}})
                     <br>Won the lag
                 </button>
             </td>
             <td></td>
             <td>
-                <button id="opponentTeamWonLag" [routerLink]="['/playField', getYourTeam(), getOpponentTeam()]">
+                <button id="opponentTeamWonLag" (click)="onOpponentTeamWonLag()">
                     Opponent Team's: {{getOpponentTeamSelectedPlayer().name}} (skill:{{getOpponentTeamSelectedPlayer().skill}})
                     <br>Won the lag
                 </button>

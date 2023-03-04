@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { ICurrentPlayer } from '../interfaces/icurrentPlayer';
 import { IPlayer } from '../interfaces/iplayer';
 
 @Injectable({
@@ -9,7 +10,9 @@ export class SharedDataService {
   private opponentTeam: string = '';
   private yourTeamPlayers: IPlayer[] = [];
   private opponentTeamPlayers: IPlayer[] = [];
-  
+  private currentPlayerLagWinner: ICurrentPlayer = {} as ICurrentPlayer;
+  private currentPlayerLagLoser: ICurrentPlayer = {} as ICurrentPlayer;
+
   constructor() { }
 
   getYourTeam(): any {
@@ -38,4 +41,16 @@ export class SharedDataService {
     this.opponentTeamPlayers = players;
   }
 
+  getCurrentPlayerLagWinner(): ICurrentPlayer {
+    return this.currentPlayerLagWinner;
+  }
+  setCurrentPlayerLagWinner(curPlayer: ICurrentPlayer) {
+    this.currentPlayerLagWinner = curPlayer;
+  }
+  getCurrentPlayerLagLoser(): ICurrentPlayer {
+    return this.currentPlayerLagLoser;
+  }
+  setCurrentPlayerLagLoser(curPlayer: ICurrentPlayer) {
+    this.currentPlayerLagLoser = curPlayer;
+  }
 }

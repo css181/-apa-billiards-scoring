@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ICurrentPlayer } from '../interfaces/icurrentPlayer';
 import { IPlayer } from '../interfaces/iplayer';
 import { SharedDataService } from '../services/shared-data.service';
 
@@ -17,7 +18,7 @@ export class PutUpComponent {
   private yourTeamSelectedPlayer: IPlayer = blankPlayer;
   private opponentTeamSelectedPlayer: IPlayer = blankPlayer;
   
-  constructor(public sharedData: SharedDataService) { }
+  constructor(public sharedData: SharedDataService, public router: Router) { }
 
   ngOnInit() { 
     this.yourTeam = this.sharedData.getYourTeam();
@@ -33,6 +34,41 @@ export class PutUpComponent {
   onChooseOpponentPlayer(player: IPlayer): void {
     console.log('Putting up Opponent player: ', player);
     this.opponentTeamSelectedPlayer = player;
+  }
+
+  onYourTeamWonLag(): void {
+    const lagWinningPlayer = {
+      id: this.yourTeamSelectedPlayer.id,
+      name: this.yourTeamSelectedPlayer.name, 
+      skill: this.yourTeamSelectedPlayer.skill,
+      team: this.yourTeam
+    } as ICurrentPlayer
+    const lagLosingPlayer = {
+      id: this.opponentTeamSelectedPlayer.id,
+      name: this.opponentTeamSelectedPlayer.name, 
+      skill: this.opponentTeamSelectedPlayer.skill,
+      team: this.opponentTeam
+    } as ICurrentPlayer
+    this.sharedData.setCurrentPlayerLagWinner(lagWinningPlayer);
+    this.sharedData.setCurrentPlayerLagLoser(lagLosingPlayer);
+    this.router.navigate(['playField', this.yourTeam, this.opponentTeam])
+  }
+  onOpponentTeamWonLag(): void {
+    const lagWinningPlayer = {
+      id: this.opponentTeamSelectedPlayer.id,
+      name: this.opponentTeamSelectedPlayer.name, 
+      skill: this.opponentTeamSelectedPlayer.skill,
+      team: this.opponentTeam
+    } as ICurrentPlayer
+    const lagLosingPlayer = {
+      id: this.yourTeamSelectedPlayer.id,
+      name: this.yourTeamSelectedPlayer.name, 
+      skill: this.yourTeamSelectedPlayer.skill,
+      team: this.yourTeam
+    } as ICurrentPlayer
+    this.sharedData.setCurrentPlayerLagWinner(lagWinningPlayer);
+    this.sharedData.setCurrentPlayerLagLoser(lagLosingPlayer);
+    this.router.navigate(['playField', this.yourTeam, this.opponentTeam])
   }
 
   public getYourTeam(): string {

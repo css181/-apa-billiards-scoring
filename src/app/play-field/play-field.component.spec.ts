@@ -1,7 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from "@angular/platform-browser"
 import { ActivatedRoute } from '@angular/router';
-import { async } from 'rxjs';
+import DefenseGoneBadPlayers from '../../assets/data/defense-gone-bad-players.json'
+import HookerPlayers from '../../assets/data/hookers-players.json';
+import { ICurrentPlayer } from '../interfaces/icurrentPlayer';
+import { SharedDataService } from '../services/shared-data.service';
 import { PlayFieldComponent } from './play-field.component';
 
 describe('PlayFieldComponent', () => {
@@ -19,7 +22,7 @@ describe('PlayFieldComponent', () => {
   beforeEach(async () => {
     TestBed.configureTestingModule({ 
       declarations: [ PlayFieldComponent ],
-      providers: [ {provide: ActivatedRoute, useValue: fakeActivatedRoute} ],
+      providers: [ SharedDataService, {provide: ActivatedRoute, useValue: fakeActivatedRoute} ],
     })
     .compileComponents();
 
@@ -27,6 +30,22 @@ describe('PlayFieldComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
+
+  //TEMPORARY TESTS
+  it('should display the team names', () => {
+    expect(fixture.debugElement.query(By.css('p#yourTeam')).nativeElement.textContent).toContain(component.getYourTeam());
+    expect(fixture.debugElement.query(By.css('p#opponentTeam')).nativeElement.textContent).toContain(component.getOpponentTeam());
+  })
+  it('should display the current Lag winner and loser after going through ngOnInit', () => {
+    setupLagWinnerAndLoser();
+
+    component.ngOnInit();
+    fixture.detectChanges();
+    
+    expect(fixture.debugElement.query(By.css('p#lagLoser')).nativeElement.textContent).toContain(component.getLagLosingPlayer().name);
+    expect(fixture.debugElement.query(By.css('p#lagWinner')).nativeElement.textContent).toContain(component.getLagWinningPlayer().name);
+  })
+
 
   it('should display the table of all the ball images', () => {
     const ballTable = fixture.debugElement.query(By.css('table#balls'));
@@ -60,4 +79,13 @@ describe('PlayFieldComponent', () => {
       expect(upNextImg.nativeElement.src).toContain("2ball.png");
     })
   })
+
+  function setupLagWinnerAndLoser() {
+    const yourPlayer = DefenseGoneBadPlayers[0];
+    const yourCurrentPlayer = {id: yourPlayer.id, name: yourPlayer.name, skill: yourPlayer.skill, team: 'Defense Gone Bad'} as ICurrentPlayer
+    const opponentPlayer = HookerPlayers[0];
+    const opponentCurrentPlayer = {id: opponentPlayer.id, name: opponentPlayer.name, skill: opponentPlayer.skill, team: 'Hookers'} as ICurrentPlayer
+    component.sharedData.setCurrentPlayerLagWinner(yourCurrentPlayer);
+    component.sharedData.setCurrentPlayerLagLoser(opponentCurrentPlayer);
+  }
 });

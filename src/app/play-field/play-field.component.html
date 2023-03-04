@@ -1,5 +1,9 @@
-<p>Your Team: {{getYourTeam()}}</p>
-<p>Opponent Team: {{getOpponentTeam()}}</p>
+<p id="yourTeam">Your Team: {{getYourTeam()}}</p>
+<p id="opponentTeam">Opponent Team: {{getOpponentTeam()}}</p>
+<p id="lagWinner">Lag Winning Player: <strong>{{getLagWinningPlayer().name}}</strong> - 
+    skill: <strong>{{getLagWinningPlayer().skill}}</strong> - team: <strong>{{getLagWinningPlayer().team}}</strong></p>
+<p id="lagLoser">Lag Losing Player: <strong>{{getLagLosingPlayer().name}}</strong> - 
+    skill: <strong>{{getLagLosingPlayer().skill}}</strong> - team: <strong>{{getLagLosingPlayer().team}}</strong></p>
 <div>
     <p>Next Ball To Hit:</p>
     <img class="up-next" src={{curBallImgPath}}>

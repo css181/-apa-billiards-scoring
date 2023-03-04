@@ -6,15 +6,22 @@ import { blankPlayer, PutUpComponent } from './put-up.component';
 import { By } from '@angular/platform-browser';
 import { IPlayer } from '../interfaces/iplayer';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { ICurrentPlayer } from '../interfaces/icurrentPlayer';
+import { Router } from '@angular/router';
 
 describe('PutUpComponent', () => {
   let component: PutUpComponent;
   let fixture: ComponentFixture<PutUpComponent>;
 
+  class RouterStub {
+    url = '';
+    navigate(commands: any[], extras?: any) { }
+  }
+
   beforeEach(async () => {
     TestBed.configureTestingModule({ 
       declarations: [ PutUpComponent ],
-      providers: [ SharedDataService ],
+      providers: [ SharedDataService, { provide: Router, useClass: RouterStub } ],
       schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
@@ -131,7 +138,7 @@ describe('PutUpComponent', () => {
   }
 
 
-  describe('Put Up Players div', () => {
+  describe('Put Up Players confirm div', () => {
     it('should start invisible and become visible only when your team and opponent team selects a player', () => {
       let matchPlayerDiv = fixture.debugElement.query(By.css('div#matchPlayers'));
       expect(matchPlayerDiv).toBeFalsy();
@@ -177,4 +184,50 @@ describe('PutUpComponent', () => {
     })
   })
 
+  describe('when your team wins the lag and that button is pressed', () => {
+    it('should store your chosen player as the lag winner and opponent chosen player as the lag loser in sharedData', () => {
+      const yourPlayer = DefenseGoneBadPlayers[0];
+      const yourCurrentPlayer = {id: yourPlayer.id, name: yourPlayer.name, skill: yourPlayer.skill, team: 'Defense Gone Bad'} as ICurrentPlayer
+      const opponentPlayer = HookerPlayers[0];
+      const opponentCurrentPlayer = {id: opponentPlayer.id, name: opponentPlayer.name, skill: opponentPlayer.skill, team: 'Hookers'} as ICurrentPlayer
+      component.onChooseYourPlayer(yourPlayer);
+      component.onChooseOpponentPlayer(opponentPlayer);
+      fixture.detectChanges();
+
+      clickYourTeamWonLagButton();
+
+      expect(component.sharedData.getCurrentPlayerLagWinner()).toEqual(yourCurrentPlayer);
+      expect(component.sharedData.getCurrentPlayerLagLoser()).toEqual(opponentCurrentPlayer);
+    })
+  })
+  
+  describe('when opponent team wins the lag and that button is pressed', () => {
+    it('should store opponent chosen player as the lag winner and your chosen player as the lag loser in sharedData', () => {
+      const yourPlayer = DefenseGoneBadPlayers[0];
+      const yourCurrentPlayer = {id: yourPlayer.id, name: yourPlayer.name, skill: yourPlayer.skill, team: 'Defense Gone Bad'} as ICurrentPlayer
+      const opponentPlayer = HookerPlayers[0];
+      const opponentCurrentPlayer = {id: opponentPlayer.id, name: opponentPlayer.name, skill: opponentPlayer.skill, team: 'Hookers'} as ICurrentPlayer
+      component.onChooseYourPlayer(yourPlayer);
+      component.onChooseOpponentPlayer(opponentPlayer);
+      fixture.detectChanges();
+
+      clickOpponentTeamWonLagButton();
+
+      expect(component.sharedData.getCurrentPlayerLagWinner()).toEqual(opponentCurrentPlayer);
+      expect(component.sharedData.getCurrentPlayerLagLoser()).toEqual(yourCurrentPlayer);
+    })
+  })
+
+  function clickYourTeamWonLagButton() {
+    let yourTeamWonLagButton = fixture.debugElement.query(By.css('button#yourTeamWonLag'));
+    expect(yourTeamWonLagButton).toBeTruthy();
+    yourTeamWonLagButton.triggerEventHandler('click', null);
+    fixture.detectChanges();
+  }
+  function clickOpponentTeamWonLagButton() {
+    let opponentTeamWonLagButton = fixture.debugElement.query(By.css('button#opponentTeamWonLag'));
+    expect(opponentTeamWonLagButton).toBeTruthy();
+    opponentTeamWonLagButton.triggerEventHandler('click', null);
+    fixture.detectChanges();
+  }
 });
