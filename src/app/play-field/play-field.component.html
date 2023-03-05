@@ -3,6 +3,10 @@
 <abs-current-player-score [isLagWinner]=true></abs-current-player-score>
 <abs-current-player-score [isLagWinner]=false></abs-current-player-score>
 <div>
+    <p id="curShootingPlayerInfo">Now shooting: <strong>{{curShootingPlayer.name}}</strong></p>
+    <button id="endTurn" (click)="onEndTurn()">End Turn</button>
+</div>
+<div>
     <p>Next Ball To Hit:</p>
     <img class="up-next" src={{curBallImgPath}}>
     <p>Click a ball to see the next ball to hit</p>

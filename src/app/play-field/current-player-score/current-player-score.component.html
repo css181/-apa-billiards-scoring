@@ -1,7 +1,10 @@
 <table border="2">
     <tr>
-        <td id="playerName">{{currentPlayer.name}}</td>
-        <td id="playerSkill">Skill:{{currentPlayer.skill}}</td>
-        <td id="playerScore">Score:{{currentPlayer.curScore}} of {{getTargetScore(currentPlayer.skill)}}</td>
+        <td colspan="3" align="center">TODO: Percent to target shaded here</td>
+    </tr>
+    <tr>
+        <td [width]="300" id="playerName">{{currentPlayer.name}}</td>
+        <td [width]="40" id="playerSkill">Skill:{{currentPlayer.skill}}</td>
+        <td [width]="160" id="playerScore">Score:{{currentPlayer.curScore}} of {{getTargetScore(currentPlayer.skill)}}</td>
     </tr>
 </table>

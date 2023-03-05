@@ -15,6 +15,7 @@ export class PlayFieldComponent implements OnInit{
   protected curBallImgPath: string = "assets/images/1ball.png";
   private lagLosingPlayer: ICurrentPlayer = {} as ICurrentPlayer;
   private lagWinningPlayer: ICurrentPlayer = {} as ICurrentPlayer;
+  public curShootingPlayer: ICurrentPlayer = {} as ICurrentPlayer;
 
   constructor(public sharedData: SharedDataService, private route: ActivatedRoute) { }
 
@@ -23,11 +24,20 @@ export class PlayFieldComponent implements OnInit{
     this.opponentTeam = this.route.snapshot.paramMap.get('opponentTeam') || '';
     this.lagLosingPlayer = this.sharedData.getCurrentPlayerLagLoser();
     this.lagWinningPlayer = this.sharedData.getCurrentPlayerLagWinner();
+    this.curShootingPlayer = this.lagWinningPlayer;
   }
 
   updateNextBall(newNext: number) {
     this.nextBall = newNext;
     this.curBallImgPath = "assets/images/" + newNext + "ball.png";
+  }
+
+  onEndTurn(): void {
+    if(this.curShootingPlayer === this.lagWinningPlayer) {
+      this.curShootingPlayer = this.lagLosingPlayer;
+    } else {
+      this.curShootingPlayer = this.lagWinningPlayer;
+    }
   }
 
   public getNextBall(): number {

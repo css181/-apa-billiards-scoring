@@ -73,6 +73,39 @@ describe('PlayFieldComponent', () => {
     })
   })
 
+  describe('currently shooting player', () => {
+    it('should start as the lag winning player', () => {
+      setupLagWinnerAndLoser();
+
+      expect(component.curShootingPlayer).toEqual(component.sharedData.getCurrentPlayerLagWinner());
+    })
+    it('should be prominantly displayed', () => {
+      setupLagWinnerAndLoser();
+
+      const element = fixture.debugElement.query(By.css('#curShootingPlayerInfo')).nativeElement; 
+      expect(element).toBeTruthy();
+      expect(element.textContent).toContain(component.curShootingPlayer.name);
+    })
+
+    describe('when "End Turn" button is pressed', () => {
+      it('should swap the currently shooting player', () => {
+        setupLagWinnerAndLoser();
+
+        //Go from Winner to Loser
+        clickEndTurnButton();
+
+        expect(component.curShootingPlayer).toEqual(component.sharedData.getCurrentPlayerLagLoser());
+        expect(fixture.debugElement.query(By.css('#curShootingPlayerInfo')).nativeElement.textContent).toContain(component.curShootingPlayer.name);
+
+        //Go from Loser to Winner
+        clickEndTurnButton();
+
+        expect(component.curShootingPlayer).toEqual(component.sharedData.getCurrentPlayerLagWinner());
+        expect(fixture.debugElement.query(By.css('#curShootingPlayerInfo')).nativeElement.textContent).toContain(component.curShootingPlayer.name);
+      })
+    })
+  })
+
   function setupLagWinnerAndLoser() {
     const yourPlayer = DefenseGoneBadPlayers[0];
     const yourCurrentPlayer = {id: yourPlayer.id, name: yourPlayer.name, skill: yourPlayer.skill, team: 'Defense Gone Bad'} as ICurrentPlayer
@@ -80,5 +113,13 @@ describe('PlayFieldComponent', () => {
     const opponentCurrentPlayer = {id: opponentPlayer.id, name: opponentPlayer.name, skill: opponentPlayer.skill, team: 'Hookers'} as ICurrentPlayer
     component.sharedData.setCurrentPlayerLagWinner(yourCurrentPlayer);
     component.sharedData.setCurrentPlayerLagLoser(opponentCurrentPlayer);
+    component.ngOnInit();
+    fixture.detectChanges();
+  }
+
+  function clickEndTurnButton() {
+    let updateButton = fixture.debugElement.query(By.css('button#endTurn'));
+    updateButton.triggerEventHandler('click', null);
+    fixture.detectChanges();
   }
 });
