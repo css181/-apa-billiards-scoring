@@ -1,7 +1,23 @@
 <p id="yourTeam">Your Team: {{getYourTeam()}}</p>
 <p id="opponentTeam">Opponent Team: {{getOpponentTeam()}}</p>
-<abs-current-player-score [isLagWinner]=true></abs-current-player-score>
-<abs-current-player-score [isLagWinner]=false></abs-current-player-score>
+<table border="2">
+    <tr>
+        <td>
+            <abs-current-player-score [isLagWinner]=true></abs-current-player-score>
+        </td>
+        <td id="inningsTitle">Innings</td>
+        <td id="inningsValue">{{innings}}</td>
+        <td> </td>
+        <td id="deadBallsTitle">Dead Balls</td>
+        <td id="deadBallsValue">{{deadBalls}}</td>
+    </tr>
+    <tr>
+        <td>
+            <abs-current-player-score [isLagWinner]=false></abs-current-player-score>
+        </td>
+        <td><button id="addInning" (click)="onAddInning()">Add Inning</button></td>
+    </tr>
+</table>
 <div>
     <p id="curShootingPlayerInfo">Now shooting: <strong>{{curShootingPlayer.name}}</strong></p>
     <button id="endTurn" (click)="onEndTurn()">End Turn</button>

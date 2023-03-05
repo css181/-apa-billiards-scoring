@@ -104,6 +104,26 @@ describe('PlayFieldComponent', () => {
         expect(fixture.debugElement.query(By.css('#curShootingPlayerInfo')).nativeElement.textContent).toContain(component.curShootingPlayer.name);
       })
     })
+
+    describe('innings', () => {
+      it('should display an innings title, and number of innings which starts at 0', () => {
+        expect(fixture.debugElement.query(By.css('#inningsTitle')).nativeElement.textContent).toBe('Innings');
+        expect(fixture.debugElement.query(By.css('#inningsValue')).nativeElement.textContent).toBe('0');
+      })
+      it('should increment the inning count when "Add Inning" button is pressed', () => {
+        clickAddInningButton();
+
+        expect(component.innings).toBe(1);
+        expect(fixture.debugElement.query(By.css('#inningsValue')).nativeElement.textContent).toBe('1');
+      })
+    })
+    
+    describe('dead balls', () => {
+      it('should display an dead balls title, and number of dead balls which starts at 0', () => {
+        expect(fixture.debugElement.query(By.css('#deadBallsTitle')).nativeElement.textContent).toBe('Dead Balls');
+        expect(fixture.debugElement.query(By.css('#deadBallsValue')).nativeElement.textContent).toBe('0');
+      })
+    })
   })
 
   function setupLagWinnerAndLoser() {
@@ -118,8 +138,13 @@ describe('PlayFieldComponent', () => {
   }
 
   function clickEndTurnButton() {
-    let updateButton = fixture.debugElement.query(By.css('button#endTurn'));
-    updateButton.triggerEventHandler('click', null);
+    let button = fixture.debugElement.query(By.css('button#endTurn'));
+    button.triggerEventHandler('click', null);
+    fixture.detectChanges();
+  }
+  function clickAddInningButton() {
+    let button = fixture.debugElement.query(By.css('button#addInning'));
+    button.triggerEventHandler('click', null);
     fixture.detectChanges();
   }
 });

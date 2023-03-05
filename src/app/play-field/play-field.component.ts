@@ -16,6 +16,8 @@ export class PlayFieldComponent implements OnInit{
   private lagLosingPlayer: ICurrentPlayer = {} as ICurrentPlayer;
   private lagWinningPlayer: ICurrentPlayer = {} as ICurrentPlayer;
   public curShootingPlayer: ICurrentPlayer = {} as ICurrentPlayer;
+  public innings: number = 0;
+  public deadBalls: number = 0;
 
   constructor(public sharedData: SharedDataService, private route: ActivatedRoute) { }
 
@@ -38,6 +40,10 @@ export class PlayFieldComponent implements OnInit{
     } else {
       this.curShootingPlayer = this.lagWinningPlayer;
     }
+  }
+
+  onAddInning(): void {
+    this.innings = this.innings + 1;
   }
 
   public getNextBall(): number {
