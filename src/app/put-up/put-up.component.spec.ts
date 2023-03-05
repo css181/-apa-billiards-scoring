@@ -187,9 +187,9 @@ describe('PutUpComponent', () => {
   describe('when your team wins the lag and that button is pressed', () => {
     it('should store your chosen player as the lag winner and opponent chosen player as the lag loser in sharedData', () => {
       const yourPlayer = DefenseGoneBadPlayers[0];
-      const yourCurrentPlayer = {id: yourPlayer.id, name: yourPlayer.name, skill: yourPlayer.skill, team: 'Defense Gone Bad'} as ICurrentPlayer
+      const yourCurrentPlayer = {id: yourPlayer.id, name: yourPlayer.name, skill: yourPlayer.skill, team: 'Defense Gone Bad', curScore: 0} as ICurrentPlayer
       const opponentPlayer = HookerPlayers[0];
-      const opponentCurrentPlayer = {id: opponentPlayer.id, name: opponentPlayer.name, skill: opponentPlayer.skill, team: 'Hookers'} as ICurrentPlayer
+      const opponentCurrentPlayer = {id: opponentPlayer.id, name: opponentPlayer.name, skill: opponentPlayer.skill, team: 'Hookers', curScore: 0} as ICurrentPlayer
       component.onChooseYourPlayer(yourPlayer);
       component.onChooseOpponentPlayer(opponentPlayer);
       fixture.detectChanges();
@@ -204,9 +204,9 @@ describe('PutUpComponent', () => {
   describe('when opponent team wins the lag and that button is pressed', () => {
     it('should store opponent chosen player as the lag winner and your chosen player as the lag loser in sharedData', () => {
       const yourPlayer = DefenseGoneBadPlayers[0];
-      const yourCurrentPlayer = {id: yourPlayer.id, name: yourPlayer.name, skill: yourPlayer.skill, team: 'Defense Gone Bad'} as ICurrentPlayer
+      const yourCurrentPlayer = {id: yourPlayer.id, name: yourPlayer.name, skill: yourPlayer.skill, team: 'Defense Gone Bad', curScore: 0} as ICurrentPlayer
       const opponentPlayer = HookerPlayers[0];
-      const opponentCurrentPlayer = {id: opponentPlayer.id, name: opponentPlayer.name, skill: opponentPlayer.skill, team: 'Hookers'} as ICurrentPlayer
+      const opponentCurrentPlayer = {id: opponentPlayer.id, name: opponentPlayer.name, skill: opponentPlayer.skill, team: 'Hookers', curScore: 0} as ICurrentPlayer
       component.onChooseYourPlayer(yourPlayer);
       component.onChooseOpponentPlayer(opponentPlayer);
       fixture.detectChanges();

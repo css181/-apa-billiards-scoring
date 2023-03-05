@@ -41,12 +41,14 @@ export class PutUpComponent {
       id: this.yourTeamSelectedPlayer.id,
       name: this.yourTeamSelectedPlayer.name, 
       skill: this.yourTeamSelectedPlayer.skill,
+      curScore: 0,
       team: this.yourTeam
     } as ICurrentPlayer
     const lagLosingPlayer = {
       id: this.opponentTeamSelectedPlayer.id,
       name: this.opponentTeamSelectedPlayer.name, 
       skill: this.opponentTeamSelectedPlayer.skill,
+      curScore: 0,
       team: this.opponentTeam
     } as ICurrentPlayer
     this.sharedData.setCurrentPlayerLagWinner(lagWinningPlayer);
@@ -58,12 +60,14 @@ export class PutUpComponent {
       id: this.opponentTeamSelectedPlayer.id,
       name: this.opponentTeamSelectedPlayer.name, 
       skill: this.opponentTeamSelectedPlayer.skill,
+      curScore: 0,
       team: this.opponentTeam
     } as ICurrentPlayer
     const lagLosingPlayer = {
       id: this.yourTeamSelectedPlayer.id,
       name: this.yourTeamSelectedPlayer.name, 
       skill: this.yourTeamSelectedPlayer.skill,
+      curScore: 0,
       team: this.yourTeam
     } as ICurrentPlayer
     this.sharedData.setCurrentPlayerLagWinner(lagWinningPlayer);

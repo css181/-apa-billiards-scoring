@@ -3,4 +3,5 @@ export interface ICurrentPlayer {
     id: string;
     skill: number;
     team: string;
+    curScore: number;
 }

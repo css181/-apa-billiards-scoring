@@ -11,18 +11,20 @@ import { TeamSelectionComponent } from './welcome/team-selection/team-selection.
 import { PlayerInfoUpdateComponent } from './welcome/player-info-update/player-info-update.component';
 import { FormsModule } from '@angular/forms';
 import { PutUpComponent } from './put-up/put-up.component';
+import { CurrentPlayerScoreComponent } from './play-field/current-player-score/current-player-score.component';
 
 const routes: Routes = [
   { path: 'welcome', component: WelcomeComponent },
   { path: 'playField/:yourTeam/:opponentTeam', component: PlayFieldComponent },
   { path: 'putUp', component: PutUpComponent },
   { path: 'teamSelection', component: TeamSelectionComponent },
+  { path: 'currentPlayerScore/:isLagWinner', component: CurrentPlayerScoreComponent},
   { path: '', redirectTo: '/welcome', pathMatch: 'full'}
 ];
 
 @NgModule({
   imports:      [ BrowserModule, FormsModule, HttpClientModule, RouterModule.forRoot(routes) ],
-  declarations: [ AppComponent, WelcomeComponent, DashifyNamesPipe, PlayFieldComponent, TeamSelectionComponent, PlayerInfoUpdateComponent, PutUpComponent ],
+  declarations: [ AppComponent, WelcomeComponent, DashifyNamesPipe, PlayFieldComponent, TeamSelectionComponent, PlayerInfoUpdateComponent, PutUpComponent, CurrentPlayerScoreComponent ],
   providers:    [ DashifyNamesPipe ],
   bootstrap:    [ AppComponent ]
 })

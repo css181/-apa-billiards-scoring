@@ -1,3 +1,4 @@
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from "@angular/platform-browser"
 import { ActivatedRoute } from '@angular/router';
@@ -23,6 +24,7 @@ describe('PlayFieldComponent', () => {
     TestBed.configureTestingModule({ 
       declarations: [ PlayFieldComponent ],
       providers: [ SharedDataService, {provide: ActivatedRoute, useValue: fakeActivatedRoute} ],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
 
@@ -35,15 +37,6 @@ describe('PlayFieldComponent', () => {
   it('should display the team names', () => {
     expect(fixture.debugElement.query(By.css('p#yourTeam')).nativeElement.textContent).toContain(component.getYourTeam());
     expect(fixture.debugElement.query(By.css('p#opponentTeam')).nativeElement.textContent).toContain(component.getOpponentTeam());
-  })
-  it('should display the current Lag winner and loser after going through ngOnInit', () => {
-    setupLagWinnerAndLoser();
-
-    component.ngOnInit();
-    fixture.detectChanges();
-    
-    expect(fixture.debugElement.query(By.css('p#lagLoser')).nativeElement.textContent).toContain(component.getLagLosingPlayer().name);
-    expect(fixture.debugElement.query(By.css('p#lagWinner')).nativeElement.textContent).toContain(component.getLagWinningPlayer().name);
   })
 
 
