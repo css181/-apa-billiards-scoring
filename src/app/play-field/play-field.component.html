@@ -15,16 +15,27 @@
         <td>
             <abs-current-player-score [isLagWinner]=false></abs-current-player-score>
         </td>
-        <td><button id="addInning" (click)="onAddInning()">Add Inning</button></td>
+        <td>
+            <button id="addInning" (click)="onAddInning()">Add Inning</button><br>
+            <button id="decrementInning" (click)="onDecrementInning()">Decrement</button>
+        </td>
     </tr>
 </table>
 <div>
-    <p id="curShootingPlayerInfo">Now shooting: <strong>{{curShootingPlayer.name}}</strong></p>
-    <button id="endTurn" (click)="onEndTurn()">End Turn</button>
+    <table>
+        <tr>
+            <td>
+                <div id="curShootingPlayerInfo">Now shooting: <strong>{{curShootingPlayer.name}}</strong></div>
+            </td>
+            <td>
+                <button id="endTurn" (click)="onEndTurn()">End Turn</button>
+            </td>
+        </tr>
+    </table>
 </div>
 <div>
-    <p>Next Ball To Hit:</p>
-    <img class="up-next" src={{curBallImgPath}}>
+    <p>Current ball:</p>
+    <img class="up-next" src={{curBallImgPath}} (click)="updateNextBall(this.nextBall+1)">
     <p>Click a ball to see the next ball to hit</p>
     <table id="balls">
         <tr>
