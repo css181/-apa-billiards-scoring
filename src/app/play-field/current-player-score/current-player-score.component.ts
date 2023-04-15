@@ -29,19 +29,19 @@ export class CurrentPlayerScoreComponent implements OnInit{
       case 2:
         target=19; break;
       case 3:
-        target=24; break;
+        target=25; break;
       case 4:
         target=31; break;
       case 5:
         target=38; break;
       case 6:
-        target=45; break;
+        target=46; break;
       case 7:
-        target=52; break;
+        target=55; break;
       case 8:
-        target=60; break;
+        target=65; break;
       case 9:
-        target=72; break;
+        target=75; break;
       default:
         break;
     }

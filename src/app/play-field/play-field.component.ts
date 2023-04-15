@@ -53,17 +53,21 @@ export class PlayFieldComponent implements OnInit{
       newNext = 1;
       pointValue=2;
     }
+    console.log(this.curShootingPlayer.name + ' hit ' + this.nextBall);
     this.nextBall = newNext;
     this.curBallImgPath = "assets/images/" + newNext + "ball.png";
     this.curShootingPlayer.curScore+=pointValue;
+    console.log(this.curShootingPlayer.name + ' new score = ' + this.curShootingPlayer.curScore);
   }
 
   onEndTurn(): void {
+    console.log(this.curShootingPlayer.name + ' ended their turn.');
     if(this.curShootingPlayer === this.lagWinningPlayer) {
       this.curShootingPlayer = this.lagLosingPlayer;
     } else {
       this.curShootingPlayer = this.lagWinningPlayer;
       this.innings++;
+      console.log('adding inning');
     }
   }
 
