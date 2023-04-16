@@ -35,19 +35,39 @@
 </div>
 <div>
     <p>Current ball:</p>
-    <img class="up-next" src={{curBallImgPath}} (click)="updateNextBall(this.nextBall+1)">
-    <p>Click if combo/carem:</p>
+    <img class="up-next" src={{curBallImgPath}} (click)="updateNextBall(this.nextBall)">
+</div>
+<div *ngIf="isDeadBallMode">
+    <p>Click the <button id="deadBallMode" (click)="flipDeadBallMode()">dead ball</button>
+    ~ To switch to "carem/combo" click buton above.</p>
     <table id="balls">
         <tr>
-            <td><img (click)="updateNextBall(2)" class="ball" src="assets/images/1ball.png" /></td>
-            <td><img (click)="updateNextBall(3)" class="ball" src="assets/images/2ball.png" /></td>
-            <td><img (click)="updateNextBall(4)" class="ball" src="assets/images/3ball.png" /></td>
-            <td><img (click)="updateNextBall(5)" class="ball" src="assets/images/4ball.png" /></td>
-            <td><img (click)="updateNextBall(6)" class="ball" src="assets/images/5ball.png" /></td>
-            <td><img (click)="updateNextBall(7)" class="ball" src="assets/images/6ball.png" /></td>
-            <td><img (click)="updateNextBall(8)" class="ball" src="assets/images/7ball.png" /></td>
-            <td><img (click)="updateNextBall(9)" class="ball" src="assets/images/8ball.png" /></td>
-            <td><img (click)="updateNextBall(10)" class="ball" src="assets/images/9ball.png" /></td>
+            <td><img (click)="addDeadBall(1)" [ngClass]="sunkBallsList.indexOf(1)!=-1 ? 'sunkBall': 'deadBall'" id="ball1" src="assets/images/1ball.png" /></td>
+            <td><img (click)="addDeadBall(2)" [ngClass]="sunkBallsList.indexOf(2)!=-1 ? 'sunkBall': 'deadBall'" class="deadBall" id="ball2" src="assets/images/2ball.png" /></td>
+            <td><img (click)="addDeadBall(3)" [ngClass]="sunkBallsList.indexOf(3)!=-1 ? 'sunkBall': 'deadBall'" class="deadBall" id="ball3" src="assets/images/3ball.png" /></td>
+            <td><img (click)="addDeadBall(4)" [ngClass]="sunkBallsList.indexOf(4)!=-1 ? 'sunkBall': 'deadBall'" class="deadBall" id="ball4" src="assets/images/4ball.png" /></td>
+            <td><img (click)="addDeadBall(5)" [ngClass]="sunkBallsList.indexOf(5)!=-1 ? 'sunkBall': 'deadBall'" class="deadBall" id="ball5" src="assets/images/5ball.png" /></td>
+            <td><img (click)="addDeadBall(6)" [ngClass]="sunkBallsList.indexOf(6)!=-1 ? 'sunkBall': 'deadBall'" class="deadBall" id="ball6" src="assets/images/6ball.png" /></td>
+            <td><img (click)="addDeadBall(7)" [ngClass]="sunkBallsList.indexOf(7)!=-1 ? 'sunkBall': 'deadBall'" class="deadBall" id="ball7" src="assets/images/7ball.png" /></td>
+            <td><img (click)="addDeadBall(8)" [ngClass]="sunkBallsList.indexOf(8)!=-1 ? 'sunkBall': 'deadBall'" class="deadBall" id="ball8" src="assets/images/8ball.png" /></td>
+            <td><img class="ball" id="ball9" src="assets/images/9ball_dead.png" /></td>
+        </tr>
+    </table>
+</div>
+<div *ngIf="!isDeadBallMode">
+    <p>Click the <button id="deadBallMode" (click)="flipDeadBallMode()">carem/combo</button>
+    ~ To switch to "dead ball" click buton above.</p>
+    <table id="balls">
+        <tr>
+            <td><img (click)="caremComboBall(1)" [ngClass]="sunkBallsList.indexOf(1)!=-1 ? 'sunkBall': 'ball'" id="ball1" src="assets/images/1ball.png" /></td>
+            <td><img (click)="caremComboBall(2)" [ngClass]="sunkBallsList.indexOf(2)!=-1 ? 'sunkBall': 'ball'" id="ball2" src="assets/images/2ball.png" /></td>
+            <td><img (click)="caremComboBall(3)" [ngClass]="sunkBallsList.indexOf(3)!=-1 ? 'sunkBall': 'ball'" id="ball3" src="assets/images/3ball.png" /></td>
+            <td><img (click)="caremComboBall(4)" [ngClass]="sunkBallsList.indexOf(4)!=-1 ? 'sunkBall': 'ball'" id="ball4" src="assets/images/4ball.png" /></td>
+            <td><img (click)="caremComboBall(5)" [ngClass]="sunkBallsList.indexOf(5)!=-1 ? 'sunkBall': 'ball'" id="ball5" src="assets/images/5ball.png" /></td>
+            <td><img (click)="caremComboBall(6)" [ngClass]="sunkBallsList.indexOf(6)!=-1 ? 'sunkBall': 'ball'" id="ball6" src="assets/images/6ball.png" /></td>
+            <td><img (click)="caremComboBall(7)" [ngClass]="sunkBallsList.indexOf(7)!=-1 ? 'sunkBall': 'ball'" id="ball7" src="assets/images/7ball.png" /></td>
+            <td><img (click)="caremComboBall(8)" [ngClass]="sunkBallsList.indexOf(8)!=-1 ? 'sunkBall': 'ball'" id="ball8" src="assets/images/8ball.png" /></td>
+            <td><img (click)="caremComboBall(9)" class="ball" id="ball9" src="assets/images/9ball.png" /></td>
         </tr>
     </table>
 </div>
