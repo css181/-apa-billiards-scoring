@@ -53,4 +53,31 @@ export class SharedDataService {
   setCurrentPlayerLagLoser(curPlayer: ICurrentPlayer) {
     this.currentPlayerLagLoser = curPlayer;
   }
+
+  getTargetScore(skill: number): number {
+    let target:number = 0;
+    switch (skill) {
+      case 1:
+        target=14; break;
+      case 2:
+        target=19; break;
+      case 3:
+        target=25; break;
+      case 4:
+        target=31; break;
+      case 5:
+        target=38; break;
+      case 6:
+        target=46; break;
+      case 7:
+        target=55; break;
+      case 8:
+        target=65; break;
+      case 9:
+        target=75; break;
+      default:
+        break;
+    }
+    return target;
+  }
 }

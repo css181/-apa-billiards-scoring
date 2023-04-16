@@ -122,6 +122,7 @@ export class PlayFieldComponent implements OnInit{
       this.innings++;
       console.log('adding inning');
     }
+    this.isDeadBallMode = false;
   }
 
   flipDeadBallMode(): void {
@@ -134,6 +135,13 @@ export class PlayFieldComponent implements OnInit{
   onDecrementInning(): void {
     if(this.innings > 0)
       this.innings--;
+  }
+  onAddDeadBall(): void {
+    this.deadBalls++;
+  }
+  onDecrementDeadBall(): void {
+    if(this.deadBalls > 0)
+      this.deadBalls--;
   }
 
   public getNextBall(): number {

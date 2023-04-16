@@ -7,6 +7,7 @@ import { CurrentPlayerScoreComponent } from './current-player-score.component';
 
 describe('CurrentPlayerScoreComponent', () => {
   let component: CurrentPlayerScoreComponent;
+  let sharedService: SharedDataService;
   let fixture: ComponentFixture<CurrentPlayerScoreComponent>;
 
   beforeEach(async () => {
@@ -17,6 +18,7 @@ describe('CurrentPlayerScoreComponent', () => {
     .compileComponents();
 
     fixture = TestBed.createComponent(CurrentPlayerScoreComponent);
+    sharedService = TestBed.inject(SharedDataService);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -51,7 +53,7 @@ describe('CurrentPlayerScoreComponent', () => {
 
     it('should display the players name, skill, current score, remaining needed, and total needed score', () => {
       const mainTable = fixture.debugElement.query(By.css('table'));
-      const targetScore = component.getTargetScore(component.currentPlayer.skill);
+      const targetScore = sharedService.getTargetScore(component.currentPlayer.skill);
 
       expect(mainTable).toBeTruthy();
       expect(mainTable.query(By.css('#playerName')).nativeElement.textContent).toContain(component.currentPlayer.name);

@@ -78,8 +78,7 @@ describe('PlayFieldComponent', () => {
       const upNextImg = fixture.debugElement.query(By.css('.up-next'));
       expect(upNextImg.nativeElement.src).toContain("1ball.png");
 
-      upNextImg.triggerEventHandler('click', null);
-      fixture.detectChanges();
+      clickUpNextImg();
 
       expect(upNextImg.nativeElement.src).toContain("2ball.png");
     })
@@ -89,8 +88,7 @@ describe('PlayFieldComponent', () => {
       component.sunkBallsList = [1,2,3,4,5,6,7,8];
       component.curBallImgPath = "assets/images/9ball.png";
 
-      upNextImg.triggerEventHandler('click', null);
-      fixture.detectChanges();
+      clickUpNextImg();
       
       expect(upNextImg.nativeElement.src).toContain("1ball.png");
       expect(component.sunkBallsList.length).toBe(0);
@@ -102,65 +100,52 @@ describe('PlayFieldComponent', () => {
       expect(component.curShootingPlayer.curScore).toBe(0);
 
       //1ball
-      upNextImg.triggerEventHandler('click', null);
-      fixture.detectChanges();
+      clickUpNextImg();
       expect(component.curShootingPlayer.curScore).toBe(1);
       
       //2ball
-      upNextImg.triggerEventHandler('click', null);
-      fixture.detectChanges();
+      clickUpNextImg();
       expect(component.curShootingPlayer.curScore).toBe(2);
       
       //3ball
-      upNextImg.triggerEventHandler('click', null);
-      fixture.detectChanges();
+      clickUpNextImg();
       expect(component.curShootingPlayer.curScore).toBe(3);
       
       //4ball
-      upNextImg.triggerEventHandler('click', null);
-      fixture.detectChanges();
+      clickUpNextImg();
       expect(component.curShootingPlayer.curScore).toBe(4);
       
       //5ball
-      upNextImg.triggerEventHandler('click', null);
-      fixture.detectChanges();
+      clickUpNextImg();
       expect(component.curShootingPlayer.curScore).toBe(5);
       
       //6ball
-      upNextImg.triggerEventHandler('click', null);
-      fixture.detectChanges();
+      clickUpNextImg();
       expect(component.curShootingPlayer.curScore).toBe(6);
       
       //7ball
-      upNextImg.triggerEventHandler('click', null);
-      fixture.detectChanges();
+      clickUpNextImg();
       expect(component.curShootingPlayer.curScore).toBe(7);
       
       //8ball
-      upNextImg.triggerEventHandler('click', null);
-      fixture.detectChanges();
+      clickUpNextImg();
       expect(component.curShootingPlayer.curScore).toBe(8);
     })
     it('should add 2 point to the current shooter when ball was 9', () => {
       setupLagWinnerAndLoser();
-      const upNextImg = fixture.debugElement.query(By.css('.up-next'));
       component.nextBall = 9;
       component.curBallImgPath = "assets/images/9ball.png";
       expect(component.curShootingPlayer.curScore).toBe(0);
 
       //9ball
-      upNextImg.triggerEventHandler('click', null);
-      fixture.detectChanges();
+      clickUpNextImg();
       expect(component.curShootingPlayer.curScore).toBe(2);
     })
     it('should add the current ball to the sunkBallList', ()=> {
       expect(component.sunkBallsList.length).toBe(0);
 
-      const upNextImg = fixture.debugElement.query(By.css('.up-next'));
-      upNextImg.triggerEventHandler('click', null); //Click 1 ball
-      fixture.detectChanges();
-      upNextImg.triggerEventHandler('click', null); //Click 2 ball
-      fixture.detectChanges();
+      clickUpNextImg(); //1ball
+      clickUpNextImg(); //2ball
 
       expect(component.sunkBallsList).toContain(1);
       expect(component.sunkBallsList).toContain(2);
@@ -170,12 +155,23 @@ describe('PlayFieldComponent', () => {
       component.curBallImgPath = "assets/images/3ball.png";
       component.sunkBallsList = [1,2,4,5];
       
-      const upNextImg = fixture.debugElement.query(By.css('.up-next'));
-      upNextImg.triggerEventHandler('click', null);
-      fixture.detectChanges();
+      clickUpNextImg();
 
       expect(component.nextBall).toBe(6);
       expect(component.curBallImgPath).toContain('6ball.png');
+    })
+    it('does nothing when isDeadBallMode=true and has opacity < 1', ()=> {
+      expect(component.curShootingPlayer.curScore).toBe(0);
+      expect(component.nextBall).toBe(1);
+      component.isDeadBallMode = true;
+      fixture.detectChanges();
+
+      clickUpNextImg();
+
+      expect(component.curShootingPlayer.curScore).toBe(0);
+      expect(component.nextBall).toBe(1);
+      const upNextImg = fixture.debugElement.query(By.css('.up-next')).nativeElement;
+      expect(getComputedStyle(upNextImg).opacity).toBeLessThan(1);
     })
   })
 
@@ -210,18 +206,28 @@ describe('PlayFieldComponent', () => {
         expect(fixture.debugElement.query(By.css('#curShootingPlayerInfo')).nativeElement.textContent).toContain(component.curShootingPlayer.name);
       })
       describe('and the lagLoser was shooting', () => {
-        it('should add an inning', () => {
+        beforeEach(()=>{
           setupLagWinnerAndLoser();
-  
           //Go from Winner to Loser
           clickEndTurnButton();
           //No inning is added
           expect(component.innings).toBe(0);
-  
+        })
+        it('should add an inning', () => {
           //Go from Loser to Winner
           clickEndTurnButton();
   
           expect(component.innings).toBe(1);
+        })
+      })
+      describe('and isDeadBallMode=true', ()=> {
+        beforeEach(()=> {
+          component.isDeadBallMode = true;
+        })
+        it('should reset isDeadBallMode back to false', ()=> {
+          clickEndTurnButton();
+
+          expect(component.isDeadBallMode).toBeFalse();
         })
       })
     })
@@ -263,6 +269,29 @@ describe('PlayFieldComponent', () => {
       expect(fixture.debugElement.query(By.css('#deadBallsTitle')).nativeElement.textContent).toBe('Dead Balls');
       expect(fixture.debugElement.query(By.css('#deadBallsValue')).nativeElement.textContent).toBe('0');
     })
+    it('should increment the inning count when "Add DeadBall" button is pressed', () => {
+      clickAddDeadBallButton();
+
+      expect(component.deadBalls).toBe(1);
+      expect(fixture.debugElement.query(By.css('#deadBallsValue')).nativeElement.textContent).toBe('1');
+    })
+    it('should decrement the inning count when "Decrement DeadBall" button is pressed', () => {
+      clickAddDeadBallButton();
+      expect(component.deadBalls).toBe(1);
+
+      clickDecrementDeadBallButton();
+
+      expect(component.deadBalls).toBe(0);
+      expect(fixture.debugElement.query(By.css('#deadBallsValue')).nativeElement.textContent).toBe('0');
+    })
+    it('should NOT decrement the inning count below 0 when "Decrement Inning" button is pressed', () => {
+      expect(component.deadBalls).toBe(0);
+
+      clickDecrementDeadBallButton();
+
+      expect(component.deadBalls).toBe(0);
+      expect(fixture.debugElement.query(By.css('#deadBallsValue')).nativeElement.textContent).toBe('0');
+    })
   })
 
   describe('row of balls 1 through 9 at the bottom', () => {
@@ -277,10 +306,6 @@ describe('PlayFieldComponent', () => {
     describe('when isDeadBallMode is true', ()=> {
       beforeEach(()=> {
         clickDeadBallModeButton();
-      })
-      it('should display the balls with opacity < 1', ()=> {
-        const ball1Img = fixture.debugElement.query(By.css("#ball1")).nativeElement;
-        expect(getComputedStyle(ball1Img).opacity).toBeLessThan(1);
       })
       it('should show the 9 ball can not die image', ()=> {
         const ball9 = fixture.debugElement.query(By.css('#ball9'));
@@ -430,6 +455,11 @@ describe('PlayFieldComponent', () => {
     button.triggerEventHandler('click', null);
     fixture.detectChanges();
   }
+  function clickUpNextImg() {
+    const upNextImg = fixture.debugElement.query(By.css('#up-nextBall'));
+    upNextImg.triggerEventHandler('click', null);
+    fixture.detectChanges();
+  }
   function clickAddInningButton() {
     let button = fixture.debugElement.query(By.css('button#addInning'));
     button.triggerEventHandler('click', null);
@@ -437,6 +467,16 @@ describe('PlayFieldComponent', () => {
   }
   function clickDecrementInningButton() {
     let button = fixture.debugElement.query(By.css('button#decrementInning'));
+    button.triggerEventHandler('click', null);
+    fixture.detectChanges();
+  }
+  function clickAddDeadBallButton() {
+    let button = fixture.debugElement.query(By.css('button#addDeadBall'));
+    button.triggerEventHandler('click', null);
+    fixture.detectChanges();
+  }
+  function clickDecrementDeadBallButton() {
+    let button = fixture.debugElement.query(By.css('button#decrementDeadBall'));
     button.triggerEventHandler('click', null);
     fixture.detectChanges();
   }
