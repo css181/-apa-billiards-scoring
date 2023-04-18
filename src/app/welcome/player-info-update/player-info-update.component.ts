@@ -30,6 +30,7 @@ export class PlayerInfoUpdateComponent implements OnChanges {
     if(this.teamName !== '' && (this.teamName !== this.oldTeamName)) {
       this.oldTeamName = this.teamName;
       this.isUpdateMode = false;
+      this.hasBeenConfirmed = false;
       this.teamsListService.getPlayers(this.teamName).subscribe(data => this.players=data);
     }
   }

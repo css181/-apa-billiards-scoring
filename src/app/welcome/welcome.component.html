@@ -12,15 +12,3 @@
         <td><abs-player-info-update [isYourTeam]="false" [teamName]='getOpponentTeam()' (notifyConfirm)='onConfirmClicked($event)'></abs-player-info-update></td>
     </tr>
 </table>
-<p></p>
-<table  *ngIf="(getYourTeam() !=='') && (getOpponentTeam() !=='')  && (areBothTeamsConfirmed())  && (getYourTeam() !== getOpponentTeam())">
-    <tr>
-        <td [width]="265"></td>
-        <td [width]="180">
-            <div>
-                <button id="confirmButton" class='centerButton' [routerLink]="['/putUp']">Confirm Team Choices</button>
-            </div>
-        </td>
-        <td [width]="265"></td>
-    </tr>
-</table>

@@ -54,7 +54,7 @@ describe('PlayerInfoUpdateComponent', () => {
 
       expect(playerNameTableElement).toBeTruthy();
     })
-    it('should show again if update was clicked and then a different team is selected', () => {
+    it('should show again if update was clicked and then a different team is selected (resetting isUpdateMode)', () => {
       component.teamName = 'Hookers';
       component.ngOnChanges();
       fixture.detectChanges();
@@ -67,6 +67,7 @@ describe('PlayerInfoUpdateComponent', () => {
       fixture.detectChanges();
 
       //Verify All non-Input TDs
+      expect(component.isUpdateMode).toBeFalse();
       let nonInputBoxes = fixture.debugElement.queryAll(By.css('.playerInfo'));
       expect(nonInputBoxes.length).toBe(8*3);
 
@@ -77,6 +78,21 @@ describe('PlayerInfoUpdateComponent', () => {
       expect(inputNameBoxes.length).toBe(0);
       let inputSkillBoxes = fixture.debugElement.queryAll(By.css('.playerSkillInput'));
       expect(inputSkillBoxes.length).toBe(0);
+    })
+    it('should reset hasBeenConfirmed if 1 team is selected, than confirmed, than a new team is selected', ()=> {
+      component.teamName = 'Hookers';
+      component.ngOnChanges();
+      fixture.detectChanges();
+      let confirmButton = fixture.debugElement.query(By.css('button#confirmButton'));
+      confirmButton.triggerEventHandler('click', null);
+      fixture.detectChanges();
+
+      component.teamName = 'Defense Gone Bad';
+      component.ngOnChanges();
+      fixture.detectChanges();
+
+      //Verify All non-Input TDs
+      expect(component.hasBeenConfirmed).toBeFalse();
     })
   })
 

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { IPlayer } from '../interfaces/iplayer';
 import { TeamsListService } from '../services/teams-list.service';
 
@@ -17,7 +18,7 @@ export class WelcomeComponent implements OnInit{
   private isYourTeamConfirmed: boolean = false;
   private isOpponentTeamConfirmed: boolean = false;
 
-  constructor(public teamsListService: TeamsListService) {
+  constructor(public teamsListService: TeamsListService, public router: Router) {
     this.teamNames = [];
   }
 
@@ -28,8 +29,10 @@ export class WelcomeComponent implements OnInit{
   onTeamSelected(message: string) {
     if(message.startsWith('true')) {
       this.yourTeam = message.substring(message.indexOf("|") + 1);
+      this.setIsYourTeamConfirmed(false);
     } else {
       this.opponentTeam = message.substring(message.indexOf("|") + 1);
+      this.setIsOpponentTeamConfirmed(false);
     }
   }
 
@@ -38,6 +41,9 @@ export class WelcomeComponent implements OnInit{
       this.isYourTeamConfirmed = true;
     } else {
       this.isOpponentTeamConfirmed = true;
+    }
+    if(this.getYourTeam() !=='' && this.getOpponentTeam() !==''  && this.areBothTeamsConfirmed()  && (this.getYourTeam() !== this.getOpponentTeam())) {
+      this.router.navigate(['/putUp']);
     }
   }
 
@@ -66,8 +72,14 @@ export class WelcomeComponent implements OnInit{
   public setIsYourTeamConfirmed(value: boolean): void {
     this.isYourTeamConfirmed = value;
   }
+  public getIsYourTeamConfirmed(): boolean {
+    return this.isYourTeamConfirmed;
+  }
   public setIsOpponentTeamConfirmed(value: boolean): void {
     this.isOpponentTeamConfirmed = value;
+  }
+  public getIsOpponentTeamConfirmed(): boolean {
+    return this.isOpponentTeamConfirmed;
   }
   public areBothTeamsConfirmed(): boolean {
     return this.isYourTeamConfirmed && this.isOpponentTeamConfirmed;
