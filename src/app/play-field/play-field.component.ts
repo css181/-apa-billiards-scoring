@@ -7,6 +7,7 @@ import HookerPlayers from '../../assets/data/hookers-players.json';
 import { IInning } from '../interfaces/iInnings';
 import { ITurn } from '../interfaces/iTurn';
 import { IGame } from '../interfaces/igame';
+import { IMatch } from '../interfaces/iMatch';
 
 @Component({
   selector: 'abs-play-field',
@@ -33,6 +34,9 @@ export class PlayFieldComponent implements OnInit{
   public deadBalls: number = 0;
   public isDeadBallMode: boolean = false;
   public sunkBallsList: number[] = [];
+
+  //TODO: remove
+  public isPrintLogMode: boolean = false;
 
   constructor(public sharedData: SharedDataService, private route: ActivatedRoute) { }
 
@@ -62,22 +66,7 @@ export class PlayFieldComponent implements OnInit{
   }
 
   onPrintLog() {
-    console.log(JSON.stringify(this.sharedData.getLog()));
-  }
-
-  updateNextBall(curBall: number) {
-    let pointValue:number = 1;
-    this.sunkBallsList.push(this.nextBall);
-    if(curBall === 9) {
-        pointValue=2;
-        this.resetBallsToNewGame();
-    }
-    console.log(this.curShootingPlayer.name + ' hit next ball: ' + curBall);
-    this.assignNewNextBall();
-    this.curBallImgPath = "assets/images/" + this.nextBall + "ball.png";
-    this.curShootingPlayer.curScore+=pointValue;
-    console.log(this.curShootingPlayer.name + ' new score = ' + this.curShootingPlayer.curScore);
-    this.updateSharedDataLogForBallSunk(curBall);
+    this.isPrintLogMode=!this.isPrintLogMode;
   }
   
   private updateSharedDataLogForBallSunk(ballNum: number) {
@@ -113,21 +102,34 @@ export class PlayFieldComponent implements OnInit{
     }
   }
 
+  updateNextBall(curBall: number) {
+    this.sunkBallsList.push(curBall);
+    this.assignNewNextBall();
+    this.curShootingPlayer.curScore+=1;
+    this.updateSharedDataLogForBallSunk(curBall);
+    this.checkAndPerformPotentialEndGameUpdates(curBall);
+    console.log(this.curShootingPlayer.name + ' hit next ball: ' + curBall);
+    console.log(this.curShootingPlayer.name + ' new score = ' + this.curShootingPlayer.curScore);
+  }
   caremComboBall(ballNum: number) {
     if(this.sunkBallsList.indexOf(ballNum)==-1){
       this.sunkBallsList.push(ballNum);
-      let pointValue:number = 1;
-      if(ballNum == 9) {
-          this.resetBallsToNewGame();
-          pointValue=2;
-      }
       if(this.nextBall===ballNum) {
         this.assignNewNextBall();
       }
-      this.curShootingPlayer.curScore+=pointValue;
+      this.curShootingPlayer.curScore+=1;
+      this.updateSharedDataLogForBallSunk(ballNum);
+      this.checkAndPerformPotentialEndGameUpdates(ballNum);
       console.log(this.curShootingPlayer.name + ' combo/caremed ' + ballNum);
       console.log(this.curShootingPlayer.name + ' new score = ' + this.curShootingPlayer.curScore);
-      this.updateSharedDataLogForBallSunk(ballNum);
+    }
+  }
+
+  checkAndPerformPotentialEndGameUpdates(sunkBall: number) {
+    if(sunkBall == 9) {
+      this.curShootingPlayer.curScore+=1;
+      this.resetBallsToNewGame();
+      this.resetNewGameInLog();
     }
   }
 
@@ -135,6 +137,15 @@ export class PlayFieldComponent implements OnInit{
     this.nextBall = 1;
     this.curBallImgPath = "assets/images/1ball.png";
     this.sunkBallsList = [];
+  }
+  
+  resetNewGameInLog(): void {
+    this.sharedData.addGameToMatch({innings: []} as IGame, this.sharedData.getLog().length-1);
+    if(this.curShootingPlayer === this.lagWinningPlayer) {
+      this.sharedData.addInningToLog({lagWinnerTurn: {name: this.lagWinningPlayer.name, ballsSunk: [], deadBalls: []} as ITurn } as IInning);
+    } else {
+      this.sharedData.addInningToLog({lagLoserTurn: {name: this.lagLosingPlayer.name, ballsSunk: [], deadBalls: []} as ITurn } as IInning);
+    }
   }
 
   assignNewNextBall(): void {
@@ -164,7 +175,6 @@ export class PlayFieldComponent implements OnInit{
       this.curShootingPlayer = this.lagWinningPlayer;
       this.innings++;
       console.log('adding inning');
-      this.sharedData.setCurrentInningIndex(this.sharedData.getCurrentIndexIndex()+1);
       this.sharedData.addInningToLog({ lagWinnerTurn: {name: this.lagWinningPlayer.name, ballsSunk: [], deadBalls: []} as ITurn } as IInning)
     }
     this.isDeadBallMode = false;
@@ -208,5 +218,18 @@ export class PlayFieldComponent implements OnInit{
   }
   public getLagLosingPlayer(): ICurrentPlayer {
     return this.lagLosingPlayer;
+  }
+
+  public getMatches(): IMatch[] {
+    return this.sharedData.getLog();
+  }
+  public getGames(matchIndex: number): IGame[] {
+    return this.getMatches()[matchIndex].games;
+  }
+  public getInnings(matchIndex: number, gameIndex: number): IInning[] {
+    return this.getGames(matchIndex)[gameIndex].innings;
+  }
+  public stringifyJSON(object: any) {
+    return JSON.stringify(object);
   }
 }

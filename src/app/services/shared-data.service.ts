@@ -15,9 +15,6 @@ export class SharedDataService {
   private opponentTeamPlayers: IPlayer[] = [];
   private currentPlayerLagWinner: ICurrentPlayer = {} as ICurrentPlayer;
   private currentPlayerLagLoser: ICurrentPlayer = {} as ICurrentPlayer;
-  private currentMatchIndex: number = 0;
-  private currentGameIndex: number = 0;
-  private currentInningIndex: number = 0;
   private log: IMatch[] = [];
 
   constructor() { }
@@ -39,17 +36,13 @@ export class SharedDataService {
     return this.log;
   }
   getCurrentMatchIndex(): number {
-    return this.currentMatchIndex;
+    return this.log.length-1;
   }
   getCurrentGameIndex(): number {
-    return this.currentGameIndex;
-    ;
+    return this.log[this.getCurrentMatchIndex()].games.length-1;
   }
   getCurrentIndexIndex(): number {
-    return this.currentInningIndex;
-  }
-  setCurrentInningIndex(newIndex: number) {
-    this.currentInningIndex = newIndex;
+    return this.log[this.getCurrentMatchIndex()].games[this.getCurrentGameIndex()].innings.length-1;
   }
   addMatchToLog(lagWinner: IPlayer, lagLoser: IPlayer) {
     this.log.push({games: [], lagLoser: lagLoser, lagWinner: lagWinner} as IMatch);
@@ -62,10 +55,12 @@ export class SharedDataService {
     }
   }
   addInningToLog(inning: IInning) {
-    if(this.log[this.currentMatchIndex].games[this.currentGameIndex].innings) {
-      this.log[this.currentMatchIndex].games[this.currentGameIndex].innings.push(inning);
+    const matchIndex = this.log.length-1;
+    const gameIndex = this.log[matchIndex].games.length-1;
+    if(this.log[matchIndex].games[gameIndex].innings) {
+      this.log[matchIndex].games[gameIndex].innings.push(inning);
     } else {
-      console.error("Log does not have a Match Index:" + this.currentMatchIndex + ", or a Game Index: " + this.currentGameIndex + ", so could not add Inning:" + JSON.stringify(inning));
+      console.error("Log does not have a Match Index:" + matchIndex + ", or a Game Index: " + gameIndex + ", so could not add Inning:" + JSON.stringify(inning));
     }
   }
 

@@ -85,3 +85,17 @@
         </tr>
     </table>
 </div>
+<div *ngIf="isPrintLogMode">
+    <p id="logs"><strong>LOGS</strong></p>
+    <div *ngFor="let match of getMatches(); let matchI = index">
+        <div *ngFor="let game of getGames(matchI); let gIndex = index">
+            <div *ngFor="let inning of getInnings(matchI, gIndex); let InningI = index">
+                <div *ngIf="inning.lagWinnerTurn">
+                    Match #{{matchI}} ~ Game #{{gIndex}} ~ Inning #{{InningI}} ~ {{stringifyJSON(inning.lagWinnerTurn)}}
+                </div>
+                <div *ngIf="inning.lagLoserTurn">
+                    Match #{{matchI}} ~ Game #{{gIndex}} ~ Inning #{{InningI}} ~ {{stringifyJSON(inning.lagLoserTurn)}}
+                </div>
+            </div>
+    </div>
+</div>
