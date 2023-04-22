@@ -8,6 +8,10 @@ import { IPlayer } from '../interfaces/iplayer';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ICurrentPlayer } from '../interfaces/icurrentPlayer';
 import { Router } from '@angular/router';
+import { IMatch } from '../interfaces/iMatch';
+import { IGame } from '../interfaces/igame';
+import { IInning } from '../interfaces/iInnings';
+import { ITurn } from '../interfaces/iTurn';
 
 describe('PutUpComponent', () => {
   let component: PutUpComponent;
@@ -179,13 +183,25 @@ describe('PutUpComponent', () => {
       expect(opponentTeamWonLagButton.nativeElement.textContent).toContain(opponentTeamPlayer.name);
       expect(opponentTeamWonLagButton.nativeElement.textContent).toContain(opponentTeamPlayer.skill);
     })
-    xit('should have both team win lag buttons re-directs to play-field component when clicked', () => {
-      //TODO verify redirect to correct place
+    it('should have both team win lag buttons re-directs to play-field component when clicked', () => {
+      const yourTeamPlayer = DefenseGoneBadPlayers[0];
+      component.onChooseYourPlayer(yourTeamPlayer);
+      component.onChooseOpponentPlayer(HookerPlayers[0]);
+      fixture.detectChanges();
+      const matchPlayerDiv = fixture.debugElement.query(By.css('div#matchPlayers'));
+      const yourTeamWonLagButton = matchPlayerDiv.query(By.css('button#yourTeamWonLag'));
+      const opponentTeamWonLagButton = matchPlayerDiv.query(By.css('button#opponentTeamWonLag'));
+      spyOn(component.router, 'navigate').and.stub();
+
+      yourTeamWonLagButton.triggerEventHandler('click', null);
+      expect(component.router.navigate).toHaveBeenCalledWith(['playField', component.getYourTeam(), component.getOpponentTeam()]);
+      opponentTeamWonLagButton.triggerEventHandler('click', null);
+      expect(component.router.navigate).toHaveBeenCalledWith(['playField', component.getYourTeam(), component.getOpponentTeam()]);
     })
   })
 
   describe('when your team wins the lag and that button is pressed', () => {
-    it('should store your chosen player as the lag winner and opponent chosen player as the lag loser in sharedData', () => {
+    it('should store your chosen player as the lag winner and opponent chosen player as the lag loser, and starts a match, game, inning, and turn in sharedData', () => {
       const yourPlayer = DefenseGoneBadPlayers[0];
       const yourCurrentPlayer = {id: yourPlayer.id, name: yourPlayer.name, skill: yourPlayer.skill, team: 'Defense Gone Bad', curScore: 0} as ICurrentPlayer
       const opponentPlayer = HookerPlayers[0];
@@ -198,11 +214,12 @@ describe('PutUpComponent', () => {
 
       expect(component.sharedData.getCurrentPlayerLagWinner()).toEqual(yourCurrentPlayer);
       expect(component.sharedData.getCurrentPlayerLagLoser()).toEqual(opponentCurrentPlayer);
+      expect(component.sharedData.getLog()[component.sharedData.getCurrentMatchIndex()]).toEqual({ lagWinner: yourPlayer, lagLoser: opponentPlayer, games: [ {innings:[{lagWinnerTurn: {name:yourPlayer.name, ballsSunk:[], deadBalls:[]} as ITurn} as IInning]} as IGame ] } as IMatch);
     })
   })
   
   describe('when opponent team wins the lag and that button is pressed', () => {
-    it('should store opponent chosen player as the lag winner and your chosen player as the lag loser in sharedData', () => {
+    it('should store opponent chosen player as the lag winner and your chosen player as the lag loser, and starts a match, game, inning, and turn in sharedData', () => {
       const yourPlayer = DefenseGoneBadPlayers[0];
       const yourCurrentPlayer = {id: yourPlayer.id, name: yourPlayer.name, skill: yourPlayer.skill, team: 'Defense Gone Bad', curScore: 0} as ICurrentPlayer
       const opponentPlayer = HookerPlayers[0];
@@ -215,6 +232,7 @@ describe('PutUpComponent', () => {
 
       expect(component.sharedData.getCurrentPlayerLagWinner()).toEqual(opponentCurrentPlayer);
       expect(component.sharedData.getCurrentPlayerLagLoser()).toEqual(yourCurrentPlayer);
+      expect(component.sharedData.getLog()[component.sharedData.getCurrentMatchIndex()]).toEqual({ lagWinner: opponentPlayer, lagLoser: yourPlayer, games: [ {innings:[{lagWinnerTurn: {name:opponentPlayer.name, ballsSunk:[], deadBalls:[]} as ITurn} as IInning]} as IGame ] } as IMatch);
     })
   })
 

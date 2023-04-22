@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ICurrentPlayer } from '../interfaces/icurrentPlayer';
+import { IGame } from '../interfaces/igame';
+import { IInning } from '../interfaces/iInnings';
+import { IMatch } from '../interfaces/iMatch';
 import { IPlayer } from '../interfaces/iplayer';
 
 @Injectable({
@@ -12,6 +15,10 @@ export class SharedDataService {
   private opponentTeamPlayers: IPlayer[] = [];
   private currentPlayerLagWinner: ICurrentPlayer = {} as ICurrentPlayer;
   private currentPlayerLagLoser: ICurrentPlayer = {} as ICurrentPlayer;
+  private currentMatchIndex: number = 0;
+  private currentGameIndex: number = 0;
+  private currentInningIndex: number = 0;
+  private log: IMatch[] = [];
 
   constructor() { }
 
@@ -26,6 +33,40 @@ export class SharedDataService {
   }
   setOpponentTeam(teamName: string) {
     this.opponentTeam = teamName;
+  }
+
+  getLog(): IMatch[] {
+    return this.log;
+  }
+  getCurrentMatchIndex(): number {
+    return this.currentMatchIndex;
+  }
+  getCurrentGameIndex(): number {
+    return this.currentGameIndex;
+    ;
+  }
+  getCurrentIndexIndex(): number {
+    return this.currentInningIndex;
+  }
+  setCurrentInningIndex(newIndex: number) {
+    this.currentInningIndex = newIndex;
+  }
+  addMatchToLog(lagWinner: IPlayer, lagLoser: IPlayer) {
+    this.log.push({games: [], lagLoser: lagLoser, lagWinner: lagWinner} as IMatch);
+  }
+  addGameToMatch(game: IGame, matchIndex: number) {
+    if(this.log[matchIndex]) {
+      this.log[matchIndex].games.push(game);
+    } else {
+      console.error("Log does not have a Match Index:" + matchIndex + ", so could not add Game:" + JSON.stringify(game));
+    }
+  }
+  addInningToLog(inning: IInning) {
+    if(this.log[this.currentMatchIndex].games[this.currentGameIndex].innings) {
+      this.log[this.currentMatchIndex].games[this.currentGameIndex].innings.push(inning);
+    } else {
+      console.error("Log does not have a Match Index:" + this.currentMatchIndex + ", or a Game Index: " + this.currentGameIndex + ", so could not add Inning:" + JSON.stringify(inning));
+    }
   }
 
   getYourTeamPlayers(): any {

@@ -5,6 +5,9 @@ import { ActivatedRoute } from '@angular/router';
 import DefenseGoneBadPlayers from '../../assets/data/defense-gone-bad-players.json'
 import HookerPlayers from '../../assets/data/hookers-players.json';
 import { ICurrentPlayer } from '../interfaces/icurrentPlayer';
+import { IGame } from '../interfaces/igame';
+import { IInning } from '../interfaces/iInnings';
+import { ITurn } from '../interfaces/iTurn';
 import { SharedDataService } from '../services/shared-data.service';
 import { PlayFieldComponent } from './play-field.component';
 
@@ -18,7 +21,11 @@ describe('PlayFieldComponent', () => {
       paramMap: mockParamMap
     }
   } as unknown as ActivatedRoute;
-
+  const yourPlayer = DefenseGoneBadPlayers[0];
+  const opponentPlayer = HookerPlayers[0];
+  let matchIndex: number;
+  let gameIndex: number;
+  let inningIndex: number;
 
   beforeEach(async () => {
     TestBed.configureTestingModule({ 
@@ -30,6 +37,14 @@ describe('PlayFieldComponent', () => {
 
     fixture = TestBed.createComponent(PlayFieldComponent);
     component = fixture.componentInstance;
+
+    //Fake out what would be in the lag at the start of this component
+    component.sharedData.addMatchToLog(yourPlayer, opponentPlayer);
+    component.sharedData.addGameToMatch({innings:[{lagWinnerTurn: {name: yourPlayer.name, ballsSunk:[], deadBalls:[]} as ITurn} as IInning]} as IGame, 0);
+    
+    matchIndex = component.sharedData.getCurrentMatchIndex();
+    gameIndex = component.sharedData.getCurrentGameIndex();
+    inningIndex = component.sharedData.getCurrentIndexIndex();
     fixture.detectChanges();
   });
 
@@ -37,6 +52,9 @@ describe('PlayFieldComponent', () => {
   it('should display the team names', () => {
     expect(fixture.debugElement.query(By.css('p#yourTeam')).nativeElement.textContent).toContain(component.getYourTeam());
     expect(fixture.debugElement.query(By.css('p#opponentTeam')).nativeElement.textContent).toContain(component.getOpponentTeam());
+  })
+  it('should have a way to print the games log to the console', ()=> {
+    expect(fixture.debugElement.query(By.css('button#printLog'))).toBeTruthy();
   })
 
 
@@ -52,6 +70,12 @@ describe('PlayFieldComponent', () => {
   it('should contain a lage display of the next ball to hit', () => {
     const upNextImg = fixture.debugElement.query(By.css('.up-next'));
     expect(upNextImg).toBeTruthy;
+  })
+
+  describe('sharedDataService', ()=> {
+    it('should have inningIndex = 0', ()=> {
+      expect(component.sharedData.getCurrentIndexIndex()).toBe(0);
+    })
   })
 
   describe('updateNextBall() method', () => {
@@ -93,7 +117,7 @@ describe('PlayFieldComponent', () => {
       expect(upNextImg.nativeElement.src).toContain("1ball.png");
       expect(component.sunkBallsList.length).toBe(0);
     })
-    it('should add 1 point to the current shooter when ball is 1 through 8', () => {
+    it('should add 1 point to the current shooter when ball is 1 through 8, and add each ball to the ballsSunk list in the log', () => {
       setupLagWinnerAndLoser();
       const upNextImg = fixture.debugElement.query(By.css('.up-next'));
       expect(upNextImg.nativeElement.src).toContain("1ball.png");
@@ -102,34 +126,42 @@ describe('PlayFieldComponent', () => {
       //1ball
       clickUpNextImg();
       expect(component.curShootingPlayer.curScore).toBe(1);
+      expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagWinnerTurn.ballsSunk).toEqual([1]);
       
       //2ball
       clickUpNextImg();
       expect(component.curShootingPlayer.curScore).toBe(2);
+      expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagWinnerTurn.ballsSunk).toEqual([1,2]);
       
       //3ball
       clickUpNextImg();
       expect(component.curShootingPlayer.curScore).toBe(3);
+      expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagWinnerTurn.ballsSunk).toEqual([1,2,3]);
       
       //4ball
       clickUpNextImg();
       expect(component.curShootingPlayer.curScore).toBe(4);
+      expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagWinnerTurn.ballsSunk).toEqual([1,2,3,4]);
       
       //5ball
       clickUpNextImg();
       expect(component.curShootingPlayer.curScore).toBe(5);
+      expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagWinnerTurn.ballsSunk).toEqual([1,2,3,4,5]);
       
       //6ball
       clickUpNextImg();
       expect(component.curShootingPlayer.curScore).toBe(6);
+      expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagWinnerTurn.ballsSunk).toEqual([1,2,3,4,5,6]);
       
       //7ball
       clickUpNextImg();
       expect(component.curShootingPlayer.curScore).toBe(7);
+      expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagWinnerTurn.ballsSunk).toEqual([1,2,3,4,5,6,7]);
       
       //8ball
       clickUpNextImg();
       expect(component.curShootingPlayer.curScore).toBe(8);
+      expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagWinnerTurn.ballsSunk).toEqual([1,2,3,4,5,6,7,8]);
     })
     it('should add 2 point to the current shooter when ball was 9', () => {
       setupLagWinnerAndLoser();
@@ -140,6 +172,23 @@ describe('PlayFieldComponent', () => {
       //9ball
       clickUpNextImg();
       expect(component.curShootingPlayer.curScore).toBe(2);
+      expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagWinnerTurn.ballsSunk).toEqual([9]);
+    })
+    describe('when the lagLoser is shooting', ()=> {
+      beforeEach(()=>{
+        setupLagWinnerAndLoser();
+        clickEndTurnButton();
+      })
+      it('should add 2 point to the lagLoser when ball was 9 and add that ball to ballsSunk of the lagLoser log', () => {
+        component.nextBall = 9;
+        component.curBallImgPath = "assets/images/9ball.png";
+        expect(component.curShootingPlayer.curScore).toBe(0);
+  
+        //9ball
+        clickUpNextImg();
+        expect(component.curShootingPlayer.curScore).toBe(2);
+        expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagLoserTurn.ballsSunk).toEqual([9]);
+      })
     })
     it('should add the current ball to the sunkBallList', ()=> {
       expect(component.sunkBallsList.length).toBe(0);
@@ -205,6 +254,14 @@ describe('PlayFieldComponent', () => {
         expect(component.curShootingPlayer).toEqual(component.sharedData.getCurrentPlayerLagWinner());
         expect(fixture.debugElement.query(By.css('#curShootingPlayerInfo')).nativeElement.textContent).toContain(component.curShootingPlayer.name);
       })
+      describe('and the lagWinner was shooting', ()=> {
+        it('should add a new turn to the log for the lagLoser with empty list for ballsSunk and deadBalls', ()=> {
+          setupLagWinnerAndLoser();
+          clickEndTurnButton();
+          
+          expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagLoserTurn).toEqual({name: component.getLagLosingPlayer().name, ballsSunk: [], deadBalls: []} as ITurn)
+        })
+      })
       describe('and the lagLoser was shooting', () => {
         beforeEach(()=>{
           setupLagWinnerAndLoser();
@@ -218,6 +275,13 @@ describe('PlayFieldComponent', () => {
           clickEndTurnButton();
   
           expect(component.innings).toBe(1);
+        })
+        it('should add a new inning with a new turn to the log for the lagWinner with empty list for ballsSunk and deadBalls', ()=> {
+          //Go from Loser to Winner
+          clickEndTurnButton();
+          
+          expect(component.sharedData.getCurrentIndexIndex()).toBe(inningIndex+1);
+          expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex+1].lagWinnerTurn).toEqual({name: component.getLagWinningPlayer().name, ballsSunk: [], deadBalls: []} as ITurn);
         })
       })
       describe('and isDeadBallMode=true', ()=> {
@@ -331,6 +395,39 @@ describe('PlayFieldComponent', () => {
         fixture.detectChanges();
 
         expect(component.deadBalls).toBe(1);
+        expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagWinnerTurn).toEqual({name: component.getLagWinningPlayer().name, ballsSunk: [], deadBalls: [1]} as ITurn);
+
+        //And again for 2 ball
+        const ball2 = fixture.debugElement.query(By.css("#ball2"));
+        ball2.triggerEventHandler('click', null);
+        fixture.detectChanges();
+
+        expect(component.deadBalls).toBe(2);
+        expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagWinnerTurn).toEqual({name: component.getLagWinningPlayer().name, ballsSunk: [], deadBalls: [1,2]} as ITurn);
+      })
+      describe('when the lagLoser is shooting', ()=> {
+        beforeEach(()=>{
+          setupLagWinnerAndLoser();
+          clickEndTurnButton();
+          clickDeadBallModeButton();
+        })
+        it('should add a dead ball for each ball that gets clicked to the lagLoser log', ()=> {
+          expect(component.deadBalls).toBe(0);
+          const ball1 = fixture.debugElement.query(By.css("#ball1"));
+          ball1.triggerEventHandler('click', null);
+          fixture.detectChanges();
+  
+          expect(component.deadBalls).toBe(1);
+          expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagLoserTurn).toEqual({name: component.getLagLosingPlayer().name, ballsSunk: [], deadBalls: [1]} as ITurn);
+  
+          //And again for 2 ball
+          const ball2 = fixture.debugElement.query(By.css("#ball2"));
+          ball2.triggerEventHandler('click', null);
+          fixture.detectChanges();
+  
+          expect(component.deadBalls).toBe(2);
+          expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagLoserTurn).toEqual({name: component.getLagLosingPlayer().name, ballsSunk: [], deadBalls: [1,2]} as ITurn);
+        })
       })
       it('should add the balls number to the sunkBalls list when clicked and change that balls opacity to less than 0.5', ()=> {
         const ball1 = fixture.debugElement.query(By.css("#ball1"));
@@ -392,6 +489,32 @@ describe('PlayFieldComponent', () => {
         expect(getComputedStyle(ball1.nativeElement).opacity).toBeLessThan(0.5);
         expect(component.sunkBallsList).toContain(1);
       })
+      it('should should add 1 point if the 2 through 8 ball are carem/combod, and update the ballsSunk in the log with that ball', ()=> {
+        const ball2 = fixture.debugElement.query(By.css("#ball2"));
+        expect(component.curShootingPlayer.curScore).toBe(0);
+
+        ball2.triggerEventHandler('click', null);
+        fixture.detectChanges();
+
+        expect(component.curShootingPlayer.curScore).toBe(1);
+        expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagWinnerTurn.ballsSunk).toEqual([2]);
+      })
+      describe('when the lagLoser is shooting', ()=> {
+        beforeEach(()=>{
+          setupLagWinnerAndLoser();
+          clickEndTurnButton();
+        })
+        it('should should add 1 point to the lagLoser if the 2 through 8 ball are carem/combod, and update the ballsSunk in the log with that ball', ()=> {
+          const ball2 = fixture.debugElement.query(By.css("#ball2"));
+          expect(component.curShootingPlayer.curScore).toBe(0);
+  
+          ball2.triggerEventHandler('click', null);
+          fixture.detectChanges();
+  
+          expect(component.curShootingPlayer.curScore).toBe(1);
+          expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagLoserTurn.ballsSunk).toEqual([2]);
+        })
+      })
       it('should should not add more points if the same carem/combo ball is clicked multiple times', ()=> {
         const ball1 = fixture.debugElement.query(By.css("#ball1"));
         expect(component.curShootingPlayer.curScore).toBe(0);
@@ -440,14 +563,13 @@ describe('PlayFieldComponent', () => {
   })
 
   function setupLagWinnerAndLoser() {
-    const yourPlayer = DefenseGoneBadPlayers[0];
     const yourCurrentPlayer = {id: yourPlayer.id, name: yourPlayer.name, skill: yourPlayer.skill, team: 'Defense Gone Bad', curScore: 0} as ICurrentPlayer
-    const opponentPlayer = HookerPlayers[0];
     const opponentCurrentPlayer = {id: opponentPlayer.id, name: opponentPlayer.name, skill: opponentPlayer.skill, team: 'Hookers', curScore: 0} as ICurrentPlayer
     component.sharedData.setCurrentPlayerLagWinner(yourCurrentPlayer);
     component.sharedData.setCurrentPlayerLagLoser(opponentCurrentPlayer);
     component.ngOnInit();
     fixture.detectChanges();
+
   }
 
   function clickEndTurnButton() {

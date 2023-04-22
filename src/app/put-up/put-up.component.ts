@@ -1,7 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ICurrentPlayer } from '../interfaces/icurrentPlayer';
+import { IGame } from '../interfaces/igame';
+import { IInning } from '../interfaces/iInnings';
 import { IPlayer } from '../interfaces/iplayer';
+import { ITurn } from '../interfaces/iTurn';
 import { SharedDataService } from '../services/shared-data.service';
 
 export const blankPlayer:IPlayer = {id:'', name:'', skill:0} as IPlayer
@@ -53,7 +56,9 @@ export class PutUpComponent {
     } as ICurrentPlayer
     this.sharedData.setCurrentPlayerLagWinner(lagWinningPlayer);
     this.sharedData.setCurrentPlayerLagLoser(lagLosingPlayer);
-    this.router.navigate(['playField', this.yourTeam, this.opponentTeam])
+    this.sharedData.addMatchToLog(this.yourTeamSelectedPlayer, this.opponentTeamSelectedPlayer);
+    this.sharedData.addGameToMatch({innings:[{lagWinnerTurn: {name: this.yourTeamSelectedPlayer.name, ballsSunk:[], deadBalls:[]} as ITurn} as IInning]} as IGame, 0);
+    this.router.navigate(['playField', this.yourTeam, this.opponentTeam]);
   }
   onOpponentTeamWonLag(): void {
     const lagWinningPlayer = {
@@ -72,7 +77,9 @@ export class PutUpComponent {
     } as ICurrentPlayer
     this.sharedData.setCurrentPlayerLagWinner(lagWinningPlayer);
     this.sharedData.setCurrentPlayerLagLoser(lagLosingPlayer);
-    this.router.navigate(['playField', this.yourTeam, this.opponentTeam])
+    this.sharedData.addMatchToLog(this.opponentTeamSelectedPlayer, this.yourTeamSelectedPlayer);
+    this.sharedData.addGameToMatch({innings:[{lagWinnerTurn: {name: this.opponentTeamSelectedPlayer.name, ballsSunk:[], deadBalls:[]} as ITurn} as IInning]} as IGame, 0);
+    this.router.navigate(['playField', this.yourTeam, this.opponentTeam]);
   }
 
   public getYourTeam(): string {
