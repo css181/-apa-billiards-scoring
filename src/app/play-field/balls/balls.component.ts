@@ -41,6 +41,7 @@ export class BallsComponent {
     
     this.lagLosingPlayer = this.sharedData.getCurrentPlayerLagLoser();
     this.lagWinningPlayer = this.sharedData.getCurrentPlayerLagWinner();
+    this.curShootingPlayer = this.lagWinningPlayer;
   }
   setupComponentForLocalTestingByDefaultingSharedData(): void {
     if(this.sharedData.getCurrentPlayerLagLoser().name===undefined) {
