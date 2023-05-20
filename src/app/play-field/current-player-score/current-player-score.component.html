@@ -4,7 +4,7 @@
         <td [width]="50" id="remainingNeeded">Need:{{sharedData.getTargetScore(currentPlayer.skill) - currentPlayer.curScore}}</td>
     </tr>
     <tr>
-        <td [width]="300" id="playerName">{{currentPlayer.name}}</td>
+        <td [width]="300" id="playerName">{{currentPlayer.team}}: <strong>{{currentPlayer.name}}</strong></td>
         <td [width]="40" id="playerSkill">Skill:{{currentPlayer.skill}}</td>
         <td colspan="2" [width]="160" id="playerScore">Score:{{currentPlayer.curScore}} of {{sharedData.getTargetScore(currentPlayer.skill)}}</td>
     </tr>

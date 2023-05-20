@@ -19,42 +19,45 @@ export class SharedDataService {
 
   constructor() { }
 
-  getYourTeam(): any {
+  public getYourTeam(): any {
     return this.yourTeam;
   }
-  setYourTeam(teamName: string) {
+  public setYourTeam(teamName: string) {
     this.yourTeam = teamName;
   }
-  getOpponentTeam(): any {
+  public getOpponentTeam(): any {
     return this.opponentTeam;
   }
-  setOpponentTeam(teamName: string) {
+  public setOpponentTeam(teamName: string) {
     this.opponentTeam = teamName;
   }
 
-  getLog(): IMatch[] {
+  public getLog(): IMatch[] {
     return this.log;
   }
-  getCurrentMatchIndex(): number {
+  setLog(log: IMatch[]) {
+    this.log = log;
+  }
+  public getCurrentMatchIndex(): number {
     return this.log.length-1;
   }
-  getCurrentGameIndex(): number {
+  public getCurrentGameIndex(): number {
     return this.log[this.getCurrentMatchIndex()].games.length-1;
   }
-  getCurrentIndexIndex(): number {
+  public getCurrentIndexIndex(): number {
     return this.log[this.getCurrentMatchIndex()].games[this.getCurrentGameIndex()].innings.length-1;
   }
-  addMatchToLog(lagWinner: IPlayer, lagLoser: IPlayer) {
+  public addMatchToLog(lagWinner: IPlayer, lagLoser: IPlayer) {
     this.log.push({games: [], lagLoser: lagLoser, lagWinner: lagWinner} as IMatch);
   }
-  addGameToMatch(game: IGame, matchIndex: number) {
+  public addGameToMatch(game: IGame, matchIndex: number) {
     if(this.log[matchIndex]) {
       this.log[matchIndex].games.push(game);
     } else {
       console.error("Log does not have a Match Index:" + matchIndex + ", so could not add Game:" + JSON.stringify(game));
     }
   }
-  addInningToLog(inning: IInning) {
+  public addInningToLog(inning: IInning) {
     const matchIndex = this.log.length-1;
     const gameIndex = this.log[matchIndex].games.length-1;
     if(this.log[matchIndex].games[gameIndex].innings) {
@@ -63,34 +66,38 @@ export class SharedDataService {
       console.error("Log does not have a Match Index:" + matchIndex + ", or a Game Index: " + gameIndex + ", so could not add Inning:" + JSON.stringify(inning));
     }
   }
+  public decrementInning() {
+    //Add all the stuff in the most recent inning to the inning before, then remove the most recent inning
 
-  getYourTeamPlayers(): any {
+  }
+
+  public getYourTeamPlayers(): any {
     return this.yourTeamPlayers;
   }
-  setYourTeamPlayers(players: IPlayer[]) {
+  public setYourTeamPlayers(players: IPlayer[]) {
     this.yourTeamPlayers = players;
   }
-  getOpponentTeamPlayers(): any {
+  public getOpponentTeamPlayers(): any {
     return this.opponentTeamPlayers;
   }
-  setOpponentTeamPlayers(players: IPlayer[]) {
+  public setOpponentTeamPlayers(players: IPlayer[]) {
     this.opponentTeamPlayers = players;
   }
 
-  getCurrentPlayerLagWinner(): ICurrentPlayer {
+  public getCurrentPlayerLagWinner(): ICurrentPlayer {
     return this.currentPlayerLagWinner;
   }
-  setCurrentPlayerLagWinner(curPlayer: ICurrentPlayer) {
+  public setCurrentPlayerLagWinner(curPlayer: ICurrentPlayer) {
     this.currentPlayerLagWinner = curPlayer;
   }
-  getCurrentPlayerLagLoser(): ICurrentPlayer {
+  public getCurrentPlayerLagLoser(): ICurrentPlayer {
     return this.currentPlayerLagLoser;
   }
-  setCurrentPlayerLagLoser(curPlayer: ICurrentPlayer) {
+  public setCurrentPlayerLagLoser(curPlayer: ICurrentPlayer) {
     this.currentPlayerLagLoser = curPlayer;
   }
 
-  getTargetScore(skill: number): number {
+  public getTargetScore(skill: number): number {
     let target:number = 0;
     switch (skill) {
       case 1:

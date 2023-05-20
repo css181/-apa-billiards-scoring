@@ -1,0 +1,11 @@
+<p id="logs"><strong>LOGS</strong></p>
+    <div *ngFor="let game of getGames(); let gIndex = index">
+        <div *ngFor="let inning of getInnings(gIndex); let InningI = index">
+            <div *ngIf="inning.lagWinnerTurn">
+                Match #{{matchIndex+1}} ~ Game #{{gIndex+1}} ~ Inning #{{InningI+1}} ~ {{stringifyJSON(inning.lagWinnerTurn)}}
+            </div>
+            <div *ngIf="inning.lagLoserTurn">
+                Match #{{matchIndex+1}} ~ Game #{{gIndex+1}} ~ Inning #{{InningI+1}} ~ {{stringifyJSON(inning.lagLoserTurn)}}
+            </div>
+        </div>
+</div>

@@ -51,11 +51,12 @@ describe('CurrentPlayerScoreComponent', () => {
       fixture.detectChanges();
     })
 
-    it('should display the players name, skill, current score, remaining needed, and total needed score', () => {
+    it('should display the players team, name, skill, current score, remaining needed, and total needed score', () => {
       const mainTable = fixture.debugElement.query(By.css('table'));
       const targetScore = sharedService.getTargetScore(component.currentPlayer.skill);
 
       expect(mainTable).toBeTruthy();
+      expect(mainTable.query(By.css('#playerName')).nativeElement.textContent).toContain(component.currentPlayer.team);
       expect(mainTable.query(By.css('#playerName')).nativeElement.textContent).toContain(component.currentPlayer.name);
       expect(mainTable.query(By.css('#playerSkill')).nativeElement.textContent).toContain(component.currentPlayer.skill);
       expect(mainTable.query(By.css('#playerScore')).nativeElement.textContent).toContain(component.currentPlayer.curScore);
