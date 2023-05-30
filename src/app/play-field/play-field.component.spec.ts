@@ -65,24 +65,24 @@ describe('PlayFieldComponent', () => {
     it('should increment the inning count when "Add Inning" button is pressed', () => {
       clickAddInningButton();
 
-      expect(component.innings).toBe(1);
+      expect(component.sharedData.getCurrentIndexIndex()).toBe(1);
       expect(fixture.debugElement.query(By.css('#inningsValue')).nativeElement.textContent).toBe('1');
     })
-    it('should decrement the inning count when "Decrement Inning" button is pressed', () => {
+    it('should decrement the inning count when "Decrement Inning" button is pressed (and have more than 0 innings)', () => {
       clickAddInningButton();
-      expect(component.innings).toBe(1);
+      expect(component.sharedData.getCurrentIndexIndex()).toBe(1);
 
       clickDecrementInningButton();
 
-      expect(component.innings).toBe(0);
+      expect(component.sharedData.getCurrentIndexIndex()).toBe(0);
       expect(fixture.debugElement.query(By.css('#inningsValue')).nativeElement.textContent).toBe('0');
     })
     it('should NOT decrement the inning count below 0 when "Decrement Inning" button is pressed', () => {
-      expect(component.innings).toBe(0);
+      expect(component.sharedData.getCurrentIndexIndex()).toBe(0);
 
       clickDecrementInningButton();
 
-      expect(component.innings).toBe(0);
+      expect(component.sharedData.getCurrentIndexIndex()).toBe(0);
       expect(fixture.debugElement.query(By.css('#inningsValue')).nativeElement.textContent).toBe('0');
     })
   })
@@ -92,13 +92,13 @@ describe('PlayFieldComponent', () => {
       expect(fixture.debugElement.query(By.css('#deadBallsTitle')).nativeElement.textContent).toBe('Dead Balls');
       expect(fixture.debugElement.query(By.css('#deadBallsValue')).nativeElement.textContent).toBe('0');
     })
-    it('should increment the inning count when "Add DeadBall" button is pressed', () => {
+    it('should increment the dead ball count when "Add DeadBall" button is pressed', () => {
       clickAddDeadBallButton();
 
       expect(component.deadBalls).toBe(1);
       expect(fixture.debugElement.query(By.css('#deadBallsValue')).nativeElement.textContent).toBe('1');
     })
-    it('should decrement the inning count when "Decrement DeadBall" button is pressed', () => {
+    it('should decrement the dead ball count when "Decrement DeadBall" button is pressed', () => {
       clickAddDeadBallButton();
       expect(component.deadBalls).toBe(1);
 
@@ -107,7 +107,7 @@ describe('PlayFieldComponent', () => {
       expect(component.deadBalls).toBe(0);
       expect(fixture.debugElement.query(By.css('#deadBallsValue')).nativeElement.textContent).toBe('0');
     })
-    it('should NOT decrement the inning count below 0 when "Decrement Inning" button is pressed', () => {
+    it('should NOT decrement the dead ball count below 0 when "Decrement DeadBall" button is pressed', () => {
       expect(component.deadBalls).toBe(0);
 
       clickDecrementDeadBallButton();

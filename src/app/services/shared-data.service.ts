@@ -67,10 +67,67 @@ export class SharedDataService {
     }
   }
   public decrementInning() {
+    //First try to remove any blank innings that have no balls sunk or deadballs from size to 0.
+    //If there are no blank innings, then
     //Add all the stuff in the most recent inning to the inning before, then remove the most recent inning
+    const matchIndex = this.log.length-1;
+    const gameIndex = this.log[matchIndex].games.length-1;
+    const lastInningIndex = this.log[matchIndex].games[gameIndex].innings.length - 1;
+    if(lastInningIndex<1) {
+      return;//Can't remove unless there are at least 2 innings.
+    }
+    for (let inningIndex = lastInningIndex; inningIndex >= 0; inningIndex--) {
+      const inning = this.log[matchIndex].games[gameIndex].innings[inningIndex];
+      if(isBlankInning(inning)) {
+        this.deleteArrayElement(this.log[matchIndex].games[gameIndex].innings, this.log[matchIndex].games[gameIndex].innings[inningIndex]);
+        return; //Only remove 1 inning
+      }
+    }
+    const latestInning = this.log[matchIndex].games[gameIndex].innings[lastInningIndex];
+    const priorInning = this.log[matchIndex].games[gameIndex].innings[lastInningIndex-1];
+    mergeLagWinnerBallsSunk();
+    mergeLagWinnerDeadballs();
+    mergeLagLoserBallsSunk();
+    mergeLagLoserDeadballs();
+    this.deleteArrayElement(this.log[matchIndex].games[gameIndex].innings, this.log[matchIndex].games[gameIndex].innings[lastInningIndex]);
 
+    function isBlankInning(inning: IInning): boolean {
+      return inning.lagLoserTurn && inning.lagLoserTurn.ballsSunk.length==0 && inning.lagLoserTurn.deadBalls.length==0
+        && inning.lagWinnerTurn.ballsSunk.length==0 && inning.lagWinnerTurn.deadBalls.length==0;
+    }
+    function mergeLagWinnerBallsSunk(): void {
+      for (let i = 0; i < latestInning.lagWinnerTurn.ballsSunk.length; i++) {
+        const curWinnerBallSunk = latestInning.lagWinnerTurn.ballsSunk[i];
+        priorInning.lagWinnerTurn.ballsSunk.push(curWinnerBallSunk);
+      }
+    }
+    function mergeLagWinnerDeadballs(): void {
+      for (let i = 0; i < latestInning.lagWinnerTurn.deadBalls.length; i++) {
+        const curWinnerDeadBalls = latestInning.lagWinnerTurn.deadBalls[i];
+        priorInning.lagWinnerTurn.deadBalls.push(curWinnerDeadBalls);
+      }
+    }
+    function mergeLagLoserBallsSunk(): void {
+      for (let i = 0; i < latestInning.lagLoserTurn.ballsSunk.length; i++) {
+        const curLoserBallSunk = latestInning.lagLoserTurn.ballsSunk[i];
+        priorInning.lagLoserTurn.ballsSunk.push(curLoserBallSunk);
+      }
+    }
+    function mergeLagLoserDeadballs(): void {
+      for (let i = 0; i < latestInning.lagLoserTurn.deadBalls.length; i++) {
+        const curLoserDeadBalls = latestInning.lagLoserTurn.deadBalls[i];
+        priorInning.lagLoserTurn.deadBalls.push(curLoserDeadBalls);
+      }
+    }
   }
 
+  public deleteArrayElement(list: any[], element: any): any[] {
+    const index = list.indexOf(element, 0);
+    if (index > -1) {
+      list.splice(index, 1);
+    }
+    return list;
+  }
   public getYourTeamPlayers(): any {
     return this.yourTeamPlayers;
   }

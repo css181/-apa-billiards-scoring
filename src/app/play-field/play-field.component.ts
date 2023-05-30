@@ -27,7 +27,6 @@ export class PlayFieldComponent implements OnInit{
   private lagWinningPlayer: ICurrentPlayer = this.yourCurrentPlayer;//{} as ICurrentPlayer;
 
   //TODO: these need to be retrieved/stored from what's in the Log in sharedData
-  public innings: number = 0;
   public deadBalls: number = 0;
 
 
@@ -64,13 +63,14 @@ export class PlayFieldComponent implements OnInit{
     this.isPrintLogMode=!this.isPrintLogMode;
   }
   
-
   onAddInning(): void {
-    this.innings++;
+    const lagWinnerTurn = {ballsSunk:[], deadBalls:[], name:this.lagWinningPlayer.name} as ITurn;
+    const lagLoserTurn = {ballsSunk:[], deadBalls:[], name:this.lagLosingPlayer.name} as ITurn;
+    const newInning = {lagWinnerTurn: lagWinnerTurn, lagLoserTurn: lagLoserTurn} as IInning;
+    this.sharedData.addInningToLog(newInning);
   }
   onDecrementInning(): void {
-    if(this.innings > 0)
-      this.innings--;
+    this.sharedData.decrementInning();
   }
   onAddDeadBall(): void {
     this.deadBalls++;

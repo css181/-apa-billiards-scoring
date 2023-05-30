@@ -47,5 +47,72 @@ describe('SharedDataService', () => {
         expect(service.getLog()).toEqual(beginLog);
       })
     })
+    describe('when 2 or more innings in the current game with no balls sunk in them', ()=>{
+      beforeEach(()=> {
+        const sampleTurn = {ballsSunk: [], deadBalls:[], name: 'Bob'} as ITurn;
+        const sampleInning = {lagLoserTurn: sampleTurn, lagWinnerTurn: sampleTurn} as IInning;
+        service.addInningToLog(sampleInning);
+        service.addInningToLog(sampleInning);
+      })
+      it('should remove the last inning', ()=> {
+        //Clone the log so we can update it
+        let expectedLog = JSON.parse(JSON.stringify(service.getLog()));
+        service.deleteArrayElement(expectedLog[0].games[0].innings, expectedLog[0].games[0].innings[1]);
+
+        service.decrementInning();
+
+        expect(service.getLog()).toEqual(expectedLog);
+      })
+      describe('and the latest inning just started so lagLoser has no turn', ()=> {
+        beforeEach(()=> {
+          const sampleTurn = {ballsSunk: [], deadBalls:[], name: 'Bob'} as ITurn;
+          const sampleInning = {lagWinnerTurn: sampleTurn} as IInning;
+          service.addInningToLog(sampleInning);
+        })
+        it('should remove the last full inning', ()=> {
+          let expectedLog = JSON.parse(JSON.stringify(service.getLog()));
+          service.deleteArrayElement(expectedLog[0].games[0].innings, expectedLog[0].games[0].innings[1]);
+  
+          service.decrementInning();
+  
+          expect(service.getLog()).toEqual(expectedLog);
+        })
+      })
+      describe('then with 2 more innings with some balls sunk in them', ()=> {
+        beforeEach(()=> {
+          const newInning: IInning = {lagWinnerTurn: {ballsSunk: [1,2], deadBalls:[], name: 'Bob'}, lagLoserTurn: {ballsSunk: [3,4], deadBalls:[7], name: 'Mary'}};
+          service.addInningToLog(newInning);
+          const newInning2: IInning = {lagWinnerTurn: {ballsSunk: [5], deadBalls:[8], name: 'Bob'}, lagLoserTurn: {ballsSunk: [6], deadBalls:[], name: 'Mary'}};
+          service.addInningToLog(newInning2);
+        })
+        it('should remove one of the earlier innings', ()=> {
+          let expectedLog = JSON.parse(JSON.stringify(service.getLog()));
+          service.deleteArrayElement(expectedLog[0].games[0].innings, expectedLog[0].games[0].innings[1]);
+  
+          service.decrementInning();
+  
+          expect(service.getLog()).toEqual(expectedLog);
+        })
+      })
+    })
+    describe('when 2 or more innings in the current game with some balls sunk in them (and no blank innings)', ()=> {
+      beforeEach(()=> {
+        const newInning: IInning = {lagWinnerTurn: {ballsSunk: [1,2], deadBalls:[], name: 'Bob'}, lagLoserTurn: {ballsSunk: [3,4], deadBalls:[7], name: 'Mary'}};
+        service.addInningToLog(newInning);
+        const newInning2: IInning = {lagWinnerTurn: {ballsSunk: [5], deadBalls:[8], name: 'Bob'}, lagLoserTurn: {ballsSunk: [6], deadBalls:[], name: 'Mary'}};
+        service.addInningToLog(newInning2);
+      })
+      it('should merge the last 2 innings together', ()=> {
+        let expectedLog = JSON.parse(JSON.stringify(service.getLog()));
+        service.deleteArrayElement(expectedLog[0].games[0].innings, expectedLog[0].games[0].innings[1]);
+        service.deleteArrayElement(expectedLog[0].games[0].innings, expectedLog[0].games[0].innings[0]);
+        const combinedInning = {lagWinnerTurn: {ballsSunk: [1,2,5], deadBalls: [8], name: 'Bob'}, lagLoserTurn: {ballsSunk: [3,4,6], deadBalls:[7], name: 'Mary'}} as IInning
+        expectedLog[0].games[0].innings.push(combinedInning);
+
+        service.decrementInning();
+
+        expect(service.getLog()).toEqual(expectedLog);
+      })
+    })
   })
 });

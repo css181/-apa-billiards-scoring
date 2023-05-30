@@ -263,13 +263,13 @@ describe('BallsComponent', () => {
           //Go from Winner to Loser
           clickEndTurnButton();
           //No inning is added
-          expect(component.innings).toBe(0);
+          expect(component.sharedData.getCurrentIndexIndex()).toBe(0);
         })
         it('should add an inning', () => {
           //Go from Loser to Winner
           clickEndTurnButton();
   
-          expect(component.innings).toBe(1);
+          expect(component.sharedData.getCurrentIndexIndex()).toBe(1);
         })
         it('should add a new inning with a new turn to the log for the lagWinner with empty list for ballsSunk and deadBalls', ()=> {
           //Go from Loser to Winner

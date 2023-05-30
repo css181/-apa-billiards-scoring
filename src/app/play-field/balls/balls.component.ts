@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { ICurrentPlayer } from 'src/app/interfaces/icurrentPlayer';
 import { IGame } from 'src/app/interfaces/igame';
 import { IInning } from 'src/app/interfaces/iInnings';
@@ -20,7 +20,6 @@ export class BallsComponent {
   public curBallImgPath: string = "assets/images/1ball.png";
 
   //TODO: these need to be retrieved/stored from what's in the Log in sharedData
-  public innings: number = 0;
   public deadBalls: number = 0;
   
   
@@ -162,8 +161,6 @@ export class BallsComponent {
       inning.lagLoserTurn = {name: this.lagLosingPlayer.name, ballsSunk: [], deadBalls: []} as ITurn;
     } else {
       this.curShootingPlayer = this.lagWinningPlayer;
-      //TODO: Add an inning in a new way
-      this.innings++;
       console.log('adding inning');
       this.sharedData.addInningToLog({ lagWinnerTurn: {name: this.lagWinningPlayer.name, ballsSunk: [], deadBalls: []} as ITurn } as IInning)
     }
