@@ -26,10 +26,6 @@ export class PlayFieldComponent implements OnInit{
   private lagLosingPlayer: ICurrentPlayer = this.opponentCurrentPlayer;//{} as ICurrentPlayer;
   private lagWinningPlayer: ICurrentPlayer = this.yourCurrentPlayer;//{} as ICurrentPlayer;
 
-  //TODO: these need to be retrieved/stored from what's in the Log in sharedData
-  public deadBalls: number = 0;
-
-
   //TODO: remove
   public isPrintLogMode: boolean = false;
 
@@ -73,11 +69,10 @@ export class PlayFieldComponent implements OnInit{
     this.sharedData.decrementInning();
   }
   onAddDeadBall(): void {
-    this.deadBalls++;
+    this.sharedData.incrementDeadBall();
   }
   onDecrementDeadBall(): void {
-    if(this.deadBalls > 0)
-      this.deadBalls--;
+    this.sharedData.decrementDeadBall();
   }
 
 

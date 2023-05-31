@@ -43,7 +43,7 @@ describe('PlayFieldComponent', () => {
     
     matchIndex = component.sharedData.getCurrentMatchIndex();
     gameIndex = component.sharedData.getCurrentGameIndex();
-    inningIndex = component.sharedData.getCurrentIndexIndex();
+    inningIndex = component.sharedData.getCurrentInningIndex();
     fixture.detectChanges();
   });
 
@@ -53,66 +53,66 @@ describe('PlayFieldComponent', () => {
 
   describe('sharedDataService', ()=> {
     it('should have inningIndex = 0', ()=> {
-      expect(component.sharedData.getCurrentIndexIndex()).toBe(0);
+      expect(component.sharedData.getCurrentInningIndex()).toBe(0);
     })
   })
 
   describe('innings', () => {
     it('should display an innings title, and number of innings which starts at 0', () => {
-      expect(fixture.debugElement.query(By.css('#inningsTitle')).nativeElement.textContent).toBe('Innings');
+      expect(fixture.debugElement.query(By.css('#inningsTitle')).nativeElement.textContent).toBe('Game Innings');
       expect(fixture.debugElement.query(By.css('#inningsValue')).nativeElement.textContent).toBe('0');
     })
     it('should increment the inning count when "Add Inning" button is pressed', () => {
       clickAddInningButton();
 
-      expect(component.sharedData.getCurrentIndexIndex()).toBe(1);
+      expect(component.sharedData.getCurrentInningIndex()).toBe(1);
       expect(fixture.debugElement.query(By.css('#inningsValue')).nativeElement.textContent).toBe('1');
     })
     it('should decrement the inning count when "Decrement Inning" button is pressed (and have more than 0 innings)', () => {
       clickAddInningButton();
-      expect(component.sharedData.getCurrentIndexIndex()).toBe(1);
+      expect(component.sharedData.getCurrentInningIndex()).toBe(1);
 
       clickDecrementInningButton();
 
-      expect(component.sharedData.getCurrentIndexIndex()).toBe(0);
+      expect(component.sharedData.getCurrentInningIndex()).toBe(0);
       expect(fixture.debugElement.query(By.css('#inningsValue')).nativeElement.textContent).toBe('0');
     })
     it('should NOT decrement the inning count below 0 when "Decrement Inning" button is pressed', () => {
-      expect(component.sharedData.getCurrentIndexIndex()).toBe(0);
+      expect(component.sharedData.getCurrentInningIndex()).toBe(0);
 
       clickDecrementInningButton();
 
-      expect(component.sharedData.getCurrentIndexIndex()).toBe(0);
+      expect(component.sharedData.getCurrentInningIndex()).toBe(0);
       expect(fixture.debugElement.query(By.css('#inningsValue')).nativeElement.textContent).toBe('0');
     })
   })
   
   describe('dead balls', () => {
     it('should display an dead balls title, and number of dead balls which starts at 0', () => {
-      expect(fixture.debugElement.query(By.css('#deadBallsTitle')).nativeElement.textContent).toBe('Dead Balls');
+      expect(fixture.debugElement.query(By.css('#deadBallsTitle')).nativeElement.textContent).toBe('Game Dead Balls');
       expect(fixture.debugElement.query(By.css('#deadBallsValue')).nativeElement.textContent).toBe('0');
     })
     it('should increment the dead ball count when "Add DeadBall" button is pressed', () => {
       clickAddDeadBallButton();
 
-      expect(component.deadBalls).toBe(1);
+      expect(component.sharedData.getCurrentDeadBallCount()).toBe(1);
       expect(fixture.debugElement.query(By.css('#deadBallsValue')).nativeElement.textContent).toBe('1');
     })
     it('should decrement the dead ball count when "Decrement DeadBall" button is pressed', () => {
       clickAddDeadBallButton();
-      expect(component.deadBalls).toBe(1);
+      expect(component.sharedData.getCurrentDeadBallCount()).toBe(1);
 
       clickDecrementDeadBallButton();
 
-      expect(component.deadBalls).toBe(0);
+      expect(component.sharedData.getCurrentDeadBallCount()).toBe(0);
       expect(fixture.debugElement.query(By.css('#deadBallsValue')).nativeElement.textContent).toBe('0');
     })
     it('should NOT decrement the dead ball count below 0 when "Decrement DeadBall" button is pressed', () => {
-      expect(component.deadBalls).toBe(0);
+      expect(component.sharedData.getCurrentDeadBallCount()).toBe(0);
 
       clickDecrementDeadBallButton();
 
-      expect(component.deadBalls).toBe(0);
+      expect(component.sharedData.getCurrentDeadBallCount()).toBe(0);
       expect(fixture.debugElement.query(By.css('#deadBallsValue')).nativeElement.textContent).toBe('0');
     })
   })

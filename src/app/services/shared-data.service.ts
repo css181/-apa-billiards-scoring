@@ -16,6 +16,8 @@ export class SharedDataService {
   private currentPlayerLagWinner: ICurrentPlayer = {} as ICurrentPlayer;
   private currentPlayerLagLoser: ICurrentPlayer = {} as ICurrentPlayer;
   private log: IMatch[] = [];
+  public totalDeadBallCount: number = 0;
+  public gameDeadBallCount: number = 0;
 
   constructor() { }
 
@@ -44,8 +46,14 @@ export class SharedDataService {
   public getCurrentGameIndex(): number {
     return this.log[this.getCurrentMatchIndex()].games.length-1;
   }
-  public getCurrentIndexIndex(): number {
+  public getCurrentGame(): IGame {
+    return this.log[this.getCurrentMatchIndex()].games[this.getCurrentGameIndex()];
+  }
+  public getCurrentInningIndex(): number {
     return this.log[this.getCurrentMatchIndex()].games[this.getCurrentGameIndex()].innings.length-1;
+  }
+  public getCurrentDeadBallCount(): number {
+    return this.gameDeadBallCount;
   }
   public addMatchToLog(lagWinner: IPlayer, lagLoser: IPlayer) {
     this.log.push({games: [], lagLoser: lagLoser, lagWinner: lagWinner} as IMatch);
@@ -118,6 +126,29 @@ export class SharedDataService {
         const curLoserDeadBalls = latestInning.lagLoserTurn.deadBalls[i];
         priorInning.lagLoserTurn.deadBalls.push(curLoserDeadBalls);
       }
+    }
+  }
+
+  public addDeadBall(ballNum: number): void {
+    const matchIndex = this.log.length-1;
+    const gameIndex = this.log[matchIndex].games.length-1;
+    const lastInningIndex = this.log[matchIndex].games[gameIndex].innings.length - 1;
+
+    if(this.log[matchIndex].games[gameIndex].innings[lastInningIndex].lagLoserTurn) {
+      this.log[matchIndex].games[gameIndex].innings[lastInningIndex].lagLoserTurn.deadBalls.push(ballNum);
+    } else {
+      this.log[matchIndex].games[gameIndex].innings[lastInningIndex].lagWinnerTurn.deadBalls.push(ballNum);
+    }
+    this.incrementDeadBall();
+  }
+  public incrementDeadBall(): void {
+    this.totalDeadBallCount++;
+    this.gameDeadBallCount++;
+  }
+  public decrementDeadBall(): void {
+    if(this.gameDeadBallCount>0) {
+      this.totalDeadBallCount--;
+      this.gameDeadBallCount--;
     }
   }
 

@@ -8,6 +8,8 @@ import { SharedDataService } from './shared-data.service';
 
 describe('SharedDataService', () => {
   let service: SharedDataService;
+  const fullBlankInning = { lagWinnerTurn: {ballsSunk: [], deadBalls: [], name: 'Bob'} as ITurn,
+                      lagLoserTurn: {ballsSunk: [], deadBalls: [], name: 'Mary'} as ITurn } as IInning;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
@@ -32,7 +34,27 @@ describe('SharedDataService', () => {
     expect(service.getOpponentTeamPlayers()).toBe(HookerPlayers);
   })
 
-  describe('decrementInning', ()=> {
+  describe('addInningToLog()', ()=> {
+    beforeEach(()=> {
+      const game = {innings: []} as IGame;
+      const match = {lagWinner: HookerPlayers[0], lagLoser: HookerPlayers[1], games: [ game ] } as IMatch;
+      const matchList = [match] as IMatch[];
+      service.setLog(matchList);
+    })
+    it('should add a new inning to the log', ()=> {
+      expect(service.getLog()[0].games[0].innings.length).toBe(0);
+      let expectedLog = JSON.parse(JSON.stringify(service.getLog()));
+      const sampleTurn = {ballsSunk: [], deadBalls:[], name: 'Bob'} as ITurn;
+      const sampleInning = {lagLoserTurn: sampleTurn, lagWinnerTurn: sampleTurn} as IInning;
+
+      service.addInningToLog(sampleInning);
+
+      expect(service.getLog()[0].games[0].innings.length).toBe(1);
+      expect(service.getLog()[0].games[0].innings[0]).toEqual(sampleInning);
+    })
+  })
+
+  describe('decrementInning()', ()=> {
     beforeEach(()=> {
       const game = {innings: []} as IGame;
       const match = {lagWinner: HookerPlayers[0], lagLoser: HookerPlayers[1], games: [ game ] } as IMatch;
@@ -41,10 +63,10 @@ describe('SharedDataService', () => {
     })
     describe('when less than 2 innings in the current game', ()=>{
       it('should not change the log at all', ()=> {
-        const beginLog = service.getLog();
+        const expectedLog = JSON.parse(JSON.stringify(service.getLog()));
         service.decrementInning();
 
-        expect(service.getLog()).toEqual(beginLog);
+        expect(service.getLog()).toEqual(expectedLog);
       })
     })
     describe('when 2 or more innings in the current game with no balls sunk in them', ()=>{
@@ -112,6 +134,66 @@ describe('SharedDataService', () => {
         service.decrementInning();
 
         expect(service.getLog()).toEqual(expectedLog);
+      })
+    })
+  })
+
+  describe('addDeadBall(ballNum)', ()=>{
+    it('should add the number into the deadball list of the current shooter', ()=>{
+      const startInning = { lagWinnerTurn: {ballsSunk: [], deadBalls: [], name: 'Bob'} as ITurn } as IInning
+      const game = {innings: [startInning]} as IGame;
+      const match = {lagWinner: HookerPlayers[0], lagLoser: HookerPlayers[1], games: [ game ] } as IMatch;
+      const matchList = [match] as IMatch[];
+      service.setLog(matchList);
+      let expectedLog = JSON.parse(JSON.stringify(service.getLog()));
+
+      //LAG WINNER
+      expectedLog[0].games[0].innings[0].lagWinnerTurn.deadBalls.push(0);
+      service.addDeadBall(0);
+
+      expect(service.getLog()[0].games[0].innings[0]).toEqual(expectedLog[0].games[0].innings[0]);
+
+      //LAG LOSER
+      service.addInningToLog(fullBlankInning);
+      expectedLog = JSON.parse(JSON.stringify(service.getLog()));
+      expectedLog[0].games[0].innings[1].lagLoserTurn.deadBalls.push(0);
+      service.addDeadBall(0);
+
+      expect(service.getLog()[0].games[0].innings[1]).toEqual(expectedLog[0].games[0].innings[1]);
+    })
+  })
+  describe('incrementDeadBall()', ()=> {
+    beforeEach(()=> {
+      service.gameDeadBallCount = 0;
+      service.totalDeadBallCount = 0;
+    })
+    it('should add to both total and game deadBallCounts', ()=>{
+      service.incrementDeadBall();
+      expect(service.gameDeadBallCount).toBe(1);
+      expect(service.totalDeadBallCount).toBe(1);
+    })
+  })
+  describe('decrementDeadBall()', ()=> {
+    describe('when gameDeadBallCount = 0', ()=> {
+      beforeEach(()=> {
+        service.gameDeadBallCount = 0;
+        service.totalDeadBallCount = 0;
+      })
+      it('should not change anything', ()=>{
+        service.decrementDeadBall();
+        expect(service.gameDeadBallCount).toBe(0);
+        expect(service.totalDeadBallCount).toBe(0);
+      })
+    })
+    describe('when there are some deadballs already in the game', ()=> {
+      beforeEach(()=> {
+        service.gameDeadBallCount = 5;
+        service.totalDeadBallCount = 8;
+      })
+      it('should decrement both game and total counts', ()=>{
+        service.decrementDeadBall();
+        expect(service.gameDeadBallCount).toBe(4);
+        expect(service.totalDeadBallCount).toBe(7);
       })
     })
   })

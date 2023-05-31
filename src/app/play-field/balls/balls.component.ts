@@ -19,16 +19,13 @@ export class BallsComponent {
   public nextBall: number = 1;
   public curBallImgPath: string = "assets/images/1ball.png";
 
-  //TODO: these need to be retrieved/stored from what's in the Log in sharedData
-  public deadBalls: number = 0;
-  
-  
   //TODO: Remove later, setting defaults for easy manual testing purposes
   private yourPlayer = DefenseGoneBadPlayers[0];
   private opponentPlayer = HookerPlayers[0];
   private yourCurrentPlayer = {id: this.yourPlayer.id, name: this.yourPlayer.name, skill: this.yourPlayer.skill, team: 'Defense Gone Bad', curScore: 0} as ICurrentPlayer
   private opponentCurrentPlayer = {id: this.opponentPlayer.id, name: this.opponentPlayer.name, skill: this.opponentPlayer.skill, team: 'Hookers', curScore: 0} as ICurrentPlayer
   
+  //Should really be set to empty, but setting defaults for easy manual testing
   private lagLosingPlayer: ICurrentPlayer = this.opponentCurrentPlayer;//{} as ICurrentPlayer;
   private lagWinningPlayer: ICurrentPlayer = this.yourCurrentPlayer;//{} as ICurrentPlayer;
 
@@ -40,7 +37,9 @@ export class BallsComponent {
     
     this.lagLosingPlayer = this.sharedData.getCurrentPlayerLagLoser();
     this.lagWinningPlayer = this.sharedData.getCurrentPlayerLagWinner();
-    this.curShootingPlayer = this.lagWinningPlayer;
+    this.curShootingPlayer = this.getCurShootingPlayerFromLog();
+    this.sunkBallsList = this.getAllSunkBallsFromGameLog();
+    this.assignNewNextBall();
   }
   setupComponentForLocalTestingByDefaultingSharedData(): void {
     if(this.sharedData.getCurrentPlayerLagLoser().name===undefined) {
@@ -54,11 +53,67 @@ export class BallsComponent {
       this.sharedData.addGameToMatch({innings:[{lagWinnerTurn: {name: this.yourCurrentPlayer.name, ballsSunk:[], deadBalls:[]} as ITurn} as IInning]} as IGame, 0);
     }
   }
+  getAllSunkBallsFromGameLog(): number[] {
+    let returnList: number[] = [];
+    let inningList: IInning[] = this.sharedData.getCurrentGame().innings;
+    for (let index = 0; index < inningList.length; index++) {
+      const inning = inningList[index];
+      returnList = returnList.concat(addAllLagWinnerSunkBalls(inning));
+      returnList = returnList.concat(addAllLagWinnerDeadBalls(inning));
+      returnList = returnList.concat(addAllLagLoserSunkBalls(inning));
+      returnList = returnList.concat(addAllLagLoserDeadBalls(inning));
+    }
+    return returnList;
+
+    function addAllLagWinnerSunkBalls(inning: IInning): number[] {
+      let returnList = [];
+      for (let index = 0; index < inning.lagWinnerTurn.ballsSunk.length; index++) {
+        const ball = inning.lagWinnerTurn.ballsSunk[index];
+        returnList.push(ball);
+      }
+      return returnList;
+    }
+    function addAllLagWinnerDeadBalls(inning: IInning): number[] {
+      let returnList = [];
+      for (let index = 0; index < inning.lagWinnerTurn.deadBalls.length; index++) {
+        const ball = inning.lagWinnerTurn.deadBalls[index];
+        returnList.push(ball);
+      }
+      return returnList;
+    }
+    function addAllLagLoserSunkBalls(inning: IInning): number[] {
+      let returnList = [];
+      if(inning.lagLoserTurn) {
+        for (let index = 0; index < inning.lagLoserTurn.ballsSunk.length; index++) {
+          const ball = inning.lagLoserTurn.ballsSunk[index];
+          returnList.push(ball);
+        }
+      }
+      return returnList;
+    }
+    function addAllLagLoserDeadBalls(inning: IInning): number[] {
+      let returnList = [];
+      if(inning.lagLoserTurn) {
+        for (let index = 0; index < inning.lagLoserTurn.deadBalls.length; index++) {
+          const ball = inning.lagLoserTurn.deadBalls[index];
+          returnList.push(ball);
+        }
+      }
+      return returnList;
+    }
+  }
+  getCurShootingPlayerFromLog(): ICurrentPlayer {
+    if(this.sharedData.getCurrentGame().innings[this.sharedData.getCurrentInningIndex()].lagLoserTurn) {
+      return this.lagLosingPlayer;
+    } else {
+      return this.lagWinningPlayer;
+    }
+  }
 
   private updateSharedDataLogForBallSunk(ballNum: number) {
     const matchIndex = this.sharedData.getCurrentMatchIndex();
     const gameIndex = this.sharedData.getCurrentGameIndex();
-    const inningIndex = this.sharedData.getCurrentIndexIndex();
+    const inningIndex = this.sharedData.getCurrentInningIndex();
     if(this.curShootingPlayer===this.lagWinningPlayer) {
       this.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagWinnerTurn.ballsSunk.push(ballNum);
     } else {
@@ -68,25 +123,11 @@ export class BallsComponent {
 
   addDeadBall(ballNum: number) {
     if(this.sunkBallsList.indexOf(ballNum)==-1){
-      //TODO: Add deadball in a new way
-      this.deadBalls++;
+      this.sharedData.addDeadBall(ballNum);
       this.sunkBallsList.push(ballNum);
       if(this.nextBall===ballNum) {
         this.assignNewNextBall();
       }
-      this.updateSharedDataLogForDeadBall(ballNum);
-    }
-  }
-
-  //TODO: combine some logic with updateSharedDataLogForBallSunk()
-  private updateSharedDataLogForDeadBall(ballNum: number) {
-    const matchIndex = this.sharedData.getCurrentMatchIndex();
-    const gameIndex = this.sharedData.getCurrentGameIndex();
-    const inningIndex = this.sharedData.getCurrentIndexIndex();
-    if(this.curShootingPlayer===this.lagWinningPlayer) {
-      this.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagWinnerTurn.deadBalls.push(ballNum);
-    } else {
-      this.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagLoserTurn.deadBalls.push(ballNum);
     }
   }
 
@@ -155,7 +196,7 @@ export class BallsComponent {
 
   onEndTurn(): void {
     console.log(this.curShootingPlayer.name + ' ended their turn.');
-    let inning: IInning = this.sharedData.getLog()[this.sharedData.getCurrentMatchIndex()].games[this.sharedData.getCurrentGameIndex()].innings[this.sharedData.getCurrentIndexIndex()];
+    let inning: IInning = this.sharedData.getLog()[this.sharedData.getCurrentMatchIndex()].games[this.sharedData.getCurrentGameIndex()].innings[this.sharedData.getCurrentInningIndex()];
     if(this.curShootingPlayer === this.lagWinningPlayer) {
       this.curShootingPlayer = this.lagLosingPlayer;
       inning.lagLoserTurn = {name: this.lagLosingPlayer.name, ballsSunk: [], deadBalls: []} as ITurn;
