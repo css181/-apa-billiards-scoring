@@ -1,11 +1,16 @@
 <table border="2">
     <tr>
-        <td colspan="3" align="center">TODO: Percent to target shaded here</td>
+        <td colspan="6" align="center">TODO: Percent to target shaded here</td>
+    </tr>
+    <tr>
+        <td colspan="2" [width]="300" id="playerName">{{currentPlayer.team}}: <strong>{{currentPlayer.name}}</strong></td>
+        <td [width]="40" id="playerSkill">Skill:{{currentPlayer.skill}}</td>
+        <td colspan="2" [width]="160" id="playerScore">Score:{{currentPlayer.curScore}} of {{sharedData.getTargetScore(currentPlayer.skill)}}</td>
         <td [width]="50" id="remainingNeeded">Need:{{sharedData.getTargetScore(currentPlayer.skill) - currentPlayer.curScore}}</td>
     </tr>
     <tr>
-        <td [width]="300" id="playerName">{{currentPlayer.team}}: <strong>{{currentPlayer.name}}</strong></td>
-        <td [width]="40" id="playerSkill">Skill:{{currentPlayer.skill}}</td>
-        <td colspan="2" [width]="160" id="playerScore">Score:{{currentPlayer.curScore}} of {{sharedData.getTargetScore(currentPlayer.skill)}}</td>
+        <td id="timeoutFirst"><img src="assets/images/timeout.png" class="timeout-button" id="timeoutFirstImg"></td>
+        <td *ngIf="currentPlayer.skill >= 4" id="timeoutSecond"><img src="assets/images/timeout_no.png" class="timeout-button" id="timeoutSecondImg"></td>
+        <td *ngIf="currentPlayer.skill <= 3" id="timeoutSecond"><img src="assets/images/timeout.png" class="timeout-button" id="timeoutSecondImg"></td>
     </tr>
 </table>

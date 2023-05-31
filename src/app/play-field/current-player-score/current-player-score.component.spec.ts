@@ -63,5 +63,39 @@ describe('CurrentPlayerScoreComponent', () => {
       expect(mainTable.query(By.css('#remainingNeeded')).nativeElement.textContent).toContain(targetScore - component.currentPlayer.curScore);
       expect(mainTable.query(By.css('#playerScore')).nativeElement.textContent).toContain(targetScore);
     })
+    describe('timeouts', ()=> {
+      it('should have 2 timeout cells', ()=>{
+        const mainTable = fixture.debugElement.query(By.css('table'));
+        expect(mainTable).toBeTruthy();
+        expect(mainTable.query(By.css('#timeoutFirst'))).toBeTruthy();
+        expect(mainTable.query(By.css('#timeoutSecond'))).toBeTruthy();
+      })
+      it('should always have a yellow timeout image in the first cell', ()=> {
+        const timeoutFirst = fixture.debugElement.query(By.css('#timeoutFirstImg'));
+        expect(timeoutFirst.nativeElement.src).toContain("timeout.png");
+      })
+      it('should have a yellow timeout image in the second cell if the player skill is 3 or lower', ()=> {
+        component.currentPlayer.skill = 3;
+        fixture.detectChanges();
+        let timeoutFirst = fixture.debugElement.query(By.css('#timeoutSecondImg'));
+        expect(timeoutFirst.nativeElement.src).toContain("timeout.png");
+
+        component.currentPlayer.skill = 2;
+        fixture.detectChanges();
+        timeoutFirst = fixture.debugElement.query(By.css('#timeoutSecondImg'));
+        expect(timeoutFirst.nativeElement.src).toContain("timeout.png");
+
+        component.currentPlayer.skill = 1;
+        fixture.detectChanges();
+        timeoutFirst = fixture.debugElement.query(By.css('#timeoutSecondImg'));
+        expect(timeoutFirst.nativeElement.src).toContain("timeout.png");
+      })
+      it('should have a white-red timeout image in the second cell if the player skill is 4 or higher', ()=> {
+        component.currentPlayer.skill = 4;
+        fixture.detectChanges();
+        let timeoutFirst = fixture.debugElement.query(By.css('#timeoutSecondImg'));
+        expect(timeoutFirst.nativeElement.src).toContain("timeout_no.png");
+      })
+    })
   })
 });
