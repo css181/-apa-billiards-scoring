@@ -3,11 +3,13 @@
         <td>
             <abs-current-player-score [isLagWinner]=true></abs-current-player-score>
         </td>
-        <td id="inningsTitle">Game Innings</td>
+        <td id="inningsTitle" [width]="80">Game Innings</td>
         <td id="inningsValue">{{sharedData.getCurrentInningIndex()}}</td>
-        <td [width]="5"> </td>
-        <td id="deadBallsTitle">Game Dead Balls</td>
+        <td class="seperating-border"> </td>
+        <td id="deadBallsTitle" [width]="80">Game<br>Dead Balls</td>
         <td id="deadBallsValue">{{sharedData.getCurrentDeadBallCount()}}</td>
+        <td class="seperating-border"> </td>
+        <td id="totalsTitle" class="totals-cell">Match<br>Totals</td>
     </tr>
     <tr>
         <td>
@@ -17,10 +19,15 @@
             <button id="addInning" (click)="onAddInning()">Add Inning</button><br>
             <button id="decrementInning" (click)="onDecrementInning()">Decrement</button>
         </td>
-        <td></td>
+        <td class="seperating-border"></td>
         <td [colSpan]="2">
             <button id="addDeadBall" (click)="onAddDeadBall()">Add DeadBall</button><br>
             <button id="decrementDeadBall" (click)="onDecrementDeadBall()">Decrement</button>
+        </td>
+        <td class="seperating-border"> </td>
+        <td id="totalsValues" class="totals-cell">
+            Innings: {{sharedData.getTotalInningCount()}} <br>
+            DeadBalls: {{sharedData.getTotalDeadBallCount()}}
         </td>
     </tr>
 </table>

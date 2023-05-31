@@ -52,8 +52,20 @@ export class SharedDataService {
   public getCurrentInningIndex(): number {
     return this.log[this.getCurrentMatchIndex()].games[this.getCurrentGameIndex()].innings.length-1;
   }
+  public getTotalInningCount(): number {
+    let answer = 0;
+    const curMatch = this.log[this.getCurrentMatchIndex()];
+    for (let index = 0; index < curMatch.games.length; index++) {
+      const game = curMatch.games[index];
+      answer += game.innings.length-1;
+    }
+    return answer;
+  }
   public getCurrentDeadBallCount(): number {
     return this.gameDeadBallCount;
+  }
+  public getTotalDeadBallCount(): number {
+    return this.totalDeadBallCount;
   }
   public addMatchToLog(lagWinner: IPlayer, lagLoser: IPlayer) {
     this.log.push({games: [], lagLoser: lagLoser, lagWinner: lagWinner} as IMatch);

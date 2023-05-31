@@ -58,9 +58,13 @@ describe('PlayFieldComponent', () => {
   })
 
   describe('innings', () => {
-    it('should display an innings title, and number of innings which starts at 0', () => {
+    it('should display a Game innings title, and number of innings which starts at 0', () => {
       expect(fixture.debugElement.query(By.css('#inningsTitle')).nativeElement.textContent).toBe('Game Innings');
       expect(fixture.debugElement.query(By.css('#inningsValue')).nativeElement.textContent).toBe('0');
+    })
+    it('should display a Total innings title, and number of innings which starts at 0', () => {
+      expect(fixture.debugElement.query(By.css('#totalsTitle')).nativeElement.textContent).toBe('MatchTotals');
+      expect(fixture.debugElement.query(By.css('#totalsValues')).nativeElement.textContent).toContain('Innings: 0')
     })
     it('should increment the inning count when "Add Inning" button is pressed', () => {
       clickAddInningButton();
@@ -88,9 +92,13 @@ describe('PlayFieldComponent', () => {
   })
   
   describe('dead balls', () => {
-    it('should display an dead balls title, and number of dead balls which starts at 0', () => {
-      expect(fixture.debugElement.query(By.css('#deadBallsTitle')).nativeElement.textContent).toBe('Game Dead Balls');
+    it('should display a Game dead balls title, and number of dead balls which starts at 0', () => {
+      expect(fixture.debugElement.query(By.css('#deadBallsTitle')).nativeElement.textContent).toBe('GameDead Balls');
       expect(fixture.debugElement.query(By.css('#deadBallsValue')).nativeElement.textContent).toBe('0');
+    })
+    it('should display a Total dead balls title, and number of dead balls which starts at 0', () => {
+      expect(fixture.debugElement.query(By.css('#totalsTitle')).nativeElement.textContent).toBe('MatchTotals');
+      expect(fixture.debugElement.query(By.css('#totalsValues')).nativeElement.textContent).toContain('DeadBalls: 0')
     })
     it('should increment the dead ball count when "Add DeadBall" button is pressed', () => {
       clickAddDeadBallButton();

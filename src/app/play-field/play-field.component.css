@@ -1,0 +1,9 @@
+.seperating-border {
+    width: 4px;
+    background-color: gray;
+  }
+
+.totals-cell {
+    background-color: lightgrey;
+    text-align: right;
+}

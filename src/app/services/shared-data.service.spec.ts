@@ -197,4 +197,26 @@ describe('SharedDataService', () => {
       })
     })
   })
+
+  describe('getTotalInningCount()', ()=> {
+    it('should return a total count of all innings in all games of the current match', ()=> {
+      const startInning = { lagWinnerTurn: {ballsSunk: [], deadBalls: [], name: 'Bob'} as ITurn } as IInning
+      let game = {innings: [startInning]} as IGame;
+      let match = {lagWinner: HookerPlayers[0], lagLoser: HookerPlayers[1], games: [ game ] } as IMatch;
+      let matchList = [match] as IMatch[];
+      service.setLog(matchList);
+      expect(service.getTotalInningCount()).toBe(0);
+
+      game = {innings: [fullBlankInning, fullBlankInning, fullBlankInning]} as IGame;
+      match = {lagWinner: HookerPlayers[0], lagLoser: HookerPlayers[1], games: [ game ] } as IMatch;
+      matchList = [match] as IMatch[];
+      service.setLog(matchList);
+      expect(service.getTotalInningCount()).toBe(2);
+      
+      match = {lagWinner: HookerPlayers[0], lagLoser: HookerPlayers[1], games: [ game, game, game ] } as IMatch;
+      matchList = [match] as IMatch[];
+      service.setLog(matchList);
+      expect(service.getTotalInningCount()).toBe(6);
+    })
+  })
 });
