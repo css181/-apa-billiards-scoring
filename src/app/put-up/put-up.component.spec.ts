@@ -214,7 +214,7 @@ describe('PutUpComponent', () => {
 
       expect(component.sharedData.getCurrentPlayerLagWinner()).toEqual(yourCurrentPlayer);
       expect(component.sharedData.getCurrentPlayerLagLoser()).toEqual(opponentCurrentPlayer);
-      expect(component.sharedData.getLog()[component.sharedData.getCurrentMatchIndex()]).toEqual({ lagWinner: yourPlayer, lagLoser: opponentPlayer, games: [ {innings:[{lagWinnerTurn: {name:yourPlayer.name, ballsSunk:[], deadBalls:[]} as ITurn} as IInning]} as IGame ] } as IMatch);
+      expect(component.sharedData.getLog()[component.sharedData.getCurrentMatchIndex()]).toEqual({ lagWinner: yourPlayer, lagLoser: opponentPlayer, games: [ {innings:[{lagWinnerTurn: {name:yourPlayer.name, ballsSunk:[], deadBalls:[], timeouts: 0} as ITurn} as IInning]} as IGame ] } as IMatch);
     })
   })
   
@@ -232,7 +232,7 @@ describe('PutUpComponent', () => {
 
       expect(component.sharedData.getCurrentPlayerLagWinner()).toEqual(opponentCurrentPlayer);
       expect(component.sharedData.getCurrentPlayerLagLoser()).toEqual(yourCurrentPlayer);
-      expect(component.sharedData.getLog()[component.sharedData.getCurrentMatchIndex()]).toEqual({ lagWinner: opponentPlayer, lagLoser: yourPlayer, games: [ {innings:[{lagWinnerTurn: {name:opponentPlayer.name, ballsSunk:[], deadBalls:[]} as ITurn} as IInning]} as IGame ] } as IMatch);
+      expect(component.sharedData.getLog()[component.sharedData.getCurrentMatchIndex()]).toEqual({ lagWinner: opponentPlayer, lagLoser: yourPlayer, games: [ {innings:[{lagWinnerTurn: {name:opponentPlayer.name, ballsSunk:[], deadBalls:[], timeouts: 0} as ITurn} as IInning]} as IGame ] } as IMatch);
     })
   })
 

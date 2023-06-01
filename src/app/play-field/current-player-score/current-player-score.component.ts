@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ICurrentPlayer } from 'src/app/interfaces/icurrentPlayer';
 import { SharedDataService } from 'src/app/services/shared-data.service';
 
@@ -10,8 +10,12 @@ import { SharedDataService } from 'src/app/services/shared-data.service';
 export class CurrentPlayerScoreComponent implements OnInit{
   @Input() isLagWinner: boolean = false;
   public currentPlayer: ICurrentPlayer = {id:'', name:'', skill:0, team:''} as ICurrentPlayer;
+  @Output() timeoutEventEmitter: EventEmitter<string> = new EventEmitter<string>();
+  public firstTimeoutImg: string = 'assets/images/timeout.png';
+  public secondTimeoutImg: string = 'assets/images/timeout.png';
   
-  constructor(public sharedData: SharedDataService) {}
+  constructor(public sharedData: SharedDataService) {
+  }
   
   ngOnInit(): void {
     if(this.isLagWinner) {
@@ -19,32 +23,30 @@ export class CurrentPlayerScoreComponent implements OnInit{
     } else {
       this.currentPlayer = this.sharedData.getCurrentPlayerLagLoser();
     }
+    if(this.currentPlayer.skill>=4) {
+      this.secondTimeoutImg = 'assets/images/timeout_no.png';
+    } else {
+      this.secondTimeoutImg = 'assets/images/timeout.png';
+    }
   }
   
-  getTargetScore(skill: number): number {
-    let target:number = 0;
-    switch (skill) {
-      case 1:
-        target=14; break;
-      case 2:
-        target=19; break;
-      case 3:
-        target=25; break;
-      case 4:
-        target=31; break;
-      case 5:
-        target=38; break;
-      case 6:
-        target=46; break;
-      case 7:
-        target=55; break;
-      case 8:
-        target=65; break;
-      case 9:
-        target=75; break;
-      default:
-        break;
+  onTimeoutClick(timeoutNum: number) {
+    if(timeoutNum==1) {
+      if(this.firstTimeoutImg.indexOf('undo')!=-1) {
+        this.timeoutEventEmitter.emit('undo timeout');
+        this.firstTimeoutImg = 'assets/images/timeout.png';
+      } else {
+        this.timeoutEventEmitter.emit('use timeout');
+        this.firstTimeoutImg = 'assets/images/timeout_undo.png';
+      }
+    } else {
+      if(this.secondTimeoutImg.indexOf('undo')!=-1) {
+        this.timeoutEventEmitter.emit('undo timeout');
+        this.secondTimeoutImg = 'assets/images/timeout.png';
+      } else {
+        this.timeoutEventEmitter.emit('use timeout');
+        this.secondTimeoutImg = 'assets/images/timeout_undo.png';
+      }
     }
-    return target;
   }
 }

@@ -1,7 +1,6 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
 import { ICurrentPlayer } from 'src/app/interfaces/icurrentPlayer';
 import { IGame } from 'src/app/interfaces/igame';
 import { IInning } from 'src/app/interfaces/iInnings';
@@ -34,7 +33,7 @@ describe('BallsComponent', () => {
     
     //Fake out what would be in the lag at the start of this component
     component.sharedData.addMatchToLog(yourPlayer, opponentPlayer);
-    component.sharedData.addGameToMatch({innings:[{lagWinnerTurn: {name: yourPlayer.name, ballsSunk:[], deadBalls:[]} as ITurn} as IInning]} as IGame, 0);
+    component.sharedData.addGameToMatch({innings:[{lagWinnerTurn: {name: yourPlayer.name, ballsSunk:[], deadBalls:[], timeouts: 0} as ITurn} as IInning]} as IGame, 0);
     
     matchIndex = component.sharedData.getCurrentMatchIndex();
     gameIndex = component.sharedData.getCurrentGameIndex();
@@ -160,7 +159,7 @@ describe('BallsComponent', () => {
         clickUpNextImg();
   
         expect(component.sharedData.getLog()[matchIndex].games[1].innings.length).toBe(1);
-        expect(component.sharedData.getLog()[matchIndex].games[1].innings[0].lagWinnerTurn).toEqual({name:component.getLagWinningPlayer().name, ballsSunk: [], deadBalls: []} as ITurn);
+        expect(component.sharedData.getLog()[matchIndex].games[1].innings[0].lagWinnerTurn).toEqual({name:component.getLagWinningPlayer().name, ballsSunk: [], deadBalls: [], timeouts: 0} as ITurn);
       })
     })
     describe('when the lagLoser is shooting', ()=> {
@@ -183,7 +182,7 @@ describe('BallsComponent', () => {
         clickUpNextImg();
   
         expect(component.sharedData.getLog()[matchIndex].games[1].innings.length).toBe(1);
-        expect(component.sharedData.getLog()[matchIndex].games[1].innings[0].lagLoserTurn).toEqual({name:component.getLagLosingPlayer().name, ballsSunk: [], deadBalls: []} as ITurn);
+        expect(component.sharedData.getLog()[matchIndex].games[1].innings[0].lagLoserTurn).toEqual({name:component.getLagLosingPlayer().name, ballsSunk: [], deadBalls: [], timeouts: 0} as ITurn);
       })
     })
     it('should add the current ball to the sunkBallList', ()=> {
@@ -255,7 +254,7 @@ describe('BallsComponent', () => {
           setupLagWinnerAndLoser();
           clickEndTurnButton();
           
-          expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagLoserTurn).toEqual({name: component.getLagLosingPlayer().name, ballsSunk: [], deadBalls: []} as ITurn)
+          expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagLoserTurn).toEqual({name: component.getLagLosingPlayer().name, ballsSunk: [], deadBalls: [], timeouts: 0} as ITurn)
         })
       })
       describe('and the lagLoser was shooting', () => {
@@ -277,7 +276,7 @@ describe('BallsComponent', () => {
           clickEndTurnButton();
           
           expect(component.sharedData.getCurrentInningIndex()).toBe(inningIndex+1);
-          expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex+1].lagWinnerTurn).toEqual({name: component.getLagWinningPlayer().name, ballsSunk: [], deadBalls: []} as ITurn);
+          expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex+1].lagWinnerTurn).toEqual({name: component.getLagWinningPlayer().name, ballsSunk: [], deadBalls: [], timeouts: 0} as ITurn);
         })
       })
       describe('and isDeadBallMode=true', ()=> {
@@ -330,7 +329,7 @@ describe('BallsComponent', () => {
         fixture.detectChanges();
 
         expect(component.sharedData.getCurrentDeadBallCount()).toBe(1);
-        expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagWinnerTurn).toEqual({name: component.getLagWinningPlayer().name, ballsSunk: [], deadBalls: [1]} as ITurn);
+        expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagWinnerTurn).toEqual({name: component.getLagWinningPlayer().name, ballsSunk: [], deadBalls: [1], timeouts: 0} as ITurn);
 
         //And again for 2 ball
         const ball2 = fixture.debugElement.query(By.css("#ball2"));
@@ -338,7 +337,7 @@ describe('BallsComponent', () => {
         fixture.detectChanges();
 
         expect(component.sharedData.getCurrentDeadBallCount()).toBe(2);
-        expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagWinnerTurn).toEqual({name: component.getLagWinningPlayer().name, ballsSunk: [], deadBalls: [1,2]} as ITurn);
+        expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagWinnerTurn).toEqual({name: component.getLagWinningPlayer().name, ballsSunk: [], deadBalls: [1,2], timeouts: 0} as ITurn);
       })
       describe('when the lagLoser is shooting', ()=> {
         beforeEach(()=>{
@@ -353,7 +352,7 @@ describe('BallsComponent', () => {
           fixture.detectChanges();
   
           expect(component.sharedData.getCurrentDeadBallCount()).toBe(1);
-          expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagLoserTurn).toEqual({name: component.getLagLosingPlayer().name, ballsSunk: [], deadBalls: [1]} as ITurn);
+          expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagLoserTurn).toEqual({name: component.getLagLosingPlayer().name, ballsSunk: [], deadBalls: [1], timeouts: 0} as ITurn);
   
           //And again for 2 ball
           const ball2 = fixture.debugElement.query(By.css("#ball2"));
@@ -361,7 +360,7 @@ describe('BallsComponent', () => {
           fixture.detectChanges();
   
           expect(component.sharedData.getCurrentDeadBallCount()).toBe(2);
-          expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagLoserTurn).toEqual({name: component.getLagLosingPlayer().name, ballsSunk: [], deadBalls: [1,2]} as ITurn);
+          expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagLoserTurn).toEqual({name: component.getLagLosingPlayer().name, ballsSunk: [], deadBalls: [1,2], timeouts: 0} as ITurn);
         })
       })
       it('should add the balls number to the sunkBalls list when clicked and change that balls opacity to less than 0.5', ()=> {
@@ -503,7 +502,7 @@ describe('BallsComponent', () => {
         })
         it('should update the Log in sharedData to add a new game, reset the innings length to 1, and create a new blank inning for the lagWinner', () => {
           expect(component.sharedData.getLog()[matchIndex].games[1].innings.length).toBe(1);
-          expect(component.sharedData.getLog()[matchIndex].games[1].innings[0].lagWinnerTurn).toEqual({name:component.getLagWinningPlayer().name, ballsSunk: [], deadBalls: []} as ITurn);
+          expect(component.sharedData.getLog()[matchIndex].games[1].innings[0].lagWinnerTurn).toEqual({name:component.getLagWinningPlayer().name, ballsSunk: [], deadBalls: [], timeouts: 0} as ITurn);
         })
       })
       describe('when the lagLoser is shooting', ()=> {
@@ -516,7 +515,7 @@ describe('BallsComponent', () => {
         })
         it('should update the Log in sharedData to add a new game, reset the innings length to 1, and create a new blank inning for the lagLoser', () => {
           expect(component.sharedData.getLog()[matchIndex].games[1].innings.length).toBe(1);
-          expect(component.sharedData.getLog()[matchIndex].games[1].innings[0].lagLoserTurn).toEqual({name:component.getLagLosingPlayer().name, ballsSunk: [], deadBalls: []} as ITurn);
+          expect(component.sharedData.getLog()[matchIndex].games[1].innings[0].lagLoserTurn).toEqual({name:component.getLagLosingPlayer().name, ballsSunk: [], deadBalls: [], timeouts: 0} as ITurn);
         })
       })
     })

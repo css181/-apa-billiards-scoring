@@ -107,8 +107,10 @@ export class SharedDataService {
     const priorInning = this.log[matchIndex].games[gameIndex].innings[lastInningIndex-1];
     mergeLagWinnerBallsSunk();
     mergeLagWinnerDeadballs();
+    mergeLagWinnerTimeouts();
     mergeLagLoserBallsSunk();
     mergeLagLoserDeadballs();
+    mergeLagLoserTimeouts();
     this.deleteArrayElement(this.log[matchIndex].games[gameIndex].innings, this.log[matchIndex].games[gameIndex].innings[lastInningIndex]);
 
     function isBlankInning(inning: IInning): boolean {
@@ -138,6 +140,12 @@ export class SharedDataService {
         const curLoserDeadBalls = latestInning.lagLoserTurn.deadBalls[i];
         priorInning.lagLoserTurn.deadBalls.push(curLoserDeadBalls);
       }
+    }
+    function mergeLagWinnerTimeouts(): void {
+      priorInning.lagWinnerTurn.timeouts+= latestInning.lagWinnerTurn.timeouts;
+    }
+    function mergeLagLoserTimeouts(): void {
+      priorInning.lagLoserTurn.timeouts+= latestInning.lagLoserTurn.timeouts;
     }
   }
 

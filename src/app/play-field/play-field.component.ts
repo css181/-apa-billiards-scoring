@@ -51,7 +51,7 @@ export class PlayFieldComponent implements OnInit{
     }
     if(this.sharedData.getLog().length===0) {
       this.sharedData.addMatchToLog(this.yourCurrentPlayer, this.opponentCurrentPlayer);
-      this.sharedData.addGameToMatch({innings:[{lagWinnerTurn: {name: this.yourCurrentPlayer.name, ballsSunk:[], deadBalls:[]} as ITurn} as IInning]} as IGame, 0);
+      this.sharedData.addGameToMatch({innings:[{lagWinnerTurn: {name: this.yourCurrentPlayer.name, ballsSunk:[], deadBalls:[], timeouts: 0} as ITurn} as IInning]} as IGame, 0);
     }
   }
 
@@ -60,8 +60,8 @@ export class PlayFieldComponent implements OnInit{
   }
   
   onAddInning(): void {
-    const lagWinnerTurn = {ballsSunk:[], deadBalls:[], name:this.lagWinningPlayer.name} as ITurn;
-    const lagLoserTurn = {ballsSunk:[], deadBalls:[], name:this.lagLosingPlayer.name} as ITurn;
+    const lagWinnerTurn = {ballsSunk:[], deadBalls:[], name:this.lagWinningPlayer.name, timeouts: 0} as ITurn;
+    const lagLoserTurn = {ballsSunk:[], deadBalls:[], name:this.lagLosingPlayer.name, timeouts: 0} as ITurn;
     const newInning = {lagWinnerTurn: lagWinnerTurn, lagLoserTurn: lagLoserTurn} as IInning;
     this.sharedData.addInningToLog(newInning);
   }
@@ -73,6 +73,43 @@ export class PlayFieldComponent implements OnInit{
   }
   onDecrementDeadBall(): void {
     this.sharedData.decrementDeadBall();
+  }
+
+  onTimeoutClicked(type: string): void {
+    const currentInning = this.sharedData.getCurrentGame().innings[this.sharedData.getCurrentInningIndex()];
+    if(type.indexOf('use')!=-1) {
+      if(currentInning.lagLoserTurn) {
+        currentInning.lagLoserTurn.timeouts++;
+      } else {
+        currentInning.lagWinnerTurn.timeouts++;
+      }
+    } else { //Undo
+      if(currentInning.lagLoserTurn) {
+        if(currentInning.lagLoserTurn.timeouts>0) {
+          currentInning.lagLoserTurn.timeouts--;
+        } else {
+          for (let index = this.sharedData.getCurrentInningIndex()-1; index >= 0; index--) {
+            const inning = this.sharedData.getCurrentGame().innings[index];
+            if(inning.lagLoserTurn.timeouts>0) {
+              inning.lagLoserTurn.timeouts--;
+              return; //end method
+            }
+          }
+        }
+      } else {
+        if(currentInning.lagWinnerTurn.timeouts>0) {
+          currentInning.lagWinnerTurn.timeouts--;
+        } else {
+          for (let index = this.sharedData.getCurrentInningIndex()-1; index >= 0; index--) {
+            const inning = this.sharedData.getCurrentGame().innings[index];
+            if(inning.lagWinnerTurn.timeouts>0) {
+              inning.lagWinnerTurn.timeouts--;
+              return; //end method
+            }
+          }
+        }
+      }
+    }
   }
 
 

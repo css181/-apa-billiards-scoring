@@ -39,7 +39,7 @@ describe('PlayFieldComponent', () => {
 
     //Fake out what would be in the lag at the start of this component
     component.sharedData.addMatchToLog(yourPlayer, opponentPlayer);
-    component.sharedData.addGameToMatch({innings:[{lagWinnerTurn: {name: yourPlayer.name, ballsSunk:[], deadBalls:[]} as ITurn} as IInning]} as IGame, 0);
+    component.sharedData.addGameToMatch({innings:[{lagWinnerTurn: {name: yourPlayer.name, ballsSunk:[], deadBalls:[], timeouts: 0} as ITurn} as IInning]} as IGame, 0);
     
     matchIndex = component.sharedData.getCurrentMatchIndex();
     gameIndex = component.sharedData.getCurrentGameIndex();
@@ -122,6 +122,103 @@ describe('PlayFieldComponent', () => {
 
       expect(component.sharedData.getCurrentDeadBallCount()).toBe(0);
       expect(fixture.debugElement.query(By.css('#deadBallsValue')).nativeElement.textContent).toBe('0');
+    })
+  })
+
+  describe('onTimeoutClicked()', ()=>{
+    describe('When on lagWinner turn', ()=> {
+      describe('when type is "use timeout"', ()=>{
+        beforeEach(()=>{
+          component.onTimeoutClicked('use timeout');
+        })
+        it('should add 1 to the timeouts in the current turn', ()=> {
+          const currentInning = component.sharedData.getCurrentGame().innings[component.sharedData.getCurrentInningIndex()];
+          expect(currentInning.lagWinnerTurn.timeouts).toBe(1);
+        })
+      })
+      describe('when type is "undo timeout" and timeout exists in the current inning', ()=>{
+        beforeEach(()=>{
+          const halfInningWithTimeout = { lagWinnerTurn: {ballsSunk: [], deadBalls: [], name: 'Bob', timeouts: 1} as ITurn} as IInning;
+          component.sharedData.addInningToLog(halfInningWithTimeout);
+          component.onTimeoutClicked('undo timeout');
+        })
+        it('should remove 1 of the timeouts in the current turn', ()=> {
+          const currentInning = component.sharedData.getCurrentGame().innings[component.sharedData.getCurrentInningIndex()];
+          expect(currentInning.lagWinnerTurn.timeouts).toBe(0);
+        })
+      })
+      describe('when type is "undo timeout" and timeout exists only in prior inning', ()=>{
+        beforeEach(()=>{
+          const halfInningWithTimeout = { lagWinnerTurn: {ballsSunk: [], deadBalls: [], name: 'Bob', timeouts: 1} as ITurn} as IInning;
+          component.sharedData.addInningToLog(JSON.parse(JSON.stringify(halfInningWithTimeout)));
+          component.sharedData.addInningToLog(JSON.parse(JSON.stringify(halfInningWithTimeout)));
+          const halfInningWithOutTimeout = { lagWinnerTurn: {ballsSunk: [], deadBalls: [], name: 'Bob', timeouts: 0} as ITurn} as IInning;
+          component.sharedData.addInningToLog(JSON.parse(JSON.stringify(halfInningWithOutTimeout)));
+          
+          expect(component.sharedData.getCurrentGame().innings[0].lagWinnerTurn.timeouts).toBe(0);
+          expect(component.sharedData.getCurrentGame().innings[1].lagWinnerTurn.timeouts).toBe(1);
+          expect(component.sharedData.getCurrentGame().innings[2].lagWinnerTurn.timeouts).toBe(1);
+          expect(component.sharedData.getCurrentGame().innings[3].lagWinnerTurn.timeouts).toBe(0);
+          
+          component.onTimeoutClicked('undo timeout');
+        })
+        it('should remove the last timeout present in the most recent turn', ()=> {
+          expect(component.sharedData.getCurrentGame().innings[0].lagWinnerTurn.timeouts).toBe(0);
+          expect(component.sharedData.getCurrentGame().innings[1].lagWinnerTurn.timeouts).toBe(1);
+          expect(component.sharedData.getCurrentGame().innings[2].lagWinnerTurn.timeouts).toBe(0);
+          expect(component.sharedData.getCurrentGame().innings[3].lagWinnerTurn.timeouts).toBe(0);
+        })
+      })
+    })
+    describe('When on lagLoser turn', ()=> {
+      beforeEach(()=>{
+        const fullBlankInning = { lagWinnerTurn: {ballsSunk: [], deadBalls: [], name: 'Bob', timeouts: 0} as ITurn,
+        lagLoserTurn: {ballsSunk: [], deadBalls: [], name: 'Mary', timeouts: 0} as ITurn } as IInning;
+        component.sharedData.addInningToLog(fullBlankInning);
+      })
+      describe('when type is "use timeout"', ()=>{
+        beforeEach(()=>{
+          component.onTimeoutClicked('use timeout');
+        })
+        it('should add 1 to the timeouts in the current turn', ()=> {
+          const currentInning = component.sharedData.getCurrentGame().innings[component.sharedData.getCurrentInningIndex()];
+          expect(currentInning.lagLoserTurn.timeouts).toBe(1);
+        })
+      })
+      describe('when type is "undo timeout" and timeout exists in the current inning', ()=>{
+        beforeEach(()=>{
+          const fullInningWithTimeout = { lagWinnerTurn: {ballsSunk: [], deadBalls: [], name: 'Bob', timeouts: 1} as ITurn,
+          lagLoserTurn: {ballsSunk: [], deadBalls: [], name: 'Mary', timeouts: 1} as ITurn } as IInning;
+          component.sharedData.addInningToLog(fullInningWithTimeout);
+          component.onTimeoutClicked('undo timeout');
+        })
+        it('should remove 1 of the timeouts in the current turn', ()=> {
+          const currentInning = component.sharedData.getCurrentGame().innings[component.sharedData.getCurrentInningIndex()];
+          expect(currentInning.lagLoserTurn.timeouts).toBe(0);
+        })
+      })
+      describe('when type is "undo timeout" and timeout exists only in prior inning', ()=>{
+        beforeEach(()=>{
+          const fullInningWithTimeout = { lagWinnerTurn: {ballsSunk: [], deadBalls: [], name: 'Bob', timeouts: 1} as ITurn,
+            lagLoserTurn: {ballsSunk: [], deadBalls: [], name: 'Mary', timeouts: 1} as ITurn } as IInning;
+          component.sharedData.addInningToLog(JSON.parse(JSON.stringify(fullInningWithTimeout)));
+          component.sharedData.addInningToLog(JSON.parse(JSON.stringify(fullInningWithTimeout)));
+          const halfInningWithOutTimeout = { lagWinnerTurn: {ballsSunk: [], deadBalls: [], name: 'Bob', timeouts: 0} as ITurn,
+            lagLoserTurn: {ballsSunk: [], deadBalls: [], name: 'Mary', timeouts: 0} as ITurn } as IInning;
+          component.sharedData.addInningToLog(JSON.parse(JSON.stringify(halfInningWithOutTimeout)));
+          
+          expect(component.sharedData.getCurrentGame().innings[2].lagLoserTurn.timeouts).toBe(1);
+          expect(component.sharedData.getCurrentGame().innings[3].lagLoserTurn.timeouts).toBe(1);
+          expect(component.sharedData.getCurrentGame().innings[4].lagLoserTurn.timeouts).toBe(0);
+          
+          component.onTimeoutClicked('undo timeout');
+        })
+        it('should remove the last timeout present in the most recent turn', ()=> {
+          expect(component.sharedData.getCurrentGame().innings[2].lagLoserTurn.timeouts).toBe(1);
+          expect(component.sharedData.getCurrentGame().innings[3].lagLoserTurn.timeouts).toBe(0);
+          expect(component.sharedData.getCurrentGame().innings[4].lagLoserTurn.timeouts).toBe(0);
+        })
+      })
     })
   })
 

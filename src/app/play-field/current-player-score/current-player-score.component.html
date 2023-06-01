@@ -9,8 +9,8 @@
         <td [width]="50" id="remainingNeeded">Need:{{sharedData.getTargetScore(currentPlayer.skill) - currentPlayer.curScore}}</td>
     </tr>
     <tr>
-        <td id="timeoutFirst"><img src="assets/images/timeout.png" class="timeout-button" id="timeoutFirstImg"></td>
-        <td *ngIf="currentPlayer.skill >= 4" id="timeoutSecond"><img src="assets/images/timeout_no.png" class="timeout-button" id="timeoutSecondImg"></td>
-        <td *ngIf="currentPlayer.skill <= 3" id="timeoutSecond"><img src="assets/images/timeout.png" class="timeout-button" id="timeoutSecondImg"></td>
+        <td id="timeoutFirst"><img src="{{firstTimeoutImg}}" (click)="onTimeoutClick(1)" class="timeout-button" id="timeoutFirstImg"></td>
+        <td *ngIf="currentPlayer.skill >= 4" id="timeoutSecond"><img src="{{secondTimeoutImg}}" class="timeout-button" id="timeoutSecondImg"></td>
+        <td *ngIf="currentPlayer.skill <= 3" id="timeoutSecond"><img src="{{secondTimeoutImg}}" (click)="onTimeoutClick(2)" class="timeout-button" id="timeoutSecondImg"></td>
     </tr>
 </table>

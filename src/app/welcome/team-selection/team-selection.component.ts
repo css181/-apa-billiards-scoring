@@ -20,10 +20,10 @@ export class TeamSelectionComponent {
   public chooseTeam(teamName: string) {
     this.chosenTeamName = teamName;
     if(this.isYourTeam) {
-      console.log("choosing your team: " + teamName);
+      // console.log("choosing your team: " + teamName);
       this.sharedData.setYourTeam(teamName);
     } else {
-      console.log("choosing opponent team: " + teamName);
+      // console.log("choosing opponent team: " + teamName);
       this.sharedData.setOpponentTeam(teamName);
     }
     this.notifyTeamWasSelected.emit(this.isYourTeam + "|" + teamName);

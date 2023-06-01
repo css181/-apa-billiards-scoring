@@ -31,11 +31,11 @@ export class PutUpComponent {
   }
 
   onChooseYourPlayer(player: IPlayer): void {
-    console.log('Putting up Your player: ', player);
+    // console.log('Putting up Your player: ', player);
     this.yourTeamSelectedPlayer = player;
   }
   onChooseOpponentPlayer(player: IPlayer): void {
-    console.log('Putting up Opponent player: ', player);
+    // console.log('Putting up Opponent player: ', player);
     this.opponentTeamSelectedPlayer = player;
   }
 
@@ -57,7 +57,7 @@ export class PutUpComponent {
     this.sharedData.setCurrentPlayerLagWinner(lagWinningPlayer);
     this.sharedData.setCurrentPlayerLagLoser(lagLosingPlayer);
     this.sharedData.addMatchToLog(this.yourTeamSelectedPlayer, this.opponentTeamSelectedPlayer);
-    this.sharedData.addGameToMatch({innings:[{lagWinnerTurn: {name: this.yourTeamSelectedPlayer.name, ballsSunk:[], deadBalls:[]} as ITurn} as IInning]} as IGame, 0);
+    this.sharedData.addGameToMatch({innings:[{lagWinnerTurn: {name: this.yourTeamSelectedPlayer.name, ballsSunk:[], deadBalls:[], timeouts: 0} as ITurn} as IInning]} as IGame, 0);
     this.router.navigate(['playField', this.yourTeam, this.opponentTeam]);
   }
   onOpponentTeamWonLag(): void {
@@ -78,7 +78,7 @@ export class PutUpComponent {
     this.sharedData.setCurrentPlayerLagWinner(lagWinningPlayer);
     this.sharedData.setCurrentPlayerLagLoser(lagLosingPlayer);
     this.sharedData.addMatchToLog(this.opponentTeamSelectedPlayer, this.yourTeamSelectedPlayer);
-    this.sharedData.addGameToMatch({innings:[{lagWinnerTurn: {name: this.opponentTeamSelectedPlayer.name, ballsSunk:[], deadBalls:[]} as ITurn} as IInning]} as IGame, 0);
+    this.sharedData.addGameToMatch({innings:[{lagWinnerTurn: {name: this.opponentTeamSelectedPlayer.name, ballsSunk:[], deadBalls:[], timeouts: 0} as ITurn} as IInning]} as IGame, 0);
     this.router.navigate(['playField', this.yourTeam, this.opponentTeam]);
   }
 

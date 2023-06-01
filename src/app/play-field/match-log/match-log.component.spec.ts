@@ -37,7 +37,7 @@ describe('MatchLogComponent', () => {
     
     //Fake out what would be in the lag at the start of this component
     component.sharedData.addMatchToLog(yourPlayer, opponentPlayer);
-    component.sharedData.addGameToMatch({innings:[{lagWinnerTurn: {name: yourPlayer.name, ballsSunk:[], deadBalls:[]} as ITurn} as IInning]} as IGame, 0);
+    component.sharedData.addGameToMatch({innings:[{lagWinnerTurn: {name: yourPlayer.name, ballsSunk:[], deadBalls:[], timeouts: 0} as ITurn} as IInning]} as IGame, 0);
     
     fixture.detectChanges();
   });

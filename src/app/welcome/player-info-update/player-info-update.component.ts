@@ -37,17 +37,17 @@ export class PlayerInfoUpdateComponent implements OnChanges {
 
   onUpdate(): void {
     this.isUpdateMode = true;
-    console.log('setting isUpdateMode to true');
+    // console.log('setting isUpdateMode to true');
   }
   
   onSave(): void {
-    console.log('Saving values of players:');
-    console.log(JSON.stringify(this.players));
+    // console.log('Saving values of players:');
+    // console.log(JSON.stringify(this.players));
     this.isUpdateMode = false;
   }
 
   onConfirm(): void {
-    console.log('confirming team');
+    // console.log('confirming team');
     this.hasBeenConfirmed = true;
     this.notifyConfirm.emit(this.isYourTeam);
     if(this.isYourTeam) {
