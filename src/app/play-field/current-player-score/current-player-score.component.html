@@ -12,5 +12,15 @@
         <td id="timeoutFirst"><img src="{{firstTimeoutImg}}" (click)="onTimeoutClick(1)" class="timeout-button" id="timeoutFirstImg"></td>
         <td *ngIf="currentPlayer.skill >= 4" id="timeoutSecond"><img src="{{secondTimeoutImg}}" class="timeout-button" id="timeoutSecondImg"></td>
         <td *ngIf="currentPlayer.skill <= 3" id="timeoutSecond"><img src="{{secondTimeoutImg}}" (click)="onTimeoutClick(2)" class="timeout-button" id="timeoutSecondImg"></td>
+        <td *ngIf="isLagWinner" id="defenseCount" colspan="2" class="defense-cell">
+            Defenses: {{sharedData.getLagWinnerDefences()}} 
+            <button id="addDefense" (click)="addDefenseLagWinner()">+</button> 
+            <button id="subtractDefense" (click)="subtractDefenseLagWinner()">-</button> 
+        </td>
+        <td *ngIf="isLagWinner==false" id="defenseCount" colspan="2" class="defense-cell">
+            Defenses: {{sharedData.getLagLoserDefences()}} 
+            <button id="addDefense" (click)="addDefenseLagLoser()">+</button> 
+            <button id="subtractDefense" (click)="subtractDefenseLagLoser()">-</button> 
+        </td>
     </tr>
 </table>

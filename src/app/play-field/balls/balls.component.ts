@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import { ICurrentPlayer } from 'src/app/interfaces/icurrentPlayer';
 import { IGame } from 'src/app/interfaces/igame';
 import { IInning } from 'src/app/interfaces/iInnings';
@@ -30,7 +31,7 @@ export class BallsComponent {
   private lagLosingPlayer: ICurrentPlayer = this.opponentCurrentPlayer;//{} as ICurrentPlayer;
   private lagWinningPlayer: ICurrentPlayer = this.yourCurrentPlayer;//{} as ICurrentPlayer;
 
-  constructor(public sharedData: SharedDataService) { }
+  constructor(public sharedData: SharedDataService, public router: Router) { }
 
   ngOnInit() { 
     //TODO: For easy testing purposes, set the shared data to our test info
@@ -163,7 +164,6 @@ export class BallsComponent {
     if(sunkBall == 9) {
       this.curShootingPlayer.curScore+=1;
       this.resetBallsToNewGame();
-      this.resetNewGameInLog();
       this.newGameEventEmitter.emit();
     }
   }
@@ -174,15 +174,6 @@ export class BallsComponent {
     this.sunkBallsList = [];
   }
   
-  resetNewGameInLog(): void {
-    this.sharedData.resetDeadBallCountForNewGame();
-    this.sharedData.addGameToMatch({innings: []} as IGame, this.sharedData.getLog().length-1);
-    if(this.curShootingPlayer === this.lagWinningPlayer) {
-      this.sharedData.addInningToLog({lagWinnerTurn: {name: this.lagWinningPlayer.name, ballsSunk: [], deadBalls: [], timeouts: 0} as ITurn } as IInning);
-    } else {
-      this.sharedData.addInningToLog({lagLoserTurn: {name: this.lagLosingPlayer.name, ballsSunk: [], deadBalls: [], timeouts: 0} as ITurn } as IInning);
-    }
-  }
 
   assignNewNextBall(): void {
     let newNext = -1;

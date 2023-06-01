@@ -29,10 +29,12 @@ export class PlayFieldComponent implements OnInit{
   private lagWinningPlayer: ICurrentPlayer = this.yourCurrentPlayer;//{} as ICurrentPlayer;
 
   public isPrintLogMode: boolean = false;
+  public isNewGameConfirmMode: boolean = false;
 
   constructor(public sharedData: SharedDataService, private route: ActivatedRoute) { }
 
   ngOnInit() { 
+    this.isNewGameConfirmMode = false;
     this.yourTeam = this.route.snapshot.paramMap.get('yourTeam') || '';
     this.opponentTeam = this.route.snapshot.paramMap.get('opponentTeam') || '';
     
@@ -45,6 +47,10 @@ export class PlayFieldComponent implements OnInit{
 
   onNewGame() {
     this.newGameEventSubject.next();
+    this.isNewGameConfirmMode = true;
+  }
+  onConfirmScoreEvent() {
+    this.isNewGameConfirmMode = false;
   }
 
   setupComponentForLocalTestingByDefaultingSharedData(): void {

@@ -18,6 +18,8 @@ export class SharedDataService {
   private log: IMatch[] = [];
   public totalDeadBallCount: number = 0;
   public gameDeadBallCount: number = 0;
+  public lagWinnerDefences: number = 0;
+  public lagLoserDefences: number = 0;
 
   constructor() { }
 
@@ -61,7 +63,7 @@ export class SharedDataService {
     }
     return answer;
   }
-  public getCurrentDeadBallCount(): number {
+  public getGameDeadBallCount(): number {
     return this.gameDeadBallCount;
   }
   public resetDeadBallCountForNewGame(): void {
@@ -206,6 +208,25 @@ export class SharedDataService {
   }
   public setCurrentPlayerLagLoser(curPlayer: ICurrentPlayer) {
     this.currentPlayerLagLoser = curPlayer;
+  }
+
+  public increaseLagWinnerDefences() {
+    this.lagWinnerDefences++;
+  }
+  public decreaseLagWinnerDefences() {
+    this.lagWinnerDefences--;
+  }
+  public getLagWinnerDefences(): number {
+    return this.lagWinnerDefences;
+  }
+  public increaseLagLoserDefences() {
+    this.lagLoserDefences++;
+  }
+  public decreaseLagLoserDefences() {
+    this.lagLoserDefences--;
+  }
+  public getLagLoserDefences(): number {
+    return this.lagLoserDefences;
   }
 
   public getTargetScore(skill: number): number {

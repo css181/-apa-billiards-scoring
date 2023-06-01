@@ -1,6 +1,7 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 import { ICurrentPlayer } from 'src/app/interfaces/icurrentPlayer';
 import { IGame } from 'src/app/interfaces/igame';
 import { IInning } from 'src/app/interfaces/iInnings';
@@ -20,10 +21,15 @@ describe('BallsComponent', () => {
   let gameIndex: number;
   let inningIndex: number;
 
+  class RouterStub {
+    url = '';
+    navigate(commands: any[], extras?: any) { }
+  }
+
   beforeEach(async () => {
     TestBed.configureTestingModule({ 
       declarations: [ BallsComponent ],
-      providers: [ SharedDataService ],
+      providers: [ SharedDataService, { provide: Router, useClass: RouterStub } ],
       schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
@@ -154,15 +160,6 @@ describe('BallsComponent', () => {
         expect(component.curShootingPlayer.curScore).toBe(2);
         expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagWinnerTurn.ballsSunk).toEqual([9]);
       })
-      it('should update the Log in sharedData to add a new game, reset the innings length to 1, deadballs to 0, and create a new blank inning for the lagWinner', () => {
-        component.sharedData.incrementDeadBall();
-        //9ball
-        clickUpNextImg();
-  
-        expect(component.sharedData.getLog()[matchIndex].games[1].innings.length).toBe(1);
-        expect(component.sharedData.getCurrentDeadBallCount()).toBe(0);
-        expect(component.sharedData.getLog()[matchIndex].games[1].innings[0].lagWinnerTurn).toEqual({name:component.getLagWinningPlayer().name, ballsSunk: [], deadBalls: [], timeouts: 0} as ITurn);
-      })
       it('should emit a newGameEvent', ()=> {
         spyOn(component.newGameEventEmitter, 'emit');
         //9ball
@@ -185,15 +182,6 @@ describe('BallsComponent', () => {
         clickUpNextImg();
         expect(component.curShootingPlayer.curScore).toBe(2);
         expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagLoserTurn.ballsSunk).toEqual([9]);
-      })
-      it('should update the Log in sharedData to add a new game, reset the innings length to 1, deadballs to 0, and create a new blank inning for the lagLoser', () => {
-        component.sharedData.incrementDeadBall();
-        //9ball
-        clickUpNextImg();
-  
-        expect(component.sharedData.getLog()[matchIndex].games[1].innings.length).toBe(1);
-        expect(component.sharedData.getCurrentDeadBallCount()).toBe(0);
-        expect(component.sharedData.getLog()[matchIndex].games[1].innings[0].lagLoserTurn).toEqual({name:component.getLagLosingPlayer().name, ballsSunk: [], deadBalls: [], timeouts: 0} as ITurn);
       })
       it('should emit a newGameEvent', ()=> {
         spyOn(component.newGameEventEmitter, 'emit');
@@ -329,7 +317,7 @@ describe('BallsComponent', () => {
       })
       it('should not impact score, dead ball count, or image when the 9ball is clicked (because it can not die)', ()=> {
         const score = component.curShootingPlayer.curScore;
-        const deadBallCount = component.sharedData.getCurrentDeadBallCount();
+        const deadBallCount = component.sharedData.getGameDeadBallCount();
         const curImg = fixture.debugElement.query(By.css('.up-next')).nativeElement.src;
 
         const ball9 = fixture.debugElement.query(By.css('#ball9'));
@@ -337,16 +325,16 @@ describe('BallsComponent', () => {
         fixture.detectChanges();
 
         expect(component.curShootingPlayer.curScore).toBe(score);
-        expect(component.sharedData.getCurrentDeadBallCount()).toBe(deadBallCount);
+        expect(component.sharedData.getGameDeadBallCount()).toBe(deadBallCount);
         expect(fixture.debugElement.query(By.css('.up-next')).nativeElement.src).toBe(curImg);
       })
       it('should add a dead ball for each ball that gets clicked (other than the 9 which can not die)', ()=> {
-        expect(component.sharedData.getCurrentDeadBallCount()).toBe(0);
+        expect(component.sharedData.getGameDeadBallCount()).toBe(0);
         const ball1 = fixture.debugElement.query(By.css("#ball1"));
         ball1.triggerEventHandler('click', null);
         fixture.detectChanges();
 
-        expect(component.sharedData.getCurrentDeadBallCount()).toBe(1);
+        expect(component.sharedData.getGameDeadBallCount()).toBe(1);
         expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagWinnerTurn).toEqual({name: component.getLagWinningPlayer().name, ballsSunk: [], deadBalls: [1], timeouts: 0} as ITurn);
 
         //And again for 2 ball
@@ -354,7 +342,7 @@ describe('BallsComponent', () => {
         ball2.triggerEventHandler('click', null);
         fixture.detectChanges();
 
-        expect(component.sharedData.getCurrentDeadBallCount()).toBe(2);
+        expect(component.sharedData.getGameDeadBallCount()).toBe(2);
         expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagWinnerTurn).toEqual({name: component.getLagWinningPlayer().name, ballsSunk: [], deadBalls: [1,2], timeouts: 0} as ITurn);
       })
       describe('when the lagLoser is shooting', ()=> {
@@ -364,12 +352,12 @@ describe('BallsComponent', () => {
           clickDeadBallModeButton();
         })
         it('should add a dead ball for each ball that gets clicked to the lagLoser log', ()=> {
-          expect(component.sharedData.getCurrentDeadBallCount()).toBe(0);
+          expect(component.sharedData.getGameDeadBallCount()).toBe(0);
           const ball1 = fixture.debugElement.query(By.css("#ball1"));
           ball1.triggerEventHandler('click', null);
           fixture.detectChanges();
   
-          expect(component.sharedData.getCurrentDeadBallCount()).toBe(1);
+          expect(component.sharedData.getGameDeadBallCount()).toBe(1);
           expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagLoserTurn).toEqual({name: component.getLagLosingPlayer().name, ballsSunk: [], deadBalls: [1], timeouts: 0} as ITurn);
   
           //And again for 2 ball
@@ -377,7 +365,7 @@ describe('BallsComponent', () => {
           ball2.triggerEventHandler('click', null);
           fixture.detectChanges();
   
-          expect(component.sharedData.getCurrentDeadBallCount()).toBe(2);
+          expect(component.sharedData.getGameDeadBallCount()).toBe(2);
           expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagLoserTurn).toEqual({name: component.getLagLosingPlayer().name, ballsSunk: [], deadBalls: [1,2], timeouts: 0} as ITurn);
         })
       })
@@ -394,15 +382,15 @@ describe('BallsComponent', () => {
       })
       it('should should not add another dead ball if the same dead ball is clicked multiple times', ()=> {
         const ball1 = fixture.debugElement.query(By.css("#ball1"));
-        expect(component.sharedData.getCurrentDeadBallCount()).toBe(0);
+        expect(component.sharedData.getGameDeadBallCount()).toBe(0);
         ball1.triggerEventHandler('click', null);
         fixture.detectChanges();
-        expect(component.sharedData.getCurrentDeadBallCount()).toBe(1);
+        expect(component.sharedData.getGameDeadBallCount()).toBe(1);
 
         ball1.triggerEventHandler('click', null);
         fixture.detectChanges();
 
-        expect(component.sharedData.getCurrentDeadBallCount()).toBe(1);
+        expect(component.sharedData.getGameDeadBallCount()).toBe(1);
       })
       it('should not update the current next ball if a different ball is clicked dead', ()=> {
         expect(component.nextBall).toBe(1);
@@ -520,11 +508,6 @@ describe('BallsComponent', () => {
           ball9.triggerEventHandler('click', null);
           fixture.detectChanges();
         })
-        it('should update the Log in sharedData to add a new game, reset the innings length to 1, deadballs to 0, and create a new blank inning for the lagWinner', () => {
-          expect(component.sharedData.getLog()[matchIndex].games[1].innings.length).toBe(1);
-          expect(component.sharedData.getCurrentDeadBallCount()).toBe(0);
-          expect(component.sharedData.getLog()[matchIndex].games[1].innings[0].lagWinnerTurn).toEqual({name:component.getLagWinningPlayer().name, ballsSunk: [], deadBalls: [], timeouts: 0} as ITurn);
-        })
         it('should emit a newGameEvent', ()=> {
           expect(component.newGameEventEmitter.emit).toHaveBeenCalled();
         })
@@ -538,11 +521,6 @@ describe('BallsComponent', () => {
           const ball9 = fixture.debugElement.query(By.css("#ball9"));
           ball9.triggerEventHandler('click', null);
           fixture.detectChanges();
-        })
-        it('should update the Log in sharedData to add a new game, reset the innings length to 1, deadballs to 0, and create a new blank inning for the lagLoser', () => {
-          expect(component.sharedData.getLog()[matchIndex].games[1].innings.length).toBe(1);
-          expect(component.sharedData.getCurrentDeadBallCount()).toBe(0);
-          expect(component.sharedData.getLog()[matchIndex].games[1].innings[0].lagLoserTurn).toEqual({name:component.getLagLosingPlayer().name, ballsSunk: [], deadBalls: [], timeouts: 0} as ITurn);
         })
         it('should emit a newGameEvent', ()=> {
           expect(component.newGameEventEmitter.emit).toHaveBeenCalled();

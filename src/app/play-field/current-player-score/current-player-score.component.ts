@@ -64,4 +64,20 @@ export class CurrentPlayerScoreComponent implements OnInit{
       }
     }
   }
+
+  //TODO: Add tests for this stuff
+  addDefenseLagWinner() {
+    this.sharedData.increaseLagWinnerDefences();
+  }
+  subtractDefenseLagWinner() {
+    if(this.sharedData.getLagWinnerDefences() > 0)
+      this.sharedData.decreaseLagWinnerDefences();
+  }
+  addDefenseLagLoser() {
+    this.sharedData.increaseLagLoserDefences();
+  }
+  subtractDefenseLagLoser() {
+    if(this.sharedData.getLagLoserDefences() > 0)
+      this.sharedData.decreaseLagLoserDefences();
+  }
 }

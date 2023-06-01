@@ -2,3 +2,8 @@
     height: 15px;
     align-items: center;
 }
+
+.defense-cell {
+    align-items: center;
+    text-align: center;
+}

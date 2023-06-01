@@ -7,7 +7,7 @@
         <td id="inningsValue">{{sharedData.getCurrentInningIndex()}}</td>
         <td class="seperating-border"> </td>
         <td id="deadBallsTitle" [width]="80">Game<br>Dead Balls</td>
-        <td id="deadBallsValue">{{sharedData.getCurrentDeadBallCount()}}</td>
+        <td id="deadBallsValue">{{sharedData.getGameDeadBallCount()}}</td>
         <td class="seperating-border"> </td>
         <td id="totalsTitle" class="totals-cell">Match<br>Totals</td>
     </tr>
@@ -45,5 +45,10 @@
     <abs-match-log [matchIndex]='sharedData.getCurrentMatchIndex()'></abs-match-log>
 </div>
 <ng-template #ballMode>
+    <div *ngIf="isNewGameConfirmMode; else displayBalls">
+        <abs-game-confirm [isLagWinnerShooting]="true" (confirmScoresCorrectEmitter)='onConfirmScoreEvent()'></abs-game-confirm><!-- TODO: Fix true later -->
+    </div>
+</ng-template>
+<ng-template #displayBalls>
     <abs-balls (newGameEventEmitter)='onNewGame()'></abs-balls>
 </ng-template>

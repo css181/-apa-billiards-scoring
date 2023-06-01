@@ -103,24 +103,24 @@ describe('PlayFieldComponent', () => {
     it('should increment the dead ball count when "Add DeadBall" button is pressed', () => {
       clickAddDeadBallButton();
 
-      expect(component.sharedData.getCurrentDeadBallCount()).toBe(1);
+      expect(component.sharedData.getGameDeadBallCount()).toBe(1);
       expect(fixture.debugElement.query(By.css('#deadBallsValue')).nativeElement.textContent).toBe('1');
     })
     it('should decrement the dead ball count when "Decrement DeadBall" button is pressed', () => {
       clickAddDeadBallButton();
-      expect(component.sharedData.getCurrentDeadBallCount()).toBe(1);
+      expect(component.sharedData.getGameDeadBallCount()).toBe(1);
 
       clickDecrementDeadBallButton();
 
-      expect(component.sharedData.getCurrentDeadBallCount()).toBe(0);
+      expect(component.sharedData.getGameDeadBallCount()).toBe(0);
       expect(fixture.debugElement.query(By.css('#deadBallsValue')).nativeElement.textContent).toBe('0');
     })
     it('should NOT decrement the dead ball count below 0 when "Decrement DeadBall" button is pressed', () => {
-      expect(component.sharedData.getCurrentDeadBallCount()).toBe(0);
+      expect(component.sharedData.getGameDeadBallCount()).toBe(0);
 
       clickDecrementDeadBallButton();
 
-      expect(component.sharedData.getCurrentDeadBallCount()).toBe(0);
+      expect(component.sharedData.getGameDeadBallCount()).toBe(0);
       expect(fixture.debugElement.query(By.css('#deadBallsValue')).nativeElement.textContent).toBe('0');
     })
   })

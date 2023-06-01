@@ -1,0 +1,16 @@
+<table>
+    <tr>
+        <td>{{lagWinnerName}}</td><td><strong>{{lagWinnerScore}}</strong></td>
+    </tr>
+    <tr>
+        <td>Innings</td><td><strong>{{inningCount}}</strong></td>
+    </tr>
+    <tr>
+        <td>Deadballs (match:{{totalDeadballs}})</td><td><strong>{{gameDeadballs}}</strong></td>
+    </tr>
+    <tr>
+        <td>{{lagLoserName}}</td><td><strong>{{lagLoserScore}}</strong></td>
+    </tr>
+</table>
+<br>
+<button id="confirmScores" (click)="onConfirmClick()">Click Once Scores Are Confirmed With Other Team</button>
