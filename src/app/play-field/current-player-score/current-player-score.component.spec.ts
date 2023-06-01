@@ -95,6 +95,9 @@ describe('CurrentPlayerScoreComponent', () => {
     })
 
     describe('Clicking different timeout images', ()=> {
+      //TODO: Update to pass the name in the emit so we can ensure we add/remove the timeout from the right person
+      //TODO: Right now timeouts will only get added/removed correctly if hit in real-time based on what's in the log
+      //relies on log not/having a loser turn to know if not/to add/remove it from the loser.
       describe('When clicking a first timeout image', ()=> {
         beforeEach(()=> {
           spyOn(component.timeoutEventEmitter, 'emit');

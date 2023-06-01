@@ -140,13 +140,13 @@ describe('BallsComponent', () => {
       expect(component.curShootingPlayer.curScore).toBe(8);
       expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagWinnerTurn.ballsSunk).toEqual([1,2,3,4,5,6,7,8]);
     })
-    describe('when the lagWinner is shooting', ()=> {
+    describe('when the lagWinner is shooting the 9 ball', ()=> {
       beforeEach(()=>{
         setupLagWinnerAndLoser();
         component.nextBall = 9;
         component.curBallImgPath = "assets/images/9ball.png";
       })
-      it('should add 2 point to the current shooter when ball was 9', () => {
+      it('should add 2 point to the current shooter', () => {
         expect(component.curShootingPlayer.curScore).toBe(0);
         //9ball
         clickUpNextImg();
@@ -154,22 +154,31 @@ describe('BallsComponent', () => {
         expect(component.curShootingPlayer.curScore).toBe(2);
         expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagWinnerTurn.ballsSunk).toEqual([9]);
       })
-      it('should update the Log in sharedData to add a new game, reset the innings length to 1, and create a new blank inning for the lagWinner', () => {
+      it('should update the Log in sharedData to add a new game, reset the innings length to 1, deadballs to 0, and create a new blank inning for the lagWinner', () => {
+        component.sharedData.incrementDeadBall();
         //9ball
         clickUpNextImg();
   
         expect(component.sharedData.getLog()[matchIndex].games[1].innings.length).toBe(1);
+        expect(component.sharedData.getCurrentDeadBallCount()).toBe(0);
         expect(component.sharedData.getLog()[matchIndex].games[1].innings[0].lagWinnerTurn).toEqual({name:component.getLagWinningPlayer().name, ballsSunk: [], deadBalls: [], timeouts: 0} as ITurn);
       })
+      it('should emit a newGameEvent', ()=> {
+        spyOn(component.newGameEventEmitter, 'emit');
+        //9ball
+        clickUpNextImg();
+
+        expect(component.newGameEventEmitter.emit).toHaveBeenCalled();
+      })
     })
-    describe('when the lagLoser is shooting', ()=> {
+    describe('when the lagLoser is shooting the 9 ball', ()=> {
       beforeEach(()=>{
         setupLagWinnerAndLoser();
         clickEndTurnButton();
         component.nextBall = 9;
         component.curBallImgPath = "assets/images/9ball.png";
       })
-      it('should add 2 point to the lagLoser when ball was 9 and add that ball to ballsSunk of the lagLoser log', () => {
+      it('should add 2 point to the lagLoser and add that ball to ballsSunk of the lagLoser log', () => {
         expect(component.curShootingPlayer.curScore).toBe(0);
   
         //9ball
@@ -177,12 +186,21 @@ describe('BallsComponent', () => {
         expect(component.curShootingPlayer.curScore).toBe(2);
         expect(component.sharedData.getLog()[matchIndex].games[gameIndex].innings[inningIndex].lagLoserTurn.ballsSunk).toEqual([9]);
       })
-      it('should update the Log in sharedData to add a new game, reset the innings length to 1, and create a new blank inning for the lagLoser', () => {
+      it('should update the Log in sharedData to add a new game, reset the innings length to 1, deadballs to 0, and create a new blank inning for the lagLoser', () => {
+        component.sharedData.incrementDeadBall();
         //9ball
         clickUpNextImg();
   
         expect(component.sharedData.getLog()[matchIndex].games[1].innings.length).toBe(1);
+        expect(component.sharedData.getCurrentDeadBallCount()).toBe(0);
         expect(component.sharedData.getLog()[matchIndex].games[1].innings[0].lagLoserTurn).toEqual({name:component.getLagLosingPlayer().name, ballsSunk: [], deadBalls: [], timeouts: 0} as ITurn);
+      })
+      it('should emit a newGameEvent', ()=> {
+        spyOn(component.newGameEventEmitter, 'emit');
+        //9ball
+        clickUpNextImg();
+
+        expect(component.newGameEventEmitter.emit).toHaveBeenCalled();
       })
     })
     it('should add the current ball to the sunkBallList', ()=> {
@@ -496,26 +514,38 @@ describe('BallsComponent', () => {
       describe('when the lagWinner is shooting and 9 ball is carem/combod', ()=> {
         beforeEach(()=>{
           setupLagWinnerAndLoser();
+          component.sharedData.incrementDeadBall();
+          spyOn(component.newGameEventEmitter, 'emit');
           const ball9 = fixture.debugElement.query(By.css("#ball9"));
           ball9.triggerEventHandler('click', null);
           fixture.detectChanges();
         })
-        it('should update the Log in sharedData to add a new game, reset the innings length to 1, and create a new blank inning for the lagWinner', () => {
+        it('should update the Log in sharedData to add a new game, reset the innings length to 1, deadballs to 0, and create a new blank inning for the lagWinner', () => {
           expect(component.sharedData.getLog()[matchIndex].games[1].innings.length).toBe(1);
+          expect(component.sharedData.getCurrentDeadBallCount()).toBe(0);
           expect(component.sharedData.getLog()[matchIndex].games[1].innings[0].lagWinnerTurn).toEqual({name:component.getLagWinningPlayer().name, ballsSunk: [], deadBalls: [], timeouts: 0} as ITurn);
         })
+        it('should emit a newGameEvent', ()=> {
+          expect(component.newGameEventEmitter.emit).toHaveBeenCalled();
+        })
       })
-      describe('when the lagLoser is shooting', ()=> {
+      describe('when the lagLoser is shooting and the 9 ball is carem/combod', ()=> {
         beforeEach(()=>{
           setupLagWinnerAndLoser();
           clickEndTurnButton();
+          component.sharedData.incrementDeadBall();
+          spyOn(component.newGameEventEmitter, 'emit');
           const ball9 = fixture.debugElement.query(By.css("#ball9"));
           ball9.triggerEventHandler('click', null);
           fixture.detectChanges();
         })
-        it('should update the Log in sharedData to add a new game, reset the innings length to 1, and create a new blank inning for the lagLoser', () => {
+        it('should update the Log in sharedData to add a new game, reset the innings length to 1, deadballs to 0, and create a new blank inning for the lagLoser', () => {
           expect(component.sharedData.getLog()[matchIndex].games[1].innings.length).toBe(1);
+          expect(component.sharedData.getCurrentDeadBallCount()).toBe(0);
           expect(component.sharedData.getLog()[matchIndex].games[1].innings[0].lagLoserTurn).toEqual({name:component.getLagLosingPlayer().name, ballsSunk: [], deadBalls: [], timeouts: 0} as ITurn);
+        })
+        it('should emit a newGameEvent', ()=> {
+          expect(component.newGameEventEmitter.emit).toHaveBeenCalled();
         })
       })
     })

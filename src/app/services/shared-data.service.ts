@@ -64,6 +64,9 @@ export class SharedDataService {
   public getCurrentDeadBallCount(): number {
     return this.gameDeadBallCount;
   }
+  public resetDeadBallCountForNewGame(): void {
+    this.gameDeadBallCount = 0;
+  }
   public getTotalDeadBallCount(): number {
     return this.totalDeadBallCount;
   }

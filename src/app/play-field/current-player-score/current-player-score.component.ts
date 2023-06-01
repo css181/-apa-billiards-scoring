@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
 import { ICurrentPlayer } from 'src/app/interfaces/icurrentPlayer';
 import { SharedDataService } from 'src/app/services/shared-data.service';
 
@@ -13,7 +14,9 @@ export class CurrentPlayerScoreComponent implements OnInit{
   @Output() timeoutEventEmitter: EventEmitter<string> = new EventEmitter<string>();
   public firstTimeoutImg: string = 'assets/images/timeout.png';
   public secondTimeoutImg: string = 'assets/images/timeout.png';
-  
+  private newGameEventSubscription: Subscription = new Subscription;
+  @Input() newGameEvent: Observable<void> = new Observable<void>;
+
   constructor(public sharedData: SharedDataService) {
   }
   
@@ -28,8 +31,20 @@ export class CurrentPlayerScoreComponent implements OnInit{
     } else {
       this.secondTimeoutImg = 'assets/images/timeout.png';
     }
+    this.newGameEventSubscription = this.newGameEvent.subscribe(() => this.resetTimeouts());
+  }
+
+  ngOnDestroy() {
+    this.newGameEventSubscription.unsubscribe();
   }
   
+  resetTimeouts() {
+    this.firstTimeoutImg = 'assets/images/timeout.png';
+    if(this.currentPlayer.skill<=3) {
+      this.secondTimeoutImg = 'assets/images/timeout.png';
+    }
+  }
+
   onTimeoutClick(timeoutNum: number) {
     if(timeoutNum==1) {
       if(this.firstTimeoutImg.indexOf('undo')!=-1) {

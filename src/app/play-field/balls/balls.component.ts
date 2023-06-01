@@ -18,6 +18,7 @@ export class BallsComponent {
   public sunkBallsList: number[] = [];
   public nextBall: number = 1;
   public curBallImgPath: string = "assets/images/1ball.png";
+  @Output() newGameEventEmitter: EventEmitter<string> = new EventEmitter<string>();
 
   //TODO: Remove later, setting defaults for easy manual testing purposes
   private yourPlayer = DefenseGoneBadPlayers[0];
@@ -67,17 +68,21 @@ export class BallsComponent {
 
     function addAllLagWinnerSunkBalls(inning: IInning): number[] {
       let returnList = [];
-      for (let index = 0; index < inning.lagWinnerTurn.ballsSunk.length; index++) {
-        const ball = inning.lagWinnerTurn.ballsSunk[index];
-        returnList.push(ball);
+      if(inning.lagWinnerTurn) {
+        for (let index = 0; index < inning.lagWinnerTurn.ballsSunk.length; index++) {
+          const ball = inning.lagWinnerTurn.ballsSunk[index];
+          returnList.push(ball);
+        }
       }
       return returnList;
     }
     function addAllLagWinnerDeadBalls(inning: IInning): number[] {
       let returnList = [];
-      for (let index = 0; index < inning.lagWinnerTurn.deadBalls.length; index++) {
-        const ball = inning.lagWinnerTurn.deadBalls[index];
-        returnList.push(ball);
+      if(inning.lagWinnerTurn) {
+        for (let index = 0; index < inning.lagWinnerTurn.deadBalls.length; index++) {
+          const ball = inning.lagWinnerTurn.deadBalls[index];
+          returnList.push(ball);
+        }
       }
       return returnList;
     }
@@ -159,6 +164,7 @@ export class BallsComponent {
       this.curShootingPlayer.curScore+=1;
       this.resetBallsToNewGame();
       this.resetNewGameInLog();
+      this.newGameEventEmitter.emit();
     }
   }
 
@@ -169,6 +175,7 @@ export class BallsComponent {
   }
   
   resetNewGameInLog(): void {
+    this.sharedData.resetDeadBallCountForNewGame();
     this.sharedData.addGameToMatch({innings: []} as IGame, this.sharedData.getLog().length-1);
     if(this.curShootingPlayer === this.lagWinningPlayer) {
       this.sharedData.addInningToLog({lagWinnerTurn: {name: this.lagWinningPlayer.name, ballsSunk: [], deadBalls: [], timeouts: 0} as ITurn } as IInning);

@@ -7,6 +7,7 @@ import HookerPlayers from '../../assets/data/hookers-players.json';
 import { IInning } from '../interfaces/iInnings';
 import { ITurn } from '../interfaces/iTurn';
 import { IGame } from '../interfaces/igame';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'abs-play-field',
@@ -22,11 +23,11 @@ export class PlayFieldComponent implements OnInit{
   private opponentPlayer = HookerPlayers[0];
   private yourCurrentPlayer = {id: this.yourPlayer.id, name: this.yourPlayer.name, skill: this.yourPlayer.skill, team: 'Defense Gone Bad', curScore: 0} as ICurrentPlayer
   private opponentCurrentPlayer = {id: this.opponentPlayer.id, name: this.opponentPlayer.name, skill: this.opponentPlayer.skill, team: 'Hookers', curScore: 0} as ICurrentPlayer
-  
+  newGameEventSubject: Subject<void> = new Subject<void>();
+
   private lagLosingPlayer: ICurrentPlayer = this.opponentCurrentPlayer;//{} as ICurrentPlayer;
   private lagWinningPlayer: ICurrentPlayer = this.yourCurrentPlayer;//{} as ICurrentPlayer;
 
-  //TODO: remove
   public isPrintLogMode: boolean = false;
 
   constructor(public sharedData: SharedDataService, private route: ActivatedRoute) { }
@@ -40,6 +41,10 @@ export class PlayFieldComponent implements OnInit{
     
     this.lagLosingPlayer = this.sharedData.getCurrentPlayerLagLoser();
     this.lagWinningPlayer = this.sharedData.getCurrentPlayerLagWinner();
+  }
+
+  onNewGame() {
+    this.newGameEventSubject.next();
   }
 
   setupComponentForLocalTestingByDefaultingSharedData(): void {

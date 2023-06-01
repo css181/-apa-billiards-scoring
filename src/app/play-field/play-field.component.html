@@ -1,7 +1,7 @@
 <table border="2">
     <tr>
         <td>
-            <abs-current-player-score [isLagWinner]=true (timeoutEventEmitter)='onTimeoutClicked($event)'></abs-current-player-score>
+            <abs-current-player-score [isLagWinner]=true [newGameEvent]="newGameEventSubject.asObservable()" (timeoutEventEmitter)='onTimeoutClicked($event)'></abs-current-player-score>
         </td>
         <td id="inningsTitle" [width]="80">Game Innings</td>
         <td id="inningsValue">{{sharedData.getCurrentInningIndex()}}</td>
@@ -13,7 +13,7 @@
     </tr>
     <tr>
         <td>
-            <abs-current-player-score [isLagWinner]=false (timeoutEventEmitter)='onTimeoutClicked($event)'></abs-current-player-score>
+            <abs-current-player-score [isLagWinner]=false [newGameEvent]="newGameEventSubject.asObservable()" (timeoutEventEmitter)='onTimeoutClicked($event)'></abs-current-player-score>
         </td>
         <td [colSpan]="2">
             <button id="addInning" (click)="onAddInning()">Add Inning</button><br>
@@ -45,5 +45,5 @@
     <abs-match-log [matchIndex]='sharedData.getCurrentMatchIndex()'></abs-match-log>
 </div>
 <ng-template #ballMode>
-    <abs-balls></abs-balls>
+    <abs-balls (newGameEventEmitter)='onNewGame()'></abs-balls>
 </ng-template>
