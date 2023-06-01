@@ -53,6 +53,10 @@ export class PlayFieldComponent implements OnInit{
     this.isNewGameConfirmMode = false;
   }
 
+  isLagWinnerShooting(): boolean {
+    return !(this.sharedData.getCurrentGame().innings[this.sharedData.getCurrentInningIndex()].lagLoserTurn);
+  }
+
   setupComponentForLocalTestingByDefaultingSharedData(): void {
     if(this.sharedData.getCurrentPlayerLagLoser().name===undefined) {
       this.sharedData.setCurrentPlayerLagLoser(this.opponentCurrentPlayer);

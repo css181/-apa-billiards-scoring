@@ -46,7 +46,7 @@
 </div>
 <ng-template #ballMode>
     <div *ngIf="isNewGameConfirmMode; else displayBalls">
-        <abs-game-confirm [isLagWinnerShooting]="true" (confirmScoresCorrectEmitter)='onConfirmScoreEvent()'></abs-game-confirm><!-- TODO: Fix true later -->
+        <abs-game-confirm [isLagWinnerShooting]="isLagWinnerShooting()" (confirmScoresCorrectEmitter)='onConfirmScoreEvent()'></abs-game-confirm>
     </div>
 </ng-template>
 <ng-template #displayBalls>

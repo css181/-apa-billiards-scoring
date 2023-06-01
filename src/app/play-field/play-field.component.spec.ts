@@ -203,9 +203,9 @@ describe('PlayFieldComponent', () => {
             lagLoserTurn: {ballsSunk: [], deadBalls: [], name: 'Mary', timeouts: 1} as ITurn } as IInning;
           component.sharedData.addInningToLog(JSON.parse(JSON.stringify(fullInningWithTimeout)));
           component.sharedData.addInningToLog(JSON.parse(JSON.stringify(fullInningWithTimeout)));
-          const halfInningWithOutTimeout = { lagWinnerTurn: {ballsSunk: [], deadBalls: [], name: 'Bob', timeouts: 0} as ITurn,
+          const fullInningWithOutTimeout = { lagWinnerTurn: {ballsSunk: [], deadBalls: [], name: 'Bob', timeouts: 0} as ITurn,
             lagLoserTurn: {ballsSunk: [], deadBalls: [], name: 'Mary', timeouts: 0} as ITurn } as IInning;
-          component.sharedData.addInningToLog(JSON.parse(JSON.stringify(halfInningWithOutTimeout)));
+          component.sharedData.addInningToLog(JSON.parse(JSON.stringify(fullInningWithOutTimeout)));
           
           expect(component.sharedData.getCurrentGame().innings[2].lagLoserTurn.timeouts).toBe(1);
           expect(component.sharedData.getCurrentGame().innings[3].lagLoserTurn.timeouts).toBe(1);
@@ -218,6 +218,28 @@ describe('PlayFieldComponent', () => {
           expect(component.sharedData.getCurrentGame().innings[3].lagLoserTurn.timeouts).toBe(0);
           expect(component.sharedData.getCurrentGame().innings[4].lagLoserTurn.timeouts).toBe(0);
         })
+      })
+    })
+  })
+
+  describe('isLagWinnerShooting()', ()=> {
+    describe('when Lag Winner is shooting', ()=>{
+      beforeEach(()=> {
+        const halfInning = { lagWinnerTurn: {ballsSunk: [], deadBalls: [], name: 'Bob', timeouts: 0} as ITurn} as IInning;
+        component.sharedData.addInningToLog(JSON.parse(JSON.stringify(halfInning)));
+      })
+      it('should return true', ()=> {
+        expect(component.isLagWinnerShooting()).toBe(true);
+      })
+    })
+    describe('when Lag Loser is shooting', ()=>{
+      beforeEach(()=> {
+        const fullInning = { lagWinnerTurn: {ballsSunk: [], deadBalls: [], name: 'Bob', timeouts: 1} as ITurn,
+          lagLoserTurn: {ballsSunk: [], deadBalls: [], name: 'Mary', timeouts: 1} as ITurn } as IInning;
+        component.sharedData.addInningToLog(JSON.parse(JSON.stringify(fullInning)));
+      })
+      it('should return true', ()=> {
+        expect(component.isLagWinnerShooting()).toBe(false);
       })
     })
   })
