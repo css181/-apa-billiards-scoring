@@ -1,6 +1,6 @@
 .up-next {
-    height: 250px;
-    width: 250px;
+    height: 150px;
+    width: 150px;
     border-radius: 40px;
     margin: 5px;
     background-color: white;
@@ -13,8 +13,8 @@
 
 
 .ball {
-    height: 90px;
-    width: 90px;
+    height: 80px;
+    width: 80px;
     border-radius: 40px;
     margin: 5px;
     background-color: white;
@@ -26,8 +26,8 @@
   }
 
   .deadBall {
-    height: 90px;
-    width: 90px;
+    height: 80px;
+    width: 80px;
     border-radius: 40px;
     margin: 5px;
     opacity: 0.5;
@@ -41,4 +41,9 @@
 
   .sunkBall {
     opacity: 0.12;
+  }
+
+  .largeText {
+    font-size: xx-large;
+    align-items: center;
   }

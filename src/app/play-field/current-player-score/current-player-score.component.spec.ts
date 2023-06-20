@@ -60,7 +60,7 @@ describe('CurrentPlayerScoreComponent', () => {
       expect(mainTable.query(By.css('#playerName')).nativeElement.textContent).toContain(component.currentPlayer.name);
       expect(mainTable.query(By.css('#playerSkill')).nativeElement.textContent).toContain(component.currentPlayer.skill);
       expect(mainTable.query(By.css('#playerScore')).nativeElement.textContent).toContain(component.currentPlayer.curScore);
-      expect(mainTable.query(By.css('#remainingNeeded')).nativeElement.textContent).toContain(targetScore - component.currentPlayer.curScore);
+      expect(mainTable.query(By.css('#remainingScore')).nativeElement.textContent).toContain(targetScore - component.currentPlayer.curScore);
       expect(mainTable.query(By.css('#playerScore')).nativeElement.textContent).toContain(targetScore);
     })
     describe('timeouts', ()=> {

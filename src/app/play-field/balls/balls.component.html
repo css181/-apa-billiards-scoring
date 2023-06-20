@@ -1,12 +1,12 @@
 <table>
     <tr>
         <td>
-            <div id="curShootingPlayerInfo">Now shooting: <strong>{{curShootingPlayer.name}}</strong></div>
+            <div>Now shooting:</div><div id="curShootingPlayerInfo" class="largeText">{{curShootingPlayer.name}}</div>
         </td>
+        <td [width]="20"></td>
         <td>
             <button id="endTurn" (click)="onEndTurn()">End Turn</button>
         </td>
-        <td [width]="100"></td>
     </tr>
 </table>
 <div *ngIf="isDeadBallMode">
@@ -21,9 +21,13 @@
             <td><img (click)="addDeadBall(1)" [ngClass]="sunkBallsList.indexOf(1)!=-1 ? 'ball sunkBall': 'ball'" id="ball1" src="assets/images/1ball.png" /></td>
             <td><img (click)="addDeadBall(2)" [ngClass]="sunkBallsList.indexOf(2)!=-1 ? 'ball sunkBall': 'ball'" id="ball2" src="assets/images/2ball.png" /></td>
             <td><img (click)="addDeadBall(3)" [ngClass]="sunkBallsList.indexOf(3)!=-1 ? 'ball sunkBall': 'ball'" id="ball3" src="assets/images/3ball.png" /></td>
+        </tr>
+        <tr>
             <td><img (click)="addDeadBall(4)" [ngClass]="sunkBallsList.indexOf(4)!=-1 ? 'ball sunkBall': 'ball'" id="ball4" src="assets/images/4ball.png" /></td>
             <td><img (click)="addDeadBall(5)" [ngClass]="sunkBallsList.indexOf(5)!=-1 ? 'ball sunkBall': 'ball'" id="ball5" src="assets/images/5ball.png" /></td>
             <td><img (click)="addDeadBall(6)" [ngClass]="sunkBallsList.indexOf(6)!=-1 ? 'ball sunkBall': 'ball'" id="ball6" src="assets/images/6ball.png" /></td>
+        </tr>
+        <tr>
             <td><img (click)="addDeadBall(7)" [ngClass]="sunkBallsList.indexOf(7)!=-1 ? 'ball sunkBall': 'ball'" id="ball7" src="assets/images/7ball.png" /></td>
             <td><img (click)="addDeadBall(8)" [ngClass]="sunkBallsList.indexOf(8)!=-1 ? 'ball sunkBall': 'ball'" id="ball8" src="assets/images/8ball.png" /></td>
             <td><img class="ball" id="ball9" src="assets/images/9ball_dead.png" /></td>
@@ -42,9 +46,13 @@
             <td><img (click)="caremComboBall(1)" [ngClass]="sunkBallsList.indexOf(1)!=-1 ? 'ball sunkBall': 'ball'" id="ball1" src="assets/images/1ball.png" /></td>
             <td><img (click)="caremComboBall(2)" [ngClass]="sunkBallsList.indexOf(2)!=-1 ? 'ball sunkBall': 'ball'" id="ball2" src="assets/images/2ball.png" /></td>
             <td><img (click)="caremComboBall(3)" [ngClass]="sunkBallsList.indexOf(3)!=-1 ? 'ball sunkBall': 'ball'" id="ball3" src="assets/images/3ball.png" /></td>
+        </tr>
+        <tr>
             <td><img (click)="caremComboBall(4)" [ngClass]="sunkBallsList.indexOf(4)!=-1 ? 'ball sunkBall': 'ball'" id="ball4" src="assets/images/4ball.png" /></td>
             <td><img (click)="caremComboBall(5)" [ngClass]="sunkBallsList.indexOf(5)!=-1 ? 'ball sunkBall': 'ball'" id="ball5" src="assets/images/5ball.png" /></td>
             <td><img (click)="caremComboBall(6)" [ngClass]="sunkBallsList.indexOf(6)!=-1 ? 'ball sunkBall': 'ball'" id="ball6" src="assets/images/6ball.png" /></td>
+        </tr>
+        <tr>
             <td><img (click)="caremComboBall(7)" [ngClass]="sunkBallsList.indexOf(7)!=-1 ? 'ball sunkBall': 'ball'" id="ball7" src="assets/images/7ball.png" /></td>
             <td><img (click)="caremComboBall(8)" [ngClass]="sunkBallsList.indexOf(8)!=-1 ? 'ball sunkBall': 'ball'" id="ball8" src="assets/images/8ball.png" /></td>
             <td><img (click)="caremComboBall(9)" class="ball" id="ball9" src="assets/images/9ball.png" /></td>

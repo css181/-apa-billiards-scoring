@@ -7,3 +7,8 @@
     background-color: lightgrey;
     text-align: right;
 }
+
+.center-item {
+  align-items: center;
+  text-align: center;
+}

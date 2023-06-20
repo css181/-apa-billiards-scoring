@@ -1,23 +1,27 @@
 <table border="2">
     <tr>
-        <td colspan="6" align="center">TODO: Percent to target shaded here</td>
+        <td colspan="4" align="center">TODO: Percent to target shaded here</td>
     </tr>
     <tr>
-        <td colspan="2" [width]="300" id="playerName">{{currentPlayer.team}}: <strong>{{currentPlayer.name}}</strong></td>
         <td [width]="40" id="playerSkill">Skill:{{currentPlayer.skill}}</td>
-        <td colspan="2" [width]="160" id="playerScore">Score:{{currentPlayer.curScore}} of {{sharedData.getTargetScore(currentPlayer.skill)}}</td>
-        <td [width]="50" id="remainingNeeded">Need:{{sharedData.getTargetScore(currentPlayer.skill) - currentPlayer.curScore}}</td>
+        <td [width]="190" colspan="2" class="center-text" id="playerScore">Score:{{currentPlayer.curScore}} of {{sharedData.getTargetScore(currentPlayer.skill)}}</td> 
+        <td [width]="50" id="remainingScore"> Need:{{sharedData.getTargetScore(currentPlayer.skill) - currentPlayer.curScore}}</td>
     </tr>
     <tr>
-        <td id="timeoutFirst"><img src="{{firstTimeoutImg}}" (click)="onTimeoutClick(1)" class="timeout-button" id="timeoutFirstImg"></td>
-        <td *ngIf="currentPlayer.skill >= 4" id="timeoutSecond"><img src="{{secondTimeoutImg}}" class="timeout-button" id="timeoutSecondImg"></td>
-        <td *ngIf="currentPlayer.skill <= 3" id="timeoutSecond"><img src="{{secondTimeoutImg}}" (click)="onTimeoutClick(2)" class="timeout-button" id="timeoutSecondImg"></td>
-        <td *ngIf="isLagWinner" id="defenseCount" colspan="2" class="defense-cell">
+        <td colspan="4" [width]="300" id="playerName">{{currentPlayer.team}}: <strong>{{currentPlayer.name}}</strong></td>
+    </tr>
+    <tr>
+        <td id="timeoutFirst" colspan="2"><img src="{{firstTimeoutImg}}" (click)="onTimeoutClick(1)" class="timeout-button" id="timeoutFirstImg"></td>
+        <td *ngIf="currentPlayer.skill >= 4" id="timeoutSecond" colspan="2"><img src="{{secondTimeoutImg}}" class="timeout-button" id="timeoutSecondImg"></td>
+        <td *ngIf="currentPlayer.skill <= 3" id="timeoutSecond" colspan="2"><img src="{{secondTimeoutImg}}" (click)="onTimeoutClick(2)" class="timeout-button" id="timeoutSecondImg"></td>
+    </tr>
+    <tr>
+        <td *ngIf="isLagWinner" id="defenseCount" colspan="4" class="center-text">
             Defenses: {{sharedData.getLagWinnerDefences()}} 
             <button id="addDefense" (click)="addDefenseLagWinner()">+</button> 
             <button id="subtractDefense" (click)="subtractDefenseLagWinner()">-</button> 
         </td>
-        <td *ngIf="isLagWinner==false" id="defenseCount" colspan="2" class="defense-cell">
+        <td *ngIf="isLagWinner==false" id="defenseCount" colspan="4" class="center-text">
             Defenses: {{sharedData.getLagLoserDefences()}} 
             <button id="addDefense" (click)="addDefenseLagLoser()">+</button> 
             <button id="subtractDefense" (click)="subtractDefenseLagLoser()">-</button> 

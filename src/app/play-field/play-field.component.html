@@ -1,26 +1,28 @@
-<table border="2">
+<table border="1">
     <tr>
         <td>
             <abs-current-player-score [isLagWinner]=true [newGameEvent]="newGameEventSubject.asObservable()" (timeoutEventEmitter)='onTimeoutClicked($event)'></abs-current-player-score>
         </td>
-        <td id="inningsTitle" [width]="80">Game Innings</td>
+
+        <td id="inningsTitle" [width]="90">Game Innings</td>
         <td id="inningsValue">{{sharedData.getCurrentInningIndex()}}</td>
         <td class="seperating-border"> </td>
-        <td id="deadBallsTitle" [width]="80">Game<br>Dead Balls</td>
+        <td id="deadBallsTitle" [width]="90">Game<br>Dead Balls</td>
         <td id="deadBallsValue">{{sharedData.getGameDeadBallCount()}}</td>
         <td class="seperating-border"> </td>
-        <td id="totalsTitle" class="totals-cell">Match<br>Totals</td>
+        <td id="totalsTitle" [width]="100" class="totals-cell">Match<br>Totals</td>
     </tr>
     <tr>
         <td>
             <abs-current-player-score [isLagWinner]=false [newGameEvent]="newGameEventSubject.asObservable()" (timeoutEventEmitter)='onTimeoutClicked($event)'></abs-current-player-score>
         </td>
-        <td [colSpan]="2">
+
+        <td [colSpan]="2" class="center-item">
             <button id="addInning" (click)="onAddInning()">Add Inning</button><br>
             <button id="decrementInning" (click)="onDecrementInning()">Decrement</button>
         </td>
         <td class="seperating-border"></td>
-        <td [colSpan]="2">
+        <td [colSpan]="2" class="center-item">
             <button id="addDeadBall" (click)="onAddDeadBall()">Add DeadBall</button><br>
             <button id="decrementDeadBall" (click)="onDecrementDeadBall()">Decrement</button>
         </td>
