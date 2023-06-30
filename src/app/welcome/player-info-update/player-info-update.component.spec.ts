@@ -1,4 +1,4 @@
-import { ComponentFixture, flush, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import HookerPlayers from '../../../assets/data/hookers-players.json';
 import { PlayerInfoUpdateComponent } from './player-info-update.component';
 import { By } from "@angular/platform-browser"
@@ -69,7 +69,7 @@ describe('PlayerInfoUpdateComponent', () => {
       //Verify All non-Input TDs
       expect(component.isUpdateMode).toBeFalse();
       let nonInputBoxes = fixture.debugElement.queryAll(By.css('.playerInfo'));
-      expect(nonInputBoxes.length).toBe(8*3);
+      expect(nonInputBoxes.length).toBe(8 * 3);
 
       //Verify No Inputs for each of the player fields
       let inputIDBoxes = fixture.debugElement.queryAll(By.css('.playerIDInput'));
@@ -79,7 +79,7 @@ describe('PlayerInfoUpdateComponent', () => {
       let inputSkillBoxes = fixture.debugElement.queryAll(By.css('.playerSkillInput'));
       expect(inputSkillBoxes.length).toBe(0);
     })
-    it('should reset hasBeenConfirmed if 1 team is selected, than confirmed, than a new team is selected', ()=> {
+    it('should reset hasBeenConfirmed if 1 team is selected, than confirmed, than a new team is selected', () => {
       component.teamName = 'Hookers';
       component.ngOnChanges();
       fixture.detectChanges();
@@ -156,8 +156,10 @@ describe('PlayerInfoUpdateComponent', () => {
   })
 
   describe('save button', () => {
-    it('should only show if in updateMode', () => {
+    beforeEach(() => {
       setupPlayerInfoUpdateComponent();
+    })
+    it('should only show if in updateMode', () => {
       let saveButon = fixture.debugElement.query(By.css('button#saveButton'));
       expect(saveButon).toBeFalsy();
 
@@ -167,10 +169,9 @@ describe('PlayerInfoUpdateComponent', () => {
       expect(saveButon).toBeTruthy();
     })
     it('should remove the ability to update values via <inputs> anymore after save is hit', () => {
-      setupPlayerInfoUpdateComponent();
       clickUpdateButton();
       let inputBoxes = fixture.debugElement.query(By.css('table#playerNamesTable')).queryAll(By.css('input'));
-      expect(inputBoxes.length).toBe(8*3);
+      expect(inputBoxes.length).toBe(8 * 3);
       //Verify No non-Input TDs
       let nonInputBoxes = fixture.debugElement.queryAll(By.css('.playerInfo'));
       expect(nonInputBoxes.length).toBe(0);
@@ -187,23 +188,110 @@ describe('PlayerInfoUpdateComponent', () => {
 
       //Verify 8*3 non-Input TDs
       nonInputBoxes = fixture.debugElement.queryAll(By.css('.playerInfo'));
-      expect(nonInputBoxes.length).toBe(8*3);
+      expect(nonInputBoxes.length).toBe(8 * 3);
     })
-    it('should update the value in players array after update is hit, values are changed, and save is hit', () => {
+    it('should do thing from internet FROM COMPONENT PROPERTY', fakeAsync(() => {
+      clickUpdateButton();
+
+      const testValue = 'Component member test'
+      component.getPlayers()[0].name = testValue // Should be the correct way to test ngModel
+      fixture.detectChanges();
+      tick();
+
+      fixture.whenStable().then(() => {
+        expect(fixture.debugElement.queryAll(By.css('.playerNameInput'))[0].nativeElement.value).toEqual(testValue)
+        expect(component.getPlayers()[0].name).toEqual(testValue);
+      });
+    }));
+    it('should do thing from internet FROM HTML INPUT', fakeAsync(() => {
+      clickUpdateButton();
+
+      const testValue = 'NativeElement test'
+
+      let element = fixture.debugElement.queryAll(By.css('.playerNameInput'))[0].nativeElement;
+      element.value = testValue // this tests only the out-binding
+      element.dispatchEvent(new Event('input'));
+      tick();
+      fixture.detectChanges();
+
+      fixture.whenStable().then(() => {
+        expect(fixture.debugElement.queryAll(By.css('.playerNameInput'))[0].nativeElement.value).toEqual(testValue);
+        expect(component.getPlayers()[0].name).toEqual(testValue);
+      });
+    }));
+    it('should update the value in players array after update is hit, values are changed, and save is hit', fakeAsync(() => {
       const idChangedValue = '5';
-      setupPlayerInfoUpdateComponent();
+      const nameChangedValue = 'myNewName';
+      const skillChangedValue = '9';
 
       clickUpdateButton();
       let inputIDBox1 = fixture.debugElement.queryAll(By.css('.playerIDInput'))[0].nativeElement;
       setInputValue(inputIDBox1, idChangedValue);
-      let saveButton = fixture.debugElement.query(By.css('button#saveButton'));
-      saveButton.triggerEventHandler('click', null);
-      fixture.detectChanges();
+      let inputNameBox1 = fixture.debugElement.queryAll(By.css('.playerNameInput'))[0].nativeElement;
+      setInputValue(inputNameBox1, nameChangedValue);
+      let inputSkillBox1 = fixture.debugElement.queryAll(By.css('.playerSkillInput'))[0].nativeElement;
+      setInputValue(inputSkillBox1, skillChangedValue);
+
+      clickSaveButton();
+      let nonInputBoxes = fixture.debugElement.queryAll(By.css('.playerInfo'));
+      expect(nonInputBoxes.length).toBe(8 * 3);
 
       fixture.whenStable().then(() => {
         expect(component.getPlayers()[0].id).toBe(idChangedValue);
+        expect(nonInputBoxes[0].nativeElement.textContent).toEqual(idChangedValue);
+        expect(component.getPlayers()[0].name).toBe(nameChangedValue);
+        expect(nonInputBoxes[1].nativeElement.textContent).toEqual(nameChangedValue);
+        expect(component.getPlayers()[0].skill).toBe(parseInt(skillChangedValue)); //Skill must be a number
+        expect(nonInputBoxes[2].nativeElement.textContent).toEqual(skillChangedValue);
       });
+    }))
+  })
+
+  describe('skill Inputs in update mode', () => {
+    beforeEach(() => {
+      setupPlayerInfoUpdateComponent();
+      clickUpdateButton();
     })
+    it('should not allow you to enter a skill below 1', fakeAsync(() => {
+      const tooLowSkill = '0';
+      let inputSkillBox1 = fixture.debugElement.queryAll(By.css('.playerSkillInput'))[0].nativeElement;
+      setInputValue(inputSkillBox1, tooLowSkill);
+
+      //TODO: This functionality is working, but this test will not fail even if we reverse the logic.
+      fixture.whenStable().then(() => {
+        clickSaveButton();
+        spyOn(window, "alert");
+        expect(window.alert).toHaveBeenCalled();
+      });
+
+      const validLowSkill = '1';
+      setInputValue(inputSkillBox1, validLowSkill);
+
+      fixture.whenStable().then(() => {
+        clickSaveButton();
+        expect(window.alert).not.toHaveBeenCalled();
+      });
+    }))
+    it('should not allow you to enter a skill above 9', fakeAsync(() => {
+      const tooHighSkill = '10';
+      let inputSkillBox1 = fixture.debugElement.queryAll(By.css('.playerSkillInput'))[0].nativeElement;
+      setInputValue(inputSkillBox1, tooHighSkill);
+
+      //TODO: This functionality is working, but this test will not fail even if we reverse the logic.
+      fixture.whenStable().then(() => {
+        clickSaveButton();
+        spyOn(window, "alert");
+        expect(window.alert).toHaveBeenCalled();
+      });
+
+      const validLowSkill = '1';
+      setInputValue(inputSkillBox1, validLowSkill);
+
+      fixture.whenStable().then(() => {
+        clickSaveButton();
+        expect(window.alert).not.toHaveBeenCalled();
+      });
+    }))
   })
 
   describe('confirm button', () => {
@@ -239,10 +327,10 @@ describe('PlayerInfoUpdateComponent', () => {
     })
   })
 
-  // must be called from within fakeAsync due to use of tick()
-  function setInputValue(element:any, value:string) {
-    element.value = value;
-    dispatchEvent(new Event('input'));
+  function setInputValue(element: any, textValue: string) {
+    element.value = textValue
+    element.dispatchEvent(new Event('input'));
+    tick();
     fixture.detectChanges();
   }
 

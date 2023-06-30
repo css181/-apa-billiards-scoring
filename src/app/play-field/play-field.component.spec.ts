@@ -238,7 +238,7 @@ describe('PlayFieldComponent', () => {
           lagLoserTurn: {ballsSunk: [], deadBalls: [], name: 'Mary', timeouts: 1} as ITurn } as IInning;
         component.sharedData.addInningToLog(JSON.parse(JSON.stringify(fullInning)));
       })
-      it('should return true', ()=> {
+      it('should return false', ()=> {
         expect(component.isLagWinnerShooting()).toBe(false);
       })
     })

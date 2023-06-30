@@ -39,11 +39,29 @@ export class PlayerInfoUpdateComponent implements OnChanges {
     this.isUpdateMode = true;
     // console.log('setting isUpdateMode to true');
   }
+
+  onSkillChange(newValue: any): void {
+    newValue = parseInt(newValue);
+  }
   
   onSave(): void {
     // console.log('Saving values of players:');
     // console.log(JSON.stringify(this.players));
-    this.isUpdateMode = false;
+    let areAllValidSkills = true;
+    for (let index = 0; index < this.players.length; index++) {
+      const element = this.players[index];
+      if(element.skill<1) {
+        alert('Player: ' + element.name + ' can not have a skill below 1.  Current [' + element.skill + ']');
+        areAllValidSkills = false;
+      }
+      if(element.skill>9) {
+        alert('Player: ' + element.name + ' can not have a skill above 9.  Current [' + element.skill + ']');
+        areAllValidSkills = false;
+      }
+    }
+    if(areAllValidSkills) {
+      this.isUpdateMode = false;
+    }
   }
 
   onConfirm(): void {

@@ -7,11 +7,11 @@
             <th [width]="60">Skill</th>
         </tr>
         <tr *ngFor="let player of getPlayers(); let i = index">
-            <td *ngIf="getIsUpdateMode()"><input class="playerIDInput" [(ngModel)]="players[i].id" value="{{players[i].id}}"></td>
+            <td *ngIf="getIsUpdateMode()"><input class="playerIDInput" [(ngModel)]="player.id" value="{{player.id}}"></td>
             <td *ngIf="getIsUpdateMode()==false" class="playerInfo">{{player.id}}</td>
-            <td *ngIf="getIsUpdateMode()"><input class="playerNameInput" [(ngModel)]="players[i].name" value="{{players[i].name}}"></td>
+            <td *ngIf="getIsUpdateMode()"><input class="playerNameInput" [(ngModel)]="player.name" value="{{player.name}}"></td>
             <td *ngIf="getIsUpdateMode()==false" class="playerInfo">{{player.name}}</td>
-            <td *ngIf="getIsUpdateMode()"><input class="playerSkillInput" [(ngModel)]="players[i].skill" value="{{players[i].skill}}"></td>
+            <td *ngIf="getIsUpdateMode()"><input class="playerSkillInput" [(ngModel)]="player.skill" type="number" min="1" max="9" value="{{player.skill}}" style="width: 3em" ></td>
             <td *ngIf="getIsUpdateMode()==false" class="playerInfo">{{player.skill}}</td>
         </tr>
     </table>
