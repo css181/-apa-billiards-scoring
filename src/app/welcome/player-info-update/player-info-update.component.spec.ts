@@ -190,35 +190,6 @@ describe('PlayerInfoUpdateComponent', () => {
       nonInputBoxes = fixture.debugElement.queryAll(By.css('.playerInfo'));
       expect(nonInputBoxes.length).toBe(8 * 3);
     })
-    it('should do thing from internet FROM COMPONENT PROPERTY', fakeAsync(() => {
-      clickUpdateButton();
-
-      const testValue = 'Component member test'
-      component.getPlayers()[0].name = testValue // Should be the correct way to test ngModel
-      fixture.detectChanges();
-      tick();
-
-      fixture.whenStable().then(() => {
-        expect(fixture.debugElement.queryAll(By.css('.playerNameInput'))[0].nativeElement.value).toEqual(testValue)
-        expect(component.getPlayers()[0].name).toEqual(testValue);
-      });
-    }));
-    it('should do thing from internet FROM HTML INPUT', fakeAsync(() => {
-      clickUpdateButton();
-
-      const testValue = 'NativeElement test'
-
-      let element = fixture.debugElement.queryAll(By.css('.playerNameInput'))[0].nativeElement;
-      element.value = testValue // this tests only the out-binding
-      element.dispatchEvent(new Event('input'));
-      tick();
-      fixture.detectChanges();
-
-      fixture.whenStable().then(() => {
-        expect(fixture.debugElement.queryAll(By.css('.playerNameInput'))[0].nativeElement.value).toEqual(testValue);
-        expect(component.getPlayers()[0].name).toEqual(testValue);
-      });
-    }));
     it('should update the value in players array after update is hit, values are changed, and save is hit', fakeAsync(() => {
       const idChangedValue = '5';
       const nameChangedValue = 'myNewName';
@@ -250,46 +221,59 @@ describe('PlayerInfoUpdateComponent', () => {
   describe('skill Inputs in update mode', () => {
     beforeEach(() => {
       setupPlayerInfoUpdateComponent();
-      clickUpdateButton();
     })
     it('should not allow you to enter a skill below 1', fakeAsync(() => {
       const tooLowSkill = '0';
+      clickUpdateButton();
+      spyOn(window, "alert");
+
       let inputSkillBox1 = fixture.debugElement.queryAll(By.css('.playerSkillInput'))[0].nativeElement;
       setInputValue(inputSkillBox1, tooLowSkill);
 
-      //TODO: This functionality is working, but this test will not fail even if we reverse the logic.
+      clickSaveButton();
+      
       fixture.whenStable().then(() => {
-        clickSaveButton();
-        spyOn(window, "alert");
-        expect(window.alert).toHaveBeenCalled();
-      });
+        expect(component.getPlayers()[0].skill).toBe(parseInt(tooLowSkill));
+        expect(inputSkillBox1.value).toEqual(tooLowSkill);
+        expect(window.alert).toHaveBeenCalledTimes(1);
 
-      const validLowSkill = '1';
-      setInputValue(inputSkillBox1, validLowSkill);
-
-      fixture.whenStable().then(() => {
+        const validSkill = '1';
+        setInputValue(inputSkillBox1, validSkill);
         clickSaveButton();
-        expect(window.alert).not.toHaveBeenCalled();
+        let nonInputBoxes = fixture.debugElement.queryAll(By.css('.playerInfo'));
+  
+        fixture.whenStable().then(() => {
+          expect(component.getPlayers()[0].skill).toBe(parseInt(validSkill));
+          expect(nonInputBoxes[2].nativeElement.textContent).toEqual(validSkill);
+          expect(window.alert).toHaveBeenCalledTimes(1);
+        })
       });
     }))
     it('should not allow you to enter a skill above 9', fakeAsync(() => {
       const tooHighSkill = '10';
+      clickUpdateButton();
+      spyOn(window, "alert");
+
       let inputSkillBox1 = fixture.debugElement.queryAll(By.css('.playerSkillInput'))[0].nativeElement;
       setInputValue(inputSkillBox1, tooHighSkill);
 
-      //TODO: This functionality is working, but this test will not fail even if we reverse the logic.
+      clickSaveButton();
+      
       fixture.whenStable().then(() => {
-        clickSaveButton();
-        spyOn(window, "alert");
-        expect(window.alert).toHaveBeenCalled();
-      });
+        expect(component.getPlayers()[0].skill).toBe(parseInt(tooHighSkill));
+        expect(inputSkillBox1.value).toEqual(tooHighSkill);
+        expect(window.alert).toHaveBeenCalledTimes(1);
 
-      const validLowSkill = '1';
-      setInputValue(inputSkillBox1, validLowSkill);
-
-      fixture.whenStable().then(() => {
+        const validSkill = '1';
+        setInputValue(inputSkillBox1, validSkill);
         clickSaveButton();
-        expect(window.alert).not.toHaveBeenCalled();
+        let nonInputBoxes = fixture.debugElement.queryAll(By.css('.playerInfo'));
+  
+        fixture.whenStable().then(() => {
+          expect(component.getPlayers()[0].skill).toBe(parseInt(validSkill));
+          expect(nonInputBoxes[2].nativeElement.textContent).toEqual(validSkill);
+          expect(window.alert).toHaveBeenCalledTimes(1);
+        })
       });
     }))
   })
