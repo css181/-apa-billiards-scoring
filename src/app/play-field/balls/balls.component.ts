@@ -128,7 +128,7 @@ export class BallsComponent {
   }
 
   addDeadBall(ballNum: number) {
-    if(this.sunkBallsList.indexOf(ballNum)==-1){
+    if(this.sunkBallsList.indexOf(ballNum)===-1){
       this.sharedData.addDeadBall(ballNum);
       this.sunkBallsList.push(ballNum);
       if(this.nextBall===ballNum) {
@@ -147,8 +147,11 @@ export class BallsComponent {
     // console.log(this.curShootingPlayer.name + ' new score = ' + this.curShootingPlayer.curScore);
   }
   caremComboBall(ballNum: number) {
-    if(this.sunkBallsList.indexOf(ballNum)==-1){
+    if(this.sunkBallsList.indexOf(ballNum)===-1){
       this.sunkBallsList.push(ballNum);
+      if(ballNum===9) {
+        this.addAnyUnsunkBallsToDeadBalls();
+      }
       if(this.nextBall===ballNum) {
         this.assignNewNextBall();
       }
@@ -157,6 +160,14 @@ export class BallsComponent {
       this.checkAndPerformPotentialEndGameUpdates(ballNum);
       // console.log(this.curShootingPlayer.name + ' combo/caremed ' + ballNum);
       // console.log(this.curShootingPlayer.name + ' new score = ' + this.curShootingPlayer.curScore);
+    }
+  }
+
+  addAnyUnsunkBallsToDeadBalls() {
+    for (let ballTryNum = 1; ballTryNum <= 8; ballTryNum++){
+      if(this.sunkBallsList.indexOf(ballTryNum)===-1) {
+        this.addDeadBall(ballTryNum);
+      }
     }
   }
 

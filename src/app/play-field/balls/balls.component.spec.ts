@@ -502,7 +502,7 @@ describe('BallsComponent', () => {
       describe('when the lagWinner is shooting and 9 ball is carem/combod', ()=> {
         beforeEach(()=>{
           setupLagWinnerAndLoser();
-          component.sharedData.incrementDeadBall();
+          component.sharedData.resetDeadBallCountForNewGame();
           spyOn(component.newGameEventEmitter, 'emit');
           const ball9 = fixture.debugElement.query(By.css("#ball9"));
           ball9.triggerEventHandler('click', null);
@@ -510,13 +510,15 @@ describe('BallsComponent', () => {
         })
         it('should emit a newGameEvent', ()=> {
           expect(component.newGameEventEmitter.emit).toHaveBeenCalled();
+        })
+        it('should add all remaining balls to deadball list in sharedData', ()=> {
+          expect(component.sharedData.getGameDeadBallCount()).toBe(8);
         })
       })
       describe('when the lagLoser is shooting and the 9 ball is carem/combod', ()=> {
         beforeEach(()=>{
           setupLagWinnerAndLoser();
           clickEndTurnButton();
-          component.sharedData.incrementDeadBall();
           spyOn(component.newGameEventEmitter, 'emit');
           const ball9 = fixture.debugElement.query(By.css("#ball9"));
           ball9.triggerEventHandler('click', null);
@@ -524,6 +526,9 @@ describe('BallsComponent', () => {
         })
         it('should emit a newGameEvent', ()=> {
           expect(component.newGameEventEmitter.emit).toHaveBeenCalled();
+        })
+        it('should add all remaining balls to deadball list in sharedData', ()=> {
+          expect(component.sharedData.getGameDeadBallCount()).toBe(8);
         })
       })
     })
